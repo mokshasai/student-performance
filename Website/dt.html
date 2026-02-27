@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DT | Student Performance Analysis</title>
+  <meta name="description" content="Decision Tree classification applied to predict student performance categories — overview, data, code, and results.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav>
+  <ul>
+    <li><a href="index.html">Introduction</a></li>
+    <li><a href="data-prep.html">Data Prep</a></li>
+    <li><a href="pca.html">PCA</a></li>
+    <li><a href="clustering.html">Clustering</a></li>
+    <li><a href="arm.html">ARM</a></li>
+    <li><a href="dt.html">DT</a></li>
+    <li><a href="nb.html">NB</a></li>
+    <li><a href="svm.html">SVM</a></li>
+    <li><a href="regression.html">Regression</a></li>
+    <li><a href="conclusions.html">Conclusions</a></li>
+  </ul>
+</nav>
+
+<main>
+
+  <!-- ── Hero ─────────────────────────────────────────────── -->
+  <div class="hero">
+    <span class="hero-badge" style="background:rgba(104,211,145,0.15);border-color:rgba(104,211,145,0.35);color:#68d391">
+      Classification Model
+    </span>
+    <h1>Decision Tree (DT)</h1>
+    <p class="hero-sub">A transparent, rule-based classification model for predicting student academic performance.</p>
+  </div>
+
+  <div class="info-grid">
+    <div class="info-tile"><div class="tile-value" style="color:#68d391">3</div><div class="tile-label">Classes (Low/Med/High)</div></div>
+    <div class="info-tile"><div class="tile-value" style="color:#68d391">33</div><div class="tile-label">Input Features</div></div>
+    <div class="info-tile"><div class="tile-value" style="color:#68d391">Gini</div><div class="tile-label">Split Criterion</div></div>
+    <div class="info-tile"><div class="tile-value" style="color:#68d391">sklearn</div><div class="tile-label">Library</div></div>
+  </div>
+
+  <!-- ── Overview ──────────────────────────────────────────── -->
+  <h2>Overview</h2>
+
+  <p>
+    A <strong>Decision Tree</strong> is a supervised machine learning model that learns a series of if-then-else rules from training data to classify or predict an outcome. Starting from a root node, the algorithm recursively splits the data on the feature that best separates the classes — typically using the <strong>Gini impurity</strong> or <strong>information gain (entropy)</strong> criterion. Each internal node represents a decision based on a single feature value, and each leaf node represents a predicted class label. Decision trees are highly interpretable: the rules they learn can be visualized as a flowchart that anyone can follow to understand how a prediction was made. This transparency makes them especially valuable in educational contexts, where the reasoning behind a classification ("this student is predicted to score Low because they have 3 prior failures and study less than 2 hours per week") is just as important as the prediction itself. However, unconstrained decision trees can overfit to training data, so parameters like <code>max_depth</code>, <code>min_samples_split</code>, and <code>min_samples_leaf</code> are used to regularize the model.
+  </p>
+
+  <p>
+    In the context of student performance, a Decision Tree is applied to classify each student into one of three performance categories — <strong>Low</strong> (G3 &lt; 10), <strong>Medium</strong> (10 &le; G3 &lt; 14), and <strong>High</strong> (G3 &ge; 14) — based on their behavioral and demographic attributes. The model can reveal which features the tree splits on most often, providing an interpretable ranking of feature importance. For example, if the root split is always on "number of past failures," it strongly suggests that prior academic history is the most discriminative factor for predicting final grade outcomes. Decision Trees also handle mixed data types (numeric and categorical) well, and require minimal preprocessing compared to distance-based models like KMeans or SVM.
+  </p>
+
+  <div class="callout" style="border-left-color:#68d391;background:rgba(104,211,145,0.06)">
+    <span class="callout-icon">🌳</span>
+    <p><strong>Why Decision Trees?</strong> They produce human-readable rules, handle both numeric and categorical features, require no normalization, and directly show which features matter most — making them ideal for explaining academic predictions to non-technical stakeholders such as teachers and school administrators.</p>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ── Data ──────────────────────────────────────────────── -->
+  <h2>Data</h2>
+
+  <p>
+    The Decision Tree uses the <strong>cleaned and encoded student dataset</strong> with G1 and G2 (intermediate grades) dropped to avoid data leakage. All 33 features are retained. The target variable is the derived <strong>performance label</strong> (Low / Medium / High) based on G3.
+  </p>
+
+  <div class="figure-grid">
+    <div class="img-wrap">
+      <img src="Raw_data.png" alt="Raw student dataset preview">
+      <div class="img-caption">Raw data — original student-mat.csv with all 33 attributes before encoding.</div>
+    </div>
+    <div class="img-wrap">
+      <img src="cleaned_data.png" alt="Cleaned student dataset preview">
+      <div class="img-caption">Cleaned data — binary-encoded and one-hot-encoded features ready for modeling.</div>
+    </div>
+  </div>
+
+  <div class="callout blue">
+    <span class="callout-icon">📁</span>
+    <p>
+      <a href="../data/student-mat.csv" download class="btn-link" style="margin-right:10px">&darr; Raw Data (student-mat.csv)</a>
+      <a href="../data/student_clean.csv" download class="btn-link" style="background:rgba(104,211,145,.1);border-color:rgba(104,211,145,.3);color:#68d391">&darr; Clean Data (student_clean.csv)</a>
+    </p>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ── Code ──────────────────────────────────────────────── -->
+  <h2>Code</h2>
+
+  <p>
+    Implemented in <strong>Python 3</strong>. Core packages: <code>sklearn</code> (DecisionTreeClassifier, train_test_split, GridSearchCV, classification_report, confusion_matrix), <code>pandas</code>, <code>matplotlib</code>.
+  </p>
+
+  <div class="callout" style="border-left-color:#68d391;background:rgba(104,211,145,0.06)">
+    <span class="callout-icon">&#128196;</span>
+    <p>Code for this analysis will be linked here once the Decision Tree script is complete. Check back after the full model implementation.</p>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ── Results ───────────────────────────────────────────── -->
+  <h2>Results</h2>
+
+  <div class="callout amber">
+    <span class="callout-icon">🔄</span>
+    <p><strong>In Progress:</strong> Decision Tree training and evaluation are currently being finalized. Results including accuracy scores, the decision tree visualization, confusion matrix, and feature importance rankings will be published here upon completion.</p>
+  </div>
+
+  <p>
+    Expected outputs include:
+  </p>
+  <ul style="color:var(--text-sec);padding-left:20px;line-height:2.2">
+    <li>Classification accuracy (train vs. test split, typically 70/30 or 80/20)</li>
+    <li>Full classification report: precision, recall, F1-score per class</li>
+    <li>Confusion matrix heatmap across Low / Medium / High performance groups</li>
+    <li>Decision tree visualization (first 3–4 depth levels for readability)</li>
+    <li>Feature importance bar chart showing the top predictors of student performance</li>
+    <li>Comparison of performance across different <code>max_depth</code> values (hyperparameter tuning)</li>
+  </ul>
+
+</main>
+
+<footer>
+  <p>Student Performance Analysis &copy; 2025 &mdash; Data Science Project</p>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>

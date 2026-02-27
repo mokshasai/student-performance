@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Regression | Student Performance Analysis</title>
+  <meta name="description" content="Regression models applied to predict final student grades — overview, data, code, and results.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav>
+  <ul>
+    <li><a href="index.html">Introduction</a></li>
+    <li><a href="data-prep.html">Data Prep</a></li>
+    <li><a href="pca.html">PCA</a></li>
+    <li><a href="clustering.html">Clustering</a></li>
+    <li><a href="arm.html">ARM</a></li>
+    <li><a href="dt.html">DT</a></li>
+    <li><a href="nb.html">NB</a></li>
+    <li><a href="svm.html">SVM</a></li>
+    <li><a href="regression.html">Regression</a></li>
+    <li><a href="conclusions.html">Conclusions</a></li>
+  </ul>
+</nav>
+
+<main>
+
+  <!-- ── Hero ─────────────────────────────────────────────── -->
+  <div class="hero">
+    <span class="hero-badge" style="background:rgba(246,173,85,0.15);border-color:rgba(246,173,85,0.35);color:#f6ad55">
+      Predictive Modeling
+    </span>
+    <h1>Regression Analysis</h1>
+    <p class="hero-sub">Predicting the exact final grade (G3) of each student using linear and regularized regression models.</p>
+  </div>
+
+  <div class="info-grid">
+    <div class="info-tile"><div class="tile-value" style="color:#f6ad55">G3</div><div class="tile-label">Numeric Target (0–20)</div></div>
+    <div class="info-tile"><div class="tile-value" style="color:#f6ad55">OLS</div><div class="tile-label">Linear Regression</div></div>
+    <div class="info-tile"><div class="tile-value" style="color:#f6ad55">R²</div><div class="tile-label">Evaluation Metric</div></div>
+    <div class="info-tile"><div class="tile-value" style="color:#f6ad55">sklearn</div><div class="tile-label">Library</div></div>
+  </div>
+
+  <!-- ── Overview ──────────────────────────────────────────── -->
+  <h2>Overview</h2>
+
+  <p>
+    <strong>Regression</strong> is a supervised learning technique used to predict a <em>continuous numeric outcome</em>, rather than a category. In this project, regression is applied to directly predict each student's final grade (G3) on a 0–20 scale. Unlike classification — which groups students into Low, Medium, or High buckets — regression provides a precise predicted score, making it useful for fine-grained interventions (e.g., predicting that a student will score 11.4 rather than simply "Medium"). The simplest approach is <strong>Ordinary Least Squares (OLS) Linear Regression</strong>, which fits a hyperplane through the feature space by minimizing the sum of squared residuals (the differences between predicted and actual values). Multiple regression includes all features simultaneously, allowing the model to estimate how each attribute (e.g., study time, absences) contributes to the final grade while holding all other factors constant — producing interpretable coefficients for each feature.
+  </p>
+
+  <p>
+    Beyond simple linear regression, <strong>Ridge</strong> and <strong>Lasso</strong> regularization are applied to prevent overfitting. Ridge regression adds a penalty term proportional to the squared magnitude of the model coefficients, shrinking all coefficients toward zero but never exactly to zero. Lasso regression uses an absolute value penalty, which has the useful property of forcing some coefficients to exactly zero — effectively performing automatic feature selection. This is particularly valuable in this dataset where many features are binary (one-hot encoded) and some may have near-zero predictive value. The best regression approach is selected based on cross-validated RMSE (Root Mean Square Error) and R² (coefficient of determination), which measures how much of the variance in grades the model explains.
+  </p>
+
+  <div class="callout amber">
+    <span class="callout-icon">📈</span>
+    <p><strong>Key Metrics:</strong> <strong>RMSE</strong> (lower = better, measures average prediction error in grade points), <strong>R²</strong> (higher = better, proportion of variance explained — 1.0 = perfect), <strong>MAE</strong> (Mean Absolute Error — average absolute difference between predicted and actual grades).</p>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ── Data ──────────────────────────────────────────────── -->
+  <h2>Data</h2>
+
+  <p>
+    Regression uses the <strong>cleaned, encoded dataset</strong> with G3 as the <strong>numeric target variable</strong> (not a label). G1 and G2 are excluded to measure how well the model predicts final grades from behavioral and demographic features alone. All features are normalized using <code>StandardScaler</code> for consistency across regularized models.
+  </p>
+
+  <div class="figure-grid">
+    <div class="img-wrap">
+      <img src="Raw_data.png" alt="Raw student dataset preview">
+      <div class="img-caption">Raw data — 395 students with 33 features including the G3 numeric target (0–20 scale).</div>
+    </div>
+    <div class="img-wrap">
+      <img src="cleaned_data.png" alt="Cleaned dataset used for regression">
+      <div class="img-caption">Cleaned data — fully numeric after encoding; G3 retained as continuous regression target.</div>
+    </div>
+  </div>
+
+  <div class="callout blue">
+    <span class="callout-icon">📁</span>
+    <p>
+      <a href="../data/student-mat.csv" download class="btn-link" style="margin-right:10px">&darr; Raw Data (student-mat.csv)</a>
+      <a href="../data/student_clean.csv" download class="btn-link" style="background:rgba(104,211,145,.1);border-color:rgba(104,211,145,.3);color:#68d391">&darr; Clean Data (student_clean.csv)</a>
+    </p>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ── Code ──────────────────────────────────────────────── -->
+  <h2>Code</h2>
+
+  <p>
+    Implemented in <strong>Python 3</strong>. Core packages: <code>sklearn</code> (LinearRegression, Ridge, Lasso, train_test_split, cross_val_score, mean_squared_error, r2_score), <code>pandas</code>, <code>numpy</code>, <code>matplotlib</code>, <code>seaborn</code>.
+  </p>
+
+  <div class="callout amber">
+    <span class="callout-icon">&#128196;</span>
+    <p>Code for this analysis will be linked here once the Regression script is complete.</p>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ── Results ───────────────────────────────────────────── -->
+  <h2>Results</h2>
+
+  <div class="callout amber">
+    <span class="callout-icon">🔄</span>
+    <p><strong>In Progress:</strong> Linear, Ridge, and Lasso regression models are being trained and evaluated. Results including RMSE, R², predicted vs. actual scatter plots, and regression coefficient analysis will be published here.</p>
+  </div>
+
+  <p>Expected outputs include:</p>
+  <ul style="color:var(--text-sec);padding-left:20px;line-height:2.2">
+    <li>RMSE and R² for Linear, Ridge, and Lasso on train and test sets</li>
+    <li>Predicted vs. actual grade scatter plot with regression line</li>
+    <li>Residual distribution histogram (checking assumption of normality)</li>
+    <li>Feature coefficient bar chart — which attributes push grades up or down</li>
+    <li>Lasso feature selection — which features get zeroed out</li>
+    <li>Cross-validated performance comparison across all three regression models</li>
+  </ul>
+
+</main>
+
+<footer>
+  <p>Student Performance Analysis &copy; 2025 &mdash; Data Science Project</p>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>

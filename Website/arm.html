@@ -16,6 +16,11 @@
     <li><a href="pca.html">PCA</a></li>
     <li><a href="clustering.html">Clustering</a></li>
     <li><a href="arm.html">ARM</a></li>
+    <li><a href="dt.html">DT</a></li>
+    <li><a href="nb.html">NB</a></li>
+    <li><a href="svm.html">SVM</a></li>
+    <li><a href="regression.html">Regression</a></li>
+    <li><a href="conclusions.html">Conclusions</a></li>
   </ul>
 </nav>
 
@@ -137,22 +142,15 @@
   <!-- ── Code ──────────────────────────────────────────────── -->
   <h2>Code</h2>
 
-  <p>ARM was implemented using the <strong>mlxtend</strong> Python library with the <code>apriori</code> and <code>association_rules</code> functions.</p>
+  <p>ARM was implemented in <strong>Python 3</strong> using the <strong>mlxtend</strong> library. Core packages used: <code>mlxtend</code> (apriori, association_rules, TransactionEncoder), <code>pandas</code>, <code>numpy</code>, <code>matplotlib</code>.</p>
 
-  <pre><code># Key ARM code
-from mlxtend.frequent_patterns import apriori, association_rules
-from mlxtend.preprocessing import TransactionEncoder
-
-te = TransactionEncoder()
-te_array = te.fit_transform(transactions)
-trans_df = pd.DataFrame(te_array, columns=te.columns_)
-
-# Mine frequent itemsets
-freq_items = apriori(trans_df, min_support=0.10, use_colnames=True)
-
-# Generate rules
-rules = association_rules(freq_items, metric="confidence", min_threshold=0.30)
-# → 9,021 rules found</code></pre>
+  <div class="callout amber">
+    <span class="callout-icon">&#128196;</span>
+    <p>
+      <a href="code/code_arm.html" class="btn-link" style="margin-right:10px">View Full ARM Code &rarr;</a>
+      <a href="../code/04_arm.py" download class="btn-link" style="background:rgba(104,211,145,.1);border-color:rgba(104,211,145,.3);color:#68d391">&darr; Download 04_arm.py</a>
+    </p>
+  </div>
 
   <hr class="divider">
 

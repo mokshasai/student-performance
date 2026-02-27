@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NB | Student Performance Analysis</title>
+  <meta name="description" content="Naive Bayes classification applied to predict student performance — overview, data, code, and results.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav>
+  <ul>
+    <li><a href="index.html">Introduction</a></li>
+    <li><a href="data-prep.html">Data Prep</a></li>
+    <li><a href="pca.html">PCA</a></li>
+    <li><a href="clustering.html">Clustering</a></li>
+    <li><a href="arm.html">ARM</a></li>
+    <li><a href="dt.html">DT</a></li>
+    <li><a href="nb.html">NB</a></li>
+    <li><a href="svm.html">SVM</a></li>
+    <li><a href="regression.html">Regression</a></li>
+    <li><a href="conclusions.html">Conclusions</a></li>
+  </ul>
+</nav>
+
+<main>
+
+  <!-- ── Hero ─────────────────────────────────────────────── -->
+  <div class="hero">
+    <span class="hero-badge" style="background:rgba(99,179,237,0.15);border-color:rgba(99,179,237,0.35);color:#63b3ed">
+      Probabilistic Classifier
+    </span>
+    <h1>Naïve Bayes (NB)</h1>
+    <p class="hero-sub">A fast probabilistic classifier based on Bayes' theorem — applied to predict student academic performance categories.</p>
+  </div>
+
+  <div class="info-grid">
+    <div class="info-tile"><div class="tile-value" style="color:#63b3ed">3</div><div class="tile-label">Classes (Low/Med/High)</div></div>
+    <div class="info-tile"><div class="tile-value" style="color:#63b3ed">GNB</div><div class="tile-label">Gaussian Naïve Bayes</div></div>
+    <div class="info-tile"><div class="tile-value" style="color:#63b3ed">P(A|B)</div><div class="tile-label">Bayes' Theorem</div></div>
+    <div class="info-tile"><div class="tile-value" style="color:#63b3ed">sklearn</div><div class="tile-label">Library</div></div>
+  </div>
+
+  <!-- ── Overview ──────────────────────────────────────────── -->
+  <h2>Overview</h2>
+
+  <p>
+    <strong>Naïve Bayes (NB)</strong> is a family of probabilistic classifiers built on <strong>Bayes' theorem</strong>, which states that the probability of a class given observed features equals the prior probability of that class multiplied by the likelihood of observing those features given the class, divided by the overall probability of the features. The "naïve" assumption is that all features are conditionally independent given the class label — meaning the model assumes that knowing one feature (e.g., study time) tells us nothing additional about another feature (e.g., absences) beyond what we already know about the class. While this assumption rarely holds perfectly in practice, Naïve Bayes classifiers often perform surprisingly well, especially on high-dimensional data or when training data is limited. For continuous numeric features (like those in the student dataset), <strong>Gaussian Naïve Bayes</strong> is used, which assumes that feature values follow a normal distribution within each class. The model is trained by estimating the mean and standard deviation of each feature per class from the training data.
+  </p>
+
+  <p>
+    Applied to student performance, Naïve Bayes classifies each student as Low, Medium, or High performer. Because the model is probabilistic, it also produces confidence scores — the probability that a student belongs to each class — providing an interpretable measure of certainty alongside the predicted label. Naïve Bayes trains extremely quickly even on larger datasets and serves as an important baseline to compare against more complex classifiers like Decision Trees and SVMs. A model that significantly outperforms Naïve Bayes justifies the added complexity; one that does not suggests the data's patterns are straightforward enough for a simple probabilistic approach.
+  </p>
+
+  <div class="callout blue">
+    <span class="callout-icon">📐</span>
+    <p><strong>Bayes' Theorem:</strong> P(Class | Features) ∝ P(Class) × P(Features | Class). Naïve Bayes estimates P(Features | Class) by assuming feature independence — making computation fast and requiring very little training data to estimate reliable parameters.</p>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ── Data ──────────────────────────────────────────────── -->
+  <h2>Data</h2>
+
+  <p>
+    The same cleaned, encoded student dataset is used. Gaussian NB works on the full numeric feature set after label encoding. The target is the three-class performance label (Low / Medium / High) derived from G3, with G1 and G2 dropped to prevent leakage.
+  </p>
+
+  <div class="figure-grid">
+    <div class="img-wrap">
+      <img src="Raw_data.png" alt="Raw student dataset preview">
+      <div class="img-caption">Raw data — 395 students, 33 features, before any encoding or transformation.</div>
+    </div>
+    <div class="img-wrap">
+      <img src="cleaned_data.png" alt="Cleaned student dataset used as NB input">
+      <div class="img-caption">Cleaned data — fully numeric after label encoding and one-hot encoding of categorical columns.</div>
+    </div>
+  </div>
+
+  <div class="callout blue">
+    <span class="callout-icon">📁</span>
+    <p>
+      <a href="../data/student-mat.csv" download class="btn-link" style="margin-right:10px">&darr; Raw Data (student-mat.csv)</a>
+      <a href="../data/student_clean.csv" download class="btn-link" style="background:rgba(104,211,145,.1);border-color:rgba(104,211,145,.3);color:#68d391">&darr; Clean Data (student_clean.csv)</a>
+    </p>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ── Code ──────────────────────────────────────────────── -->
+  <h2>Code</h2>
+
+  <p>
+    Implemented in <strong>Python 3</strong>. Core packages: <code>sklearn</code> (GaussianNB, train_test_split, classification_report, confusion_matrix, cross_val_score), <code>pandas</code>, <code>matplotlib</code>, <code>seaborn</code>.
+  </p>
+
+  <div class="callout blue">
+    <span class="callout-icon">&#128196;</span>
+    <p>Code for this analysis will be linked here once the Naïve Bayes script is complete.</p>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ── Results ───────────────────────────────────────────── -->
+  <h2>Results</h2>
+
+  <div class="callout amber">
+    <span class="callout-icon">🔄</span>
+    <p><strong>In Progress:</strong> Naïve Bayes model training and cross-validation results are being finalized. Results will be published here including accuracy, class-level metrics, and comparison with other classifiers.</p>
+  </div>
+
+  <p>Expected outputs include:</p>
+  <ul style="color:var(--text-sec);padding-left:20px;line-height:2.2">
+    <li>Overall classification accuracy on held-out test set</li>
+    <li>Per-class precision, recall, and F1-score (Low / Medium / High)</li>
+    <li>Confusion matrix showing predicted vs. actual class labels</li>
+    <li>5-fold cross-validation accuracy for robust performance estimation</li>
+    <li>Probability distributions per class (Gaussian curves for key features)</li>
+    <li>Comparison of NB accuracy vs. Decision Tree and SVM baselines</li>
+  </ul>
+
+</main>
+
+<footer>
+  <p>Student Performance Analysis &copy; 2025 &mdash; Data Science Project</p>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>

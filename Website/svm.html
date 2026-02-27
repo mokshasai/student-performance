@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SVM | Student Performance Analysis</title>
+  <meta name="description" content="Support Vector Machine applied to classify student performance — overview, data, code, and results.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav>
+  <ul>
+    <li><a href="index.html">Introduction</a></li>
+    <li><a href="data-prep.html">Data Prep</a></li>
+    <li><a href="pca.html">PCA</a></li>
+    <li><a href="clustering.html">Clustering</a></li>
+    <li><a href="arm.html">ARM</a></li>
+    <li><a href="dt.html">DT</a></li>
+    <li><a href="nb.html">NB</a></li>
+    <li><a href="svm.html">SVM</a></li>
+    <li><a href="regression.html">Regression</a></li>
+    <li><a href="conclusions.html">Conclusions</a></li>
+  </ul>
+</nav>
+
+<main>
+
+  <!-- ── Hero ─────────────────────────────────────────────── -->
+  <div class="hero">
+    <span class="hero-badge" style="background:rgba(252,129,129,0.15);border-color:rgba(252,129,129,0.35);color:#fc8181">
+      Margin-Based Classifier
+    </span>
+    <h1>Support Vector Machine (SVM)</h1>
+    <p class="hero-sub">Finding the optimal hyperplane to separate student performance classes with maximum margin.</p>
+  </div>
+
+  <div class="info-grid">
+    <div class="info-tile"><div class="tile-value" style="color:#fc8181">RBF</div><div class="tile-label">Kernel Function</div></div>
+    <div class="info-tile"><div class="tile-value" style="color:#fc8181">3</div><div class="tile-label">Classes (OvR Strategy)</div></div>
+    <div class="info-tile"><div class="tile-value" style="color:#fc8181">C, γ</div><div class="tile-label">Hyperparameters</div></div>
+    <div class="info-tile"><div class="tile-value" style="color:#fc8181">sklearn</div><div class="tile-label">Library</div></div>
+  </div>
+
+  <!-- ── Overview ──────────────────────────────────────────── -->
+  <h2>Overview</h2>
+
+  <p>
+    A <strong>Support Vector Machine (SVM)</strong> is a supervised learning algorithm that finds the <strong>optimal decision boundary</strong> — called a hyperplane — that separates classes with the largest possible margin of separation. The data points closest to the boundary on either side are called <strong>support vectors</strong>, and the model is entirely defined by these critical points. In high-dimensional feature spaces, SVMs are particularly powerful because the margin maximization objective provides strong generalization ability even when the number of features is large relative to the number of training examples. For non-linearly separable data, SVMs employ a <strong>kernel function</strong> — such as the Radial Basis Function (RBF) kernel — to implicitly transform the feature space into a higher-dimensional representation where a linear boundary becomes sufficient. The regularization parameter <code>C</code> controls the trade-off between maximizing the margin and minimizing training error, while the kernel coefficient <code>gamma</code> determines how far the influence of a single training example reaches.
+  </p>
+
+  <p>
+    For multi-class classification of student performance (Low, Medium, High), SVM uses a <strong>One-vs-Rest (OvR)</strong> strategy: three separate binary classifiers are trained, each distinguishing one class from the other two. The class with the highest decision function score is assigned as the final label. Because SVM is sensitive to feature scale, all numeric features are normalized using <code>StandardScaler</code> before training. SVMs generally produce higher accuracy than simpler models on complex datasets and are especially valuable when discovering sharp, nonlinear boundaries between performance groups. The model is less interpretable than a Decision Tree, but its accuracy and robustness to overfitting make it a strong contender for the best-performing classifier in this project.
+  </p>
+
+  <div class="callout" style="border-left-color:#fc8181;background:rgba(252,129,129,0.06)">
+    <span class="callout-icon">⚙️</span>
+    <p><strong>Key Hyperparameters:</strong> <code>C</code> (regularization strength — larger C = less margin, fewer misclassifications on training set), <code>kernel</code> (RBF, linear, polynomial), <code>gamma</code> (RBF width — smaller gamma = smoother boundary). GridSearchCV is used to find the optimal combination via cross-validation.</p>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ── Data ──────────────────────────────────────────────── -->
+  <h2>Data</h2>
+
+  <p>
+    SVM requires fully numeric features and is sensitive to scale. The cleaned, encoded dataset is normalized with <code>StandardScaler</code> before training. The target is the three-class performance label. G1 and G2 are dropped to avoid leakage.
+  </p>
+
+  <div class="figure-grid">
+    <div class="img-wrap">
+      <img src="Raw_data.png" alt="Raw student dataset preview">
+      <div class="img-caption">Raw data — original CSV with mixed data types before any encoding.</div>
+    </div>
+    <div class="img-wrap">
+      <img src="cleaned_data.png" alt="Cleaned dataset used for SVM">
+      <div class="img-caption">Cleaned &amp; normalized data — StandardScaler applied before SVM training.</div>
+    </div>
+  </div>
+
+  <div class="callout blue">
+    <span class="callout-icon">📁</span>
+    <p>
+      <a href="../data/student-mat.csv" download class="btn-link" style="margin-right:10px">&darr; Raw Data (student-mat.csv)</a>
+      <a href="../data/student_clean.csv" download class="btn-link" style="background:rgba(104,211,145,.1);border-color:rgba(104,211,145,.3);color:#68d391">&darr; Clean Data (student_clean.csv)</a>
+    </p>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ── Code ──────────────────────────────────────────────── -->
+  <h2>Code</h2>
+
+  <p>
+    Implemented in <strong>Python 3</strong>. Core packages: <code>sklearn</code> (SVC, StandardScaler, GridSearchCV, classification_report, confusion_matrix, cross_val_score), <code>pandas</code>, <code>matplotlib</code>, <code>seaborn</code>.
+  </p>
+
+  <div class="callout" style="border-left-color:#fc8181;background:rgba(252,129,129,0.06)">
+    <span class="callout-icon">&#128196;</span>
+    <p>Code for this analysis will be linked here once the SVM script is complete.</p>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ── Results ───────────────────────────────────────────── -->
+  <h2>Results</h2>
+
+  <div class="callout amber">
+    <span class="callout-icon">🔄</span>
+    <p><strong>In Progress:</strong> SVM training with hyperparameter tuning (GridSearchCV across C and gamma) is being finalized. Results including accuracy, confusion matrix, and decision boundary analysis will be published here.</p>
+  </div>
+
+  <p>Expected outputs include:</p>
+  <ul style="color:var(--text-sec);padding-left:20px;line-height:2.2">
+    <li>Best hyperparameter combination found via GridSearchCV (C, kernel, gamma)</li>
+    <li>Test set accuracy on the optimal model</li>
+    <li>Classification report: precision, recall, F1-score per class</li>
+    <li>Confusion matrix across Low / Medium / High performance groups</li>
+    <li>Cross-validation accuracy distribution (boxplot across 5 folds)</li>
+    <li>Comparison of RBF vs. linear kernel performance</li>
+    <li>Discussion of which student features SVM found most separating</li>
+  </ul>
+
+</main>
+
+<footer>
+  <p>Student Performance Analysis &copy; 2025 &mdash; Data Science Project</p>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
