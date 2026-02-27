@@ -1,0 +1,11 @@
+,Transactions
+0,"StudyTime:Medium, Absences:Low, Alcohol:None, Internet:No, Failures:None, FamSupport:No, Higher:Yes, Romantic:No, FreeTime:Medium, Grade:Low"
+1,"StudyTime:Medium, Absences:Low, Alcohol:None, Internet:Yes, Failures:None, FamSupport:Yes, Higher:Yes, Romantic:No, FreeTime:Medium, Grade:Low"
+2,"StudyTime:Medium, Absences:High, Alcohol:Medium, Internet:Yes, Failures:Some, FamSupport:No, Higher:Yes, Romantic:No, FreeTime:Medium, Grade:Medium"
+3,"StudyTime:High, Absences:Low, Alcohol:None, Internet:Yes, Failures:None, FamSupport:Yes, Higher:Yes, Romantic:Yes, FreeTime:Low, Grade:High"
+4,"StudyTime:Medium, Absences:Low, Alcohol:Low, Internet:No, Failures:None, FamSupport:Yes, Higher:Yes, Romantic:No, FreeTime:Medium, Grade:Medium"
+5,"StudyTime:Medium, Absences:High, Alcohol:Low, Internet:Yes, Failures:None, FamSupport:Yes, Higher:Yes, Romantic:No, FreeTime:High, Grade:High"
+6,"StudyTime:Medium, Absences:Low, Alcohol:None, Internet:Yes, Failures:None, FamSupport:No, Higher:Yes, Romantic:No, FreeTime:High, Grade:Medium"
+7,"StudyTime:Medium, Absences:Low, Alcohol:None, Internet:No, Failures:None, FamSupport:Yes, Higher:Yes, Romantic:No, FreeTime:VeryLow, Grade:Low"
+8,"StudyTime:Medium, Absences:Low, Alcohol:None, Internet:Yes, Failures:None, FamSupport:Yes, Higher:Yes, Romantic:No, FreeTime:Low, Grade:High"
+9,"StudyTime:Medium, Absences:Low, Alcohol:None, Internet:Yes, Failures:None, FamSupport:Yes, Higher:Yes, Romantic:No, FreeTime:VeryHigh, Grade:High"

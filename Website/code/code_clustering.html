@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='UTF-8'>
+<meta name='viewport' content='width=device-width,initial-scale=1.0'>
+<title>Clustering Code | Student Performance</title>
+<link rel='stylesheet' href='../style.css'>
+<link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css'>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js'></script>
+<style>
+body{background:#0f1117}
+.code-header{display:flex;align-items:center;justify-content:space-between;
+  background:#1a1d27;border:1px solid rgba(255,255,255,.08);
+  border-radius:12px 12px 0 0;padding:14px 22px;margin-top:30px}
+.file-tag{font-family:'JetBrains Mono',monospace;font-size:.85rem;
+  color:#63b3ed;font-weight:600}
+.cpbtn{background:rgba(99,179,237,.12);border:1px solid rgba(99,179,237,.3);
+  color:#63b3ed;padding:6px 14px;border-radius:6px;font-size:.78rem;
+  font-weight:600;cursor:pointer;font-family:inherit;transition:all .2s}
+.cpbtn:hover{background:rgba(99,179,237,.22)}
+.hljs{border-radius:0 0 12px 12px;font-size:.82rem;line-height:1.65}
+pre{margin:0!important;padding:0!important;
+  background:none!important;border:none!important}
+pre code.hljs{padding:24px 28px!important}
+.back-row{display:flex;align-items:center;gap:12px;margin-bottom:10px;flex-wrap:wrap}
+.bdg{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.7rem;
+  font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin:3px}
+.bb{background:rgba(99,179,237,.15);color:#63b3ed}
+.bg{background:rgba(104,211,145,.15);color:#68d391}
+.ba{background:rgba(246,173,85,.15);color:#f6ad55}
+.bp{background:rgba(183,148,244,.15);color:#b794f4}
+.pip{background:#1a1d27;border:1px solid rgba(255,255,255,.08);
+  border-radius:8px;padding:12px 18px;font-family:'JetBrains Mono',monospace;
+  font-size:.8rem;color:#a0d9ef;margin:16px 0}
+</style>
+</head><body>
+<nav><ul>
+  <li><a href='../index.html'>Introduction</a></li>
+  <li><a href='../data-prep.html'>Data Prep</a></li>
+  <li><a href='../pca.html'>PCA</a></li>
+  <li><a href='../clustering.html'>Clustering</a></li>
+  <li><a href='../arm.html'>ARM</a></li>
+</ul></nav>
+<main>
+  <div class='back-row'>
+    <a href='../clustering.html' class='btn-link'>&larr; Back to Clustering</a>
+    <a href='../../code/03_clustering.py' download class='btn-link' style='background:rgba(104,211,145,.1);border-color:rgba(104,211,145,.3);color:#68d391'>&darr; Download .py</a>
+  </div>
+  <div class='hero' style='padding:40px 0 30px'>
+    <span class='hero-badge' style='background:rgba(104,211,145,.15);border-color:rgba(104,211,145,.35);color:#68d391'>Script 03 of 04</span>
+    <h1 style='font-size:2rem'>Clustering Code</h1>
+    <p class='hero-sub'>KMeans, Hierarchical (Ward), and DBSCAN on PCA-reduced student data.</p>
+  </div>
+  <div style='margin:14px 0'><span class="bdg bg">KMeans</span><span class="bdg bg">Hierarchical</span><span class="bdg bg">DBSCAN</span><span class="bdg bg">Silhouette</span></div>
+  <div class='code-header'>
+    <span class='file-tag'>&#128196; 03_clustering.py</span>
+    <div style='display:flex;gap:10px;align-items:center'>
+      <span style='font-size:.75rem;color:#718096'>234 lines &middot; Python 3</span>
+      <button class='cpbtn' onclick='cp()'>Copy Code</button>
+    </div>
+  </div>
+  <pre><code class='language-python' id='cb'>&quot;&quot;&quot;
+Student Performance Analysis
+=============================
+Script 03 — Clustering Analysis
+
+Methods : K-Means, Hierarchical (Agglomerative / Ward), DBSCAN
+Goal    : Discover natural student groupings without using labels.
+          Compare all three algorithms.
+Dataset : UCI Student Performance (student-mat.csv)
+Author  : Data Science Project 2025
+&quot;&quot;&quot;
+
+# ─────────────────────────────────────────────────────────────
+# IMPORTS
+# ─────────────────────────────────────────────────────────────
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.preprocessing import StandardScaler, LabelEncoder
+from sklearn.decomposition import PCA
+from sklearn.cluster import KMeans, AgglomerativeClustering, DBSCAN
+from sklearn.metrics import silhouette_score
+from scipy.cluster.hierarchy import dendrogram, linkage
+import warnings
+warnings.filterwarnings(&quot;ignore&quot;)
+
+# ─────────────────────────────────────────────────────────────
+# 1. LOAD &amp; PREPARE DATA
+#    Same preprocessing as PCA — numeric only, no labels
+# ─────────────────────────────────────────────────────────────
+raw_df = pd.read_csv(&quot;../data/student-mat.csv&quot;, sep=&quot;;&quot;)
+
+binary_cols = [
+    &quot;school&quot;, &quot;sex&quot;, &quot;address&quot;, &quot;famsize&quot;, &quot;Pstatus&quot;,
+    &quot;schoolsup&quot;, &quot;famsup&quot;, &quot;paid&quot;, &quot;activities&quot;,
+    &quot;nursery&quot;, &quot;higher&quot;, &quot;internet&quot;, &quot;romantic&quot;
+]
+for col in binary_cols:
+    raw_df[col] = LabelEncoder().fit_transform(raw_df[col])
+
+raw_df = pd.get_dummies(raw_df, columns=[&quot;Mjob&quot;, &quot;Fjob&quot;, &quot;reason&quot;, &quot;guardian&quot;])
+
+# Save true labels for later comparison — NOT used during clustering
+def perf_label(g):
+    if g &gt;= 14: return &quot;High&quot;
+    elif g &gt;= 10: return &quot;Medium&quot;
+    else: return &quot;Low&quot;
+
+true_labels = raw_df[&quot;G3&quot;].apply(perf_label)
+pca_features = raw_df.drop(columns=[&quot;G3&quot;, &quot;G1&quot;, &quot;G2&quot;])
+
+# Normalize
+X_scaled = StandardScaler().fit_transform(pca_features)
+
+# Reduce to 3D via PCA for visualization &amp; computation
+pca3 = PCA(n_components=3)
+X_3d = pca3.fit_transform(X_scaled)
+var3 = pca3.explained_variance_ratio_
+print(f&quot;PCA 3D input — retained variance: {var3.sum()*100:.1f}%&quot;)
+print(f&quot;Clustering input shape: {X_3d.shape}&quot;)
+
+# Color palette
+CLUSTER_COLORS = [&quot;#e74c3c&quot;, &quot;#3498db&quot;, &quot;#2ecc71&quot;, &quot;#f39c12&quot;, &quot;#9b59b6&quot;,
+                  &quot;#1abc9c&quot;, &quot;#e67e22&quot;, &quot;#34495e&quot;]
+
+plt.rcParams[&quot;figure.facecolor&quot;] = &quot;#f8f9fa&quot;
+
+# ─────────────────────────────────────────────────────────────
+# 2. KMEANS — SILHOUETTE METHOD TO CHOOSE k
+# ─────────────────────────────────────────────────────────────
+print(&quot;\n── K-Means: Silhouette Method ──&quot;)
+sil_scores = {}
+for k in range(2, 11):
+    km = KMeans(n_clusters=k, random_state=42, n_init=10)
+    lbl = km.fit_predict(X_3d)
+    sil_scores[k] = silhouette_score(X_3d, lbl)
+    print(f&quot;  k={k}: silhouette = {sil_scores[k]:.4f}&quot;)
+
+# Pick top 3 k values
+best_ks = sorted(sil_scores, key=sil_scores.get, reverse=True)[:3]
+best_ks.sort()
+print(f&quot;\n  Best 3 k values: {best_ks}&quot;)
+
+# Plot silhouette scores
+fig, ax = plt.subplots(figsize=(8, 5))
+ax.set_facecolor(&quot;#f8f9fa&quot;)
+ax.plot(list(sil_scores.keys()), list(sil_scores.values()),
+        marker=&quot;o&quot;, color=&quot;#2c3e50&quot;, linewidth=2, markersize=8)
+for k, s in sil_scores.items():
+    ax.text(k, s + 0.003, f&quot;{s:.3f}&quot;, ha=&quot;center&quot;, fontsize=8)
+for k in best_ks:
+    ax.axvline(k, color=&quot;#e74c3c&quot;, linestyle=&quot;--&quot;, alpha=0.4)
+ax.set_xlabel(&quot;Number of Clusters (k)&quot;, fontsize=11)
+ax.set_ylabel(&quot;Silhouette Score&quot;, fontsize=11)
+ax.set_title(&quot;Silhouette Method — Choosing Optimal k&quot;, fontsize=13, fontweight=&quot;bold&quot;)
+ax.grid(True, alpha=0.3)
+plt.tight_layout()
+plt.savefig(&quot;../Website/fig_cluster_silhouette.png&quot;, dpi=150, bbox_inches=&quot;tight&quot;)
+plt.close()
+print(&quot;  Saved: fig_cluster_silhouette.png&quot;)
+
+# ─────────────────────────────────────────────────────────────
+# 3. KMEANS CLUSTERING — 3 BEST k VALUES
+# ─────────────────────────────────────────────────────────────
+print(&quot;\n── K-Means Clustering ──&quot;)
+fig, axes = plt.subplots(1, 3, figsize=(16, 5))
+fig.patch.set_facecolor(&quot;#f8f9fa&quot;)
+
+for ax, k in zip(axes, best_ks):
+    km = KMeans(n_clusters=k, random_state=42, n_init=10)
+    cluster_labels = km.fit_predict(X_3d)
+    centroids = km.cluster_centers_
+    sil = silhouette_score(X_3d, cluster_labels)
+    print(f&quot;  k={k}: silhouette = {sil:.4f}&quot;)
+
+    ax.set_facecolor(&quot;#f8f9fa&quot;)
+    for ci in range(k):
+        mask = cluster_labels == ci
+        ax.scatter(X_3d[mask, 0], X_3d[mask, 1],
+                   c=CLUSTER_COLORS[ci % len(CLUSTER_COLORS)],
+                   alpha=0.5, s=40, label=f&quot;Cluster {ci + 1}&quot;,
+                   edgecolors=&quot;white&quot;, linewidth=0.4)
+    ax.scatter(centroids[:, 0], centroids[:, 1],
+               c=&quot;black&quot;, marker=&quot;X&quot;, s=180, zorder=5,
+               label=&quot;Centroid&quot;, edgecolors=&quot;white&quot;, linewidth=1)
+    ax.set_title(f&quot;KMeans k={k}  |  Sil: {sil:.3f}&quot;, fontsize=11, fontweight=&quot;bold&quot;)
+    ax.set_xlabel(&quot;PC1&quot;); ax.set_ylabel(&quot;PC2&quot;)
+    ax.legend(fontsize=7); ax.grid(True, alpha=0.3)
+
+fig.suptitle(&quot;KMeans Clustering on PCA-Reduced Student Data&quot;,
+             fontsize=13, fontweight=&quot;bold&quot;, y=1.01)
+plt.tight_layout()
+plt.savefig(&quot;../Website/fig_cluster_kmeans.png&quot;, dpi=150, bbox_inches=&quot;tight&quot;)
+plt.close()
+print(&quot;  Saved: fig_cluster_kmeans.png&quot;)
+
+# ─────────────────────────────────────────────────────────────
+# 4. HIERARCHICAL CLUSTERING — WARD LINKAGE
+# ─────────────────────────────────────────────────────────────
+print(&quot;\n── Hierarchical Clustering (Ward Linkage) ──&quot;)
+
+# Dendrogram (use first 100 students for readability)
+Z = linkage(X_3d[:100], method=&quot;ward&quot;)
+fig, ax = plt.subplots(figsize=(14, 6))
+fig.patch.set_facecolor(&quot;#f8f9fa&quot;)
+ax.set_facecolor(&quot;#f8f9fa&quot;)
+dendrogram(Z, ax=ax, truncate_mode=&quot;lastp&quot;, p=20,
+           leaf_rotation=45, leaf_font_size=9,
+           color_threshold=0.7 * max(Z[:, 2]))
+ax.set_title(&quot;Hierarchical Clustering Dendrogram (Ward Linkage, 100 students)&quot;,
+             fontsize=13, fontweight=&quot;bold&quot;)
+ax.set_xlabel(&quot;Sample Index / Cluster&quot;, fontsize=11)
+ax.set_ylabel(&quot;Distance (Ward)&quot;, fontsize=11)
+ax.grid(True, alpha=0.2, axis=&quot;y&quot;)
+plt.tight_layout()
+plt.savefig(&quot;../Website/fig_cluster_dendrogram.png&quot;, dpi=150, bbox_inches=&quot;tight&quot;)
+plt.close()
+print(&quot;  Saved: fig_cluster_dendrogram.png&quot;)
+
+# Fit k=3 and scatter
+hc = AgglomerativeClustering(n_clusters=3, linkage=&quot;ward&quot;)
+hc_labels = hc.fit_predict(X_3d)
+hc_sil = silhouette_score(X_3d, hc_labels)
+print(f&quot;  Hierarchical k=3 silhouette: {hc_sil:.4f}&quot;)
+
+fig, ax = plt.subplots(figsize=(8, 6))
+fig.patch.set_facecolor(&quot;#f8f9fa&quot;)
+ax.set_facecolor(&quot;#f8f9fa&quot;)
+for ci in range(3):
+    mask = hc_labels == ci
+    ax.scatter(X_3d[mask, 0], X_3d[mask, 1],
+               c=CLUSTER_COLORS[ci], alpha=0.6, s=50,
+               label=f&quot;Cluster {ci + 1}&quot;, edgecolors=&quot;white&quot;, linewidth=0.4)
+ax.set_xlabel(&quot;PC1&quot;); ax.set_ylabel(&quot;PC2&quot;)
+ax.set_title(f&quot;Hierarchical Clustering (Ward, k=3)  |  Sil: {hc_sil:.3f}&quot;,
+             fontsize=13, fontweight=&quot;bold&quot;)
+ax.legend(); ax.grid(True, alpha=0.3)
+plt.tight_layout()
+plt.savefig(&quot;../Website/fig_cluster_hierarchical.png&quot;, dpi=150, bbox_inches=&quot;tight&quot;)
+plt.close()
+print(&quot;  Saved: fig_cluster_hierarchical.png&quot;)
+
+# ─────────────────────────────────────────────────────────────
+# 5. DBSCAN — DENSITY BASED CLUSTERING
+# ─────────────────────────────────────────────────────────────
+print(&quot;\n── DBSCAN (eps=0.8, min_samples=5) ──&quot;)
+dbscan = DBSCAN(eps=0.8, min_samples=5)
+db_labels = dbscan.fit_predict(X_3d)
+
+n_clusters = len(set(db_labels)) - (1 if -1 in db_labels else 0)
+n_noise = list(db_labels).count(-1)
+print(f&quot;  Clusters found: {n_clusters}&quot;)
+print(f&quot;  Noise points  : {n_noise} ({n_noise/len(db_labels)*100:.1f}%)&quot;)
+
+fig, ax = plt.subplots(figsize=(8, 6))
+fig.patch.set_facecolor(&quot;#f8f9fa&quot;)
+ax.set_facecolor(&quot;#f8f9fa&quot;)
+db_color_map = {-1: &quot;#aaaaaa&quot;}
+for i, l in enumerate(sorted([x for x in set(db_labels) if x != -1])):
+    db_color_map[l] = CLUSTER_COLORS[i % len(CLUSTER_COLORS)]
+
+for label in sorted(set(db_labels)):
+    mask = db_labels == label
+    name = &quot;Noise&quot; if label == -1 else f&quot;Cluster {label + 1}&quot;
+    ax.scatter(X_3d[mask, 0], X_3d[mask, 1],
+               c=db_color_map[label],
+               alpha=0.7 if label != -1 else 0.3,
+               s=50 if label != -1 else 20,
+               label=name, edgecolors=&quot;white&quot;, linewidth=0.4)
+
+ax.set_xlabel(&quot;PC1&quot;); ax.set_ylabel(&quot;PC2&quot;)
+ax.set_title(
+    f&quot;DBSCAN (eps=0.8, min_samples=5)\n&quot;
+    f&quot;{n_clusters} Clusters  |  {n_noise} Noise Points&quot;,
+    fontsize=12, fontweight=&quot;bold&quot;
+)
+ax.legend(); ax.grid(True, alpha=0.3)
+plt.tight_layout()
+plt.savefig(&quot;../Website/fig_cluster_dbscan.png&quot;, dpi=150, bbox_inches=&quot;tight&quot;)
+plt.close()
+print(&quot;  Saved: fig_cluster_dbscan.png&quot;)
+
+# ─────────────────────────────────────────────────────────────
+# SUMMARY
+# ─────────────────────────────────────────────────────────────
+print(&quot;\n&quot; + &quot;=&quot;*50)
+print(&quot;CLUSTERING SUMMARY&quot;)
+print(&quot;=&quot;*50)
+print(f&quot;  Input              : PCA 3D (19.7% variance)&quot;)
+print(f&quot;  Best KMeans k      : {best_ks}&quot;)
+print(f&quot;  Hierarchical k=3   : Sil = {hc_sil:.4f}&quot;)
+print(f&quot;  DBSCAN clusters    : {n_clusters} clusters + {n_noise} noise&quot;)
+print(&quot;=&quot;*50)
+print(&quot;\nScript 03 complete.&quot;)
+</code></pre>
+</main>
+<footer><p>Student Performance Analysis &copy; 2025 &mdash; Data Science Project</p></footer>
+<script src='../script.js'></script>
+<script>
+hljs.highlightAll();
+function cp(){
+  var c=document.getElementById('cb').innerText;
+  navigator.clipboard.writeText(c).then(function(){
+    var b=document.querySelector('.cpbtn');
+    b.textContent='Copied!';
+    setTimeout(function(){b.textContent='Copy Code';},2000);
+  });
+}
+</script>
+</body></html>

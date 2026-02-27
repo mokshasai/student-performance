@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='UTF-8'>
+<meta name='viewport' content='width=device-width,initial-scale=1.0'>
+<title>Data Prep &amp; EDA Code | Student Performance</title>
+<link rel='stylesheet' href='../style.css'>
+<link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css'>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js'></script>
+<style>
+body{background:#0f1117}
+.code-header{display:flex;align-items:center;justify-content:space-between;
+  background:#1a1d27;border:1px solid rgba(255,255,255,.08);
+  border-radius:12px 12px 0 0;padding:14px 22px;margin-top:30px}
+.file-tag{font-family:'JetBrains Mono',monospace;font-size:.85rem;
+  color:#63b3ed;font-weight:600}
+.cpbtn{background:rgba(99,179,237,.12);border:1px solid rgba(99,179,237,.3);
+  color:#63b3ed;padding:6px 14px;border-radius:6px;font-size:.78rem;
+  font-weight:600;cursor:pointer;font-family:inherit;transition:all .2s}
+.cpbtn:hover{background:rgba(99,179,237,.22)}
+.hljs{border-radius:0 0 12px 12px;font-size:.82rem;line-height:1.65}
+pre{margin:0!important;padding:0!important;
+  background:none!important;border:none!important}
+pre code.hljs{padding:24px 28px!important}
+.back-row{display:flex;align-items:center;gap:12px;margin-bottom:10px;flex-wrap:wrap}
+.bdg{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.7rem;
+  font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin:3px}
+.bb{background:rgba(99,179,237,.15);color:#63b3ed}
+.bg{background:rgba(104,211,145,.15);color:#68d391}
+.ba{background:rgba(246,173,85,.15);color:#f6ad55}
+.bp{background:rgba(183,148,244,.15);color:#b794f4}
+.pip{background:#1a1d27;border:1px solid rgba(255,255,255,.08);
+  border-radius:8px;padding:12px 18px;font-family:'JetBrains Mono',monospace;
+  font-size:.8rem;color:#a0d9ef;margin:16px 0}
+</style>
+</head><body>
+<nav><ul>
+  <li><a href='../index.html'>Introduction</a></li>
+  <li><a href='../data-prep.html'>Data Prep</a></li>
+  <li><a href='../pca.html'>PCA</a></li>
+  <li><a href='../clustering.html'>Clustering</a></li>
+  <li><a href='../arm.html'>ARM</a></li>
+</ul></nav>
+<main>
+  <div class='back-row'>
+    <a href='../data-prep.html' class='btn-link'>&larr; Back to Data Prep</a>
+    <a href='../../code/01_data_prep_eda.py' download class='btn-link' style='background:rgba(104,211,145,.1);border-color:rgba(104,211,145,.3);color:#68d391'>&darr; Download .py</a>
+  </div>
+  <div class='hero' style='padding:40px 0 30px'>
+    <span class='hero-badge' style='background:rgba(99,179,237,.15);border-color:rgba(99,179,237,.35);color:#63b3ed'>Script 01 of 04</span>
+    <h1 style='font-size:2rem'>Data Prep &amp; EDA Code</h1>
+    <p class='hero-sub'>Loading, cleaning, encoding, and visualizing student performance data.</p>
+  </div>
+  <div style='margin:14px 0'><span class="bdg bb">pandas</span><span class="bdg bb">matplotlib</span><span class="bdg bb">seaborn</span><span class="bdg bg">EDA</span><span class="bdg bg">Data Cleaning</span></div>
+  <div class='code-header'>
+    <span class='file-tag'>&#128196; 01_data_prep_eda.py</span>
+    <div style='display:flex;gap:10px;align-items:center'>
+      <span style='font-size:.75rem;color:#718096'>207 lines &middot; Python 3</span>
+      <button class='cpbtn' onclick='cp()'>Copy Code</button>
+    </div>
+  </div>
+  <pre><code class='language-python' id='cb'>&quot;&quot;&quot;
+Student Performance Analysis
+=============================
+Script 01 — Data Loading, Cleaning &amp; Exploratory Data Analysis (EDA)
+
+Dataset : UCI Student Performance (student-mat.csv)
+Author  : Data Science Project 2025
+&quot;&quot;&quot;
+
+# ─────────────────────────────────────────────────────────────
+# IMPORTS
+# ─────────────────────────────────────────────────────────────
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+import requests
+
+# ─────────────────────────────────────────────────────────────
+# 1. LOAD DATA
+# ─────────────────────────────────────────────────────────────
+raw_df = pd.read_csv(&quot;../data/student-mat.csv&quot;, sep=&quot;;&quot;)
+
+print(&quot;Shape:&quot;, raw_df.shape)
+print(&quot;\nFirst 5 rows:&quot;)
+print(raw_df.head())
+
+# Export raw snapshot
+raw_df.to_csv(&quot;../data/student_raw.csv&quot;, index=False)
+
+# ─────────────────────────────────────────────────────────────
+# 2. DATA VALIDATION
+# ─────────────────────────────────────────────────────────────
+print(&quot;\nNull values per column:&quot;)
+print(raw_df.isnull().sum())
+
+print(&quot;\nDuplicate rows:&quot;, raw_df.duplicated().sum())
+
+# ─────────────────────────────────────────────────────────────
+# 3. TARGET VARIABLE — PERFORMANCE LABEL (Classification)
+# ─────────────────────────────────────────────────────────────
+def performance_label(grade):
+    &quot;&quot;&quot;Convert numeric G3 grade (0–20) to categorical performance label.&quot;&quot;&quot;
+    if grade &gt;= 14:
+        return &quot;High&quot;
+    elif grade &gt;= 10:
+        return &quot;Medium&quot;
+    else:
+        return &quot;Low&quot;
+
+raw_df[&quot;performance&quot;] = raw_df[&quot;G3&quot;].apply(performance_label)
+print(&quot;\nPerformance class distribution:&quot;)
+print(raw_df[&quot;performance&quot;].value_counts())
+
+# ─────────────────────────────────────────────────────────────
+# 4. DATA CLEANING &amp; PREPARATION
+# ─────────────────────────────────────────────────────────────
+
+# 4a. Drop G1 and G2 to prevent data leakage when predicting G3
+clean_df = raw_df.drop(columns=[&quot;G1&quot;, &quot;G2&quot;])
+
+# 4b. Binary encode yes/no columns (LabelEncoder equivalent)
+binary_cols = [
+    &quot;school&quot;, &quot;sex&quot;, &quot;address&quot;, &quot;famsize&quot;, &quot;Pstatus&quot;,
+    &quot;schoolsup&quot;, &quot;famsup&quot;, &quot;paid&quot;, &quot;activities&quot;,
+    &quot;nursery&quot;, &quot;higher&quot;, &quot;internet&quot;, &quot;romantic&quot;
+]
+binary_map = {&quot;yes&quot;: 1, &quot;no&quot;: 0, &quot;GP&quot;: 0, &quot;MS&quot;: 1,
+              &quot;F&quot;: 0, &quot;M&quot;: 1, &quot;U&quot;: 0, &quot;R&quot;: 1,
+              &quot;LE3&quot;: 0, &quot;GT3&quot;: 1, &quot;T&quot;: 0, &quot;A&quot;: 1}
+
+for col in binary_cols:
+    clean_df[col] = clean_df[col].map(binary_map).fillna(clean_df[col])
+
+# 4c. One-hot encode multi-category columns
+multi_cat_cols = [&quot;Mjob&quot;, &quot;Fjob&quot;, &quot;reason&quot;, &quot;guardian&quot;]
+clean_df = pd.get_dummies(clean_df, columns=multi_cat_cols)
+
+print(&quot;\nCleaned dataset shape:&quot;, clean_df.shape)
+print(clean_df.head())
+
+# Export cleaned dataset
+clean_df.to_csv(&quot;../data/student_clean.csv&quot;, index=False)
+
+# ─────────────────────────────────────────────────────────────
+# 5. EXPLORATORY DATA ANALYSIS (EDA)
+# ─────────────────────────────────────────────────────────────
+sns.set_theme(style=&quot;whitegrid&quot;)
+plt.rcParams[&quot;figure.facecolor&quot;] = &quot;#f8f9fa&quot;
+
+# --- 5a. Grade Distribution ---
+plt.figure(figsize=(8, 5))
+sns.histplot(raw_df[&quot;G3&quot;], bins=21, kde=True, color=&quot;#2c3e50&quot;)
+plt.title(&quot;Distribution of Final Grades (G3)&quot;, fontsize=14, fontweight=&quot;bold&quot;)
+plt.xlabel(&quot;Final Grade (0–20)&quot;)
+plt.ylabel(&quot;Count&quot;)
+plt.tight_layout()
+plt.savefig(&quot;../Website/fig_grade_distribution.png&quot;, dpi=150)
+plt.close()
+
+# --- 5b. Study Time vs Final Grade ---
+plt.figure(figsize=(8, 5))
+sns.boxplot(x=&quot;studytime&quot;, y=&quot;G3&quot;, data=raw_df, palette=&quot;Blues&quot;)
+plt.title(&quot;Study Time vs Final Grade&quot;, fontsize=14, fontweight=&quot;bold&quot;)
+plt.xlabel(&quot;Study Time (1=&lt;2h, 2=2-5h, 3=5-10h, 4=&gt;10h)&quot;)
+plt.ylabel(&quot;Final Grade (G3)&quot;)
+plt.tight_layout()
+plt.savefig(&quot;../Website/fig_studytime_vs_grade.png&quot;, dpi=150)
+plt.close()
+
+# --- 5c. Absences vs Final Grade ---
+plt.figure(figsize=(8, 5))
+sns.scatterplot(x=&quot;absences&quot;, y=&quot;G3&quot;, data=raw_df, alpha=0.6, color=&quot;#e74c3c&quot;)
+plt.title(&quot;Absences vs Final Grade&quot;, fontsize=14, fontweight=&quot;bold&quot;)
+plt.xlabel(&quot;Number of Absences&quot;)
+plt.ylabel(&quot;Final Grade (G3)&quot;)
+plt.tight_layout()
+plt.savefig(&quot;../Website/fig_absences_vs_grade.png&quot;, dpi=150)
+plt.close()
+
+# --- 5d. Gender Distribution ---
+plt.figure(figsize=(6, 4))
+raw_df[&quot;sex&quot;].value_counts().plot(kind=&quot;bar&quot;, color=[&quot;#3498db&quot;, &quot;#e74c3c&quot;])
+plt.title(&quot;Gender Distribution&quot;, fontsize=14, fontweight=&quot;bold&quot;)
+plt.xlabel(&quot;Gender (F = Female, M = Male)&quot;)
+plt.ylabel(&quot;Count&quot;)
+plt.xticks(rotation=0)
+plt.tight_layout()
+plt.savefig(&quot;../Website/fig_gender_distribution.png&quot;, dpi=150)
+plt.close()
+
+# --- 5e. Parental Education vs Grade ---
+plt.figure(figsize=(8, 5))
+sns.boxplot(x=&quot;Medu&quot;, y=&quot;G3&quot;, data=raw_df, palette=&quot;Greens&quot;)
+plt.title(&quot;Mother&#x27;s Education vs Final Grade&quot;, fontsize=14, fontweight=&quot;bold&quot;)
+plt.xlabel(&quot;Mother Education Level (0=none … 4=higher)&quot;)
+plt.ylabel(&quot;Final Grade (G3)&quot;)
+plt.tight_layout()
+plt.savefig(&quot;../Website/fig_parent_edu_vs_grade.png&quot;, dpi=150)
+plt.close()
+
+# --- 5f. Alcohol Consumption vs Grade ---
+plt.figure(figsize=(8, 5))
+sns.boxplot(x=&quot;Walc&quot;, y=&quot;G3&quot;, data=raw_df, palette=&quot;Reds&quot;)
+plt.title(&quot;Weekend Alcohol Consumption vs Final Grade&quot;, fontsize=14, fontweight=&quot;bold&quot;)
+plt.xlabel(&quot;Weekend Alcohol (1=very low … 5=very high)&quot;)
+plt.ylabel(&quot;Final Grade (G3)&quot;)
+plt.tight_layout()
+plt.savefig(&quot;../Website/fig_alcohol_vs_grade.png&quot;, dpi=150)
+plt.close()
+
+# --- 5g. Internet Access vs Performance ---
+plt.figure(figsize=(7, 5))
+internet_perf = pd.crosstab(raw_df[&quot;internet&quot;], raw_df[&quot;performance&quot;])
+internet_perf.plot(kind=&quot;bar&quot;, color=[&quot;#e74c3c&quot;, &quot;#3498db&quot;, &quot;#2ecc71&quot;])
+plt.title(&quot;Internet Access vs Performance Category&quot;, fontsize=14, fontweight=&quot;bold&quot;)
+plt.xlabel(&quot;Internet Access&quot;)
+plt.ylabel(&quot;Count&quot;)
+plt.xticks(rotation=0)
+plt.legend(title=&quot;Performance&quot;)
+plt.tight_layout()
+plt.savefig(&quot;../Website/fig_internet_vs_performance.png&quot;, dpi=150)
+plt.close()
+
+# --- 5h. Family Support vs Performance ---
+plt.figure(figsize=(7, 5))
+famsup_perf = pd.crosstab(raw_df[&quot;famsup&quot;], raw_df[&quot;performance&quot;])
+famsup_perf.plot(kind=&quot;bar&quot;, color=[&quot;#e74c3c&quot;, &quot;#3498db&quot;, &quot;#2ecc71&quot;])
+plt.title(&quot;Family Support vs Performance Category&quot;, fontsize=14, fontweight=&quot;bold&quot;)
+plt.xlabel(&quot;Family Educational Support&quot;)
+plt.ylabel(&quot;Count&quot;)
+plt.xticks(rotation=0)
+plt.legend(title=&quot;Performance&quot;)
+plt.tight_layout()
+plt.savefig(&quot;../Website/fig_family_support_vs_performance.png&quot;, dpi=150)
+plt.close()
+
+# --- 5i. Age Distribution ---
+plt.figure(figsize=(7, 4))
+raw_df[&quot;age&quot;].value_counts().sort_index().plot(kind=&quot;bar&quot;, color=&quot;#9b59b6&quot;)
+plt.title(&quot;Age Distribution of Students&quot;, fontsize=14, fontweight=&quot;bold&quot;)
+plt.xlabel(&quot;Age&quot;)
+plt.ylabel(&quot;Count&quot;)
+plt.xticks(rotation=0)
+plt.tight_layout()
+plt.savefig(&quot;../Website/fig_age_distribution.png&quot;, dpi=150)
+plt.close()
+
+print(&quot;\nEDA complete. All figures saved to Website/&quot;)
+
+# ─────────────────────────────────────────────────────────────
+# 6. API DATA COLLECTION — World Bank Education Indicators
+# ─────────────────────────────────────────────────────────────
+url = &quot;https://api.worldbank.org/v2/country/PRT/indicator/SE.XPD.TOTL.GD.ZS?format=json&quot;
+try:
+    response = requests.get(url, timeout=10)
+    data = response.json()
+    edu_spending = [
+        entry[&quot;value&quot;] for entry in data[1]
+        if entry[&quot;value&quot;] is not None
+    ][0]  # Most recent non-null value
+    print(f&quot;\nPortugal Education Spending (% of GDP): {edu_spending:.2f}%&quot;)
+    clean_df[&quot;edu_spending_gdp&quot;] = edu_spending
+except Exception as e:
+    print(f&quot;\nAPI call failed (offline?): {e}&quot;)
+
+print(&quot;\nScript 01 complete.&quot;)
+</code></pre>
+</main>
+<footer><p>Student Performance Analysis &copy; 2025 &mdash; Data Science Project</p></footer>
+<script src='../script.js'></script>
+<script>
+hljs.highlightAll();
+function cp(){
+  var c=document.getElementById('cb').innerText;
+  navigator.clipboard.writeText(c).then(function(){
+    var b=document.querySelector('.cpbtn');
+    b.textContent='Copied!';
+    setTimeout(function(){b.textContent='Copy Code';},2000);
+  });
+}
+</script>
+</body></html>

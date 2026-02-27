@@ -1,0 +1,16 @@
+antecedents_str,consequents_str,support,confidence,lift
+Grade:High,Higher:Yes,0.253,1.0,1.053
+StudyTime:High,Higher:Yes,0.165,1.0,1.053
+"Absences:Low, Grade:High",Higher:Yes,0.205,1.0,1.053
+"Absences:Low, StudyTime:High",Higher:Yes,0.124,1.0,1.053
+"Alcohol:Low, Romantic:No",Higher:Yes,0.142,1.0,1.053
+"Alcohol:None, Grade:High",Higher:Yes,0.124,1.0,1.053
+"Failures:None, FreeTime:Low",Higher:Yes,0.132,1.0,1.053
+"Failures:None, Grade:High",Higher:Yes,0.246,1.0,1.053
+"Failures:None, Internet:No",Higher:Yes,0.119,1.0,1.053
+"Failures:None, StudyTime:High",Higher:Yes,0.137,1.0,1.053
+"FamSupport:No, Grade:High",Higher:Yes,0.101,1.0,1.053
+"FamSupport:Yes, Grade:High",Higher:Yes,0.152,1.0,1.053
+"FamSupport:Yes, StudyTime:High",Higher:Yes,0.109,1.0,1.053
+"Grade:High, Internet:Yes",Higher:Yes,0.228,1.0,1.053
+"Grade:High, Romantic:No",Higher:Yes,0.187,1.0,1.053

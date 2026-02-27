@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Data Prep | Student Performance Analysis</title>
+  <meta name="description" content="Data preparation and exploratory data analysis for the student performance machine learning project.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav>
+  <ul>
+    <li><a href="index.html">Introduction</a></li>
+    <li><a href="data-prep.html">Data Prep</a></li>
+    <li><a href="pca.html">PCA</a></li>
+    <li><a href="clustering.html">Clustering</a></li>
+    <li><a href="arm.html">ARM</a></li>
+  </ul>
+</nav>
+
+<main>
+
+  <!-- ── Hero ─────────────────────────────────────────────── -->
+  <div class="hero">
+    <span class="hero-badge">Data Preparation &amp; EDA</span>
+    <h1>Data Preparation &amp;<br>Exploratory Analysis</h1>
+    <p class="hero-sub">Gathering, cleaning, and visually exploring the student performance dataset before modeling.</p>
+  </div>
+
+  <!-- ── Data Source ────────────────────────────────────── -->
+  <h2>Data Source</h2>
+
+  <p>
+    The primary dataset used in this project is the <strong>Student Performance Dataset</strong>,
+    obtained from the <strong>UCI Machine Learning Repository</strong>. The dataset contains
+    academic, demographic, social, and behavioral information for secondary school students
+    enrolled in a mathematics course in Portugal. Each row represents an individual student, and each
+    column represents a specific attribute related to performance or background.
+  </p>
+
+  <div class="callout blue">
+    <span class="callout-icon">📁</span>
+    <p>
+      <strong>Dataset source:</strong> UCI Machine Learning Repository &mdash;
+      <strong>File used:</strong> <code>student-mat.csv</code> (Math course, 395 students, 33 attributes)<br>
+      <a href="https://archive.ics.uci.edu/ml/datasets/Student+Performance" target="_blank" rel="noopener">Link to UCI Repository →</a>
+    </p>
+  </div>
+
+  <div class="img-wrap">
+    <img src="Raw_data.png" alt="Screenshot of the raw student dataset showing first five rows">
+    <div class="img-caption">Figure: Raw dataset preview — 395 rows × 33 columns as loaded from student-mat.csv.</div>
+  </div>
+
+  <!-- ── API ────────────────────────────────────────────── -->
+  <h2>API Data Collection</h2>
+
+  <p>
+    In addition to the primary dataset, external contextual data was collected using
+    the <strong>World Bank Open Data API</strong>. This API was used to retrieve
+    country-level education and technology indicators (Portugal) to provide broader
+    educational context. These indicators were used for contextual understanding
+    and enrichment — they were not merged at the individual student level.
+  </p>
+
+  <div class="callout blue">
+    <span class="callout-icon">🌐</span>
+    <p>
+      <strong>API:</strong> World Bank Open Data &mdash;
+      <a href="https://data.worldbank.org/" target="_blank" rel="noopener">data.worldbank.org</a>
+    </p>
+  </div>
+
+  <pre><code>https://api.worldbank.org/v2/country/PRT/indicator/IT.NET.USER.ZS?format=json</code></pre>
+
+  <!-- ── Cleaning ────────────────────────────────────────── -->
+  <h2>Data Cleaning &amp; Preparation</h2>
+
+  <p>
+    Data cleaning and preparation were performed using Python to ensure the dataset
+    was accurate, consistent, and suitable for exploration and modeling.
+  </p>
+
+  <div class="card">
+    <h3 style="margin-top:0">Preparation Steps</h3>
+    <ol style="padding-left:20px;color:var(--text-sec);line-height:2.2">
+      <li>Checked for <strong>null / missing values</strong> — none found ✓</li>
+      <li>Checked for <strong>duplicate rows</strong> — none found ✓</li>
+      <li>Verified all <strong>data types</strong> for correctness</li>
+      <li>Reviewed numerical ranges for <strong>outliers</strong> (e.g., absences 0–93)</li>
+      <li>Dropped intermediate grades <code>G1</code> and <code>G2</code> to avoid data leakage</li>
+      <li>Created derived <strong>performance category</strong> from G3 (Low / Medium / High)</li>
+      <li>Binary-encoded yes/no columns; One-hot encoded job/reason/guardian columns</li>
+    </ol>
+  </div>
+
+  <div class="img-wrap">
+    <img src="cleaned_data.png" alt="Preview of the cleaned and encoded student dataset">
+    <div class="img-caption">Figure: Cleaned dataset preview after encoding and feature engineering.</div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ── EDA ────────────────────────────────────────────── -->
+  <h2>Exploratory Data Analysis</h2>
+
+  <p>
+    Exploratory Data Analysis (EDA) was conducted to understand distributions,
+    relationships, and patterns within the student performance dataset.
+    The following visualizations explore how academic outcomes relate to
+    study habits, attendance, family background, and lifestyle factors.
+  </p>
+
+  <!-- 1 -->
+  <figure>
+    <div class="img-wrap" style="margin:0">
+      <img src="fig_grade_distribution.png" alt="Final Grade Distribution histogram">
+    </div>
+    <figcaption>
+      <strong>Figure 1: Distribution of Final Grades.</strong>
+      Most students score in the mid-range (10–14), with fewer extreme high or low values,
+      indicating balanced academic performance across the dataset. There is a notable spike at G3=0 representing students who withdrew from the course.
+    </figcaption>
+  </figure>
+
+  <!-- 2 -->
+  <figure>
+    <div class="img-wrap" style="margin:0">
+      <img src="fig_studytime_vs_grade.png" alt="Study Time vs Final Grade boxplot">
+    </div>
+    <figcaption>
+      <strong>Figure 2: Study Time vs Final Grade.</strong>
+      Higher study time levels are generally associated with higher median grades,
+      suggesting that consistent study habits positively influence performance.
+    </figcaption>
+  </figure>
+
+  <!-- 3 -->
+  <figure>
+    <div class="img-wrap" style="margin:0">
+      <img src="fig_absences_vs_grade.png" alt="Absences vs Final Grade scatter">
+    </div>
+    <figcaption>
+      <strong>Figure 3: Absences vs Final Grade.</strong>
+      Students with more absences tend to have lower final grades,
+      highlighting the importance of regular attendance.
+    </figcaption>
+  </figure>
+
+  <!-- 4 + 5 side by side -->
+  <div class="fig-grid">
+    <figure>
+      <div class="img-wrap" style="margin:0">
+        <img src="fig_gender_distribution.png" alt="Gender Distribution bar chart">
+      </div>
+      <figcaption>
+        <strong>Figure 4: Gender Distribution.</strong>
+        Relatively balanced male/female split, reducing potential gender bias in analysis.
+      </figcaption>
+    </figure>
+
+    <figure>
+      <div class="img-wrap" style="margin:0">
+        <img src="fig_age_distribution.png" alt="Age Distribution bar chart">
+      </div>
+      <figcaption>
+        <strong>Figure 9: Age Distribution of Students.</strong>
+        Most students fall within a narrow age range (15–18), suggesting behavioral factors are more predictive than age.
+      </figcaption>
+    </figure>
+  </div>
+
+  <!-- 5 -->
+  <figure>
+    <div class="img-wrap" style="margin:0">
+      <img src="fig_parent_edu_vs_grade.png" alt="Parental Education vs Grade boxplot">
+    </div>
+    <figcaption>
+      <strong>Figure 5: Parental Education vs Final Grade.</strong>
+      Students with more highly educated parents tend to show slightly higher median grades,
+      although overlap exists across all education levels.
+    </figcaption>
+  </figure>
+
+  <!-- 6 -->
+  <figure>
+    <div class="img-wrap" style="margin:0">
+      <img src="fig_alcohol_vs_grade.png" alt="Alcohol Consumption vs Grade boxplot">
+    </div>
+    <figcaption>
+      <strong>Figure 6: Weekend Alcohol Consumption vs Final Grade.</strong>
+      Higher alcohol consumption levels are generally associated with lower academic performance,
+      suggesting lifestyle choices may impact learning outcomes.
+    </figcaption>
+  </figure>
+
+  <!-- 7 + 8 side by side -->
+  <div class="fig-grid">
+    <figure>
+      <div class="img-wrap" style="margin:0">
+        <img src="fig_internet_vs_performance.png" alt="Internet Access vs Performance bar chart">
+      </div>
+      <figcaption>
+        <strong>Figure 7: Internet Access vs Performance.</strong>
+        Students with internet access are more frequently in medium and high performance groups.
+      </figcaption>
+    </figure>
+
+    <figure>
+      <div class="img-wrap" style="margin:0">
+        <img src="fig_family_support_vs_performance.png" alt="Family Support vs Performance bar chart">
+      </div>
+      <figcaption>
+        <strong>Figure 8: Family Support vs Performance.</strong>
+        Family educational support is associated with higher performance categories.
+      </figcaption>
+    </figure>
+  </div>
+
+  <!-- Parallel Coordinates -->
+  <figure>
+    <iframe
+      src="parallel_coordinates.html"
+      width="100%"
+      height="520"
+      title="Interactive parallel coordinates plot of student attributes">
+    </iframe>
+    <figcaption>
+      <strong>Figure 10: Interactive Parallel Coordinates — Student Behavior &amp; Academic Performance.</strong>
+      Each line = one student. Color intensity indicates final grade. Students with higher grades follow patterns of higher study time and lower absences. Drag axes to reorder and explore different relationships.
+    </figcaption>
+  </figure>
+
+  <div class="callout blue">
+    <span class="callout-icon">💻</span>
+    <p>
+      <strong>Code Repository:</strong> All data preparation and EDA code is in the main Python notebook.
+      <a href="#" target="_blank">Link to Notebook (EDA &amp; Data Preparation) →</a>
+    </p>
+  </div>
+
+</main>
+
+<footer>
+  <p>Student Performance Analysis &copy; 2025 &mdash; Data Science Project</p>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>

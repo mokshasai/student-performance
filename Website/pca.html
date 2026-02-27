@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PCA | Student Performance Analysis</title>
+  <meta name="description" content="Principal Component Analysis applied to student performance data — dimensionality reduction, variance explanation, and visualizations.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav>
+  <ul>
+    <li><a href="index.html">Introduction</a></li>
+    <li><a href="data-prep.html">Data Prep</a></li>
+    <li><a href="pca.html">PCA</a></li>
+    <li><a href="clustering.html">Clustering</a></li>
+    <li><a href="arm.html">ARM</a></li>
+  </ul>
+</nav>
+
+<main>
+
+  <!-- ── Hero ─────────────────────────────────────────────── -->
+  <div class="hero">
+    <span class="hero-badge" style="background:rgba(183,148,244,0.15);border-color:rgba(183,148,244,0.35);color:var(--accent-pca)">
+      Dimensionality Reduction
+    </span>
+    <h1>Principal Component<br>Analysis (PCA)</h1>
+    <p class="hero-sub">Reducing complexity while retaining the most important variance in student data.</p>
+    <a href="code/code_pca.html" class="btn-link" style="margin-top:16px;display:inline-flex;align-items:center;gap:8px">&#128196; View Full Code &rarr;</a>
+  </div>
+
+  <!-- Quick stats -->
+  <div class="info-grid">
+    <div class="info-tile"><div class="tile-value" style="color:var(--accent-pca)">14.4%</div><div class="tile-label">Variance — 2D</div></div>
+    <div class="info-tile"><div class="tile-value" style="color:var(--accent-pca)">19.7%</div><div class="tile-label">Variance — 3D</div></div>
+    <div class="info-tile"><div class="tile-value" style="color:var(--accent-pca)">34</div><div class="tile-label">Components for 95%</div></div>
+    <div class="info-tile"><div class="tile-value" style="color:var(--accent-pca)">3.497</div><div class="tile-label">Top Eigenvalue (PC1)</div></div>
+  </div>
+
+  <!-- ── What is PCA ─────────────────────────────────────── -->
+  <h2>What is PCA?</h2>
+
+  <p>
+    <strong>Principal Component Analysis (PCA)</strong> is an unsupervised dimensionality reduction technique that transforms a dataset with many correlated features into a smaller set of uncorrelated variables called <em>principal components</em>. Each principal component is a linear combination of the original features, ordered so that the first component captures the greatest amount of variance in the data, the second captures the next greatest (orthogonal to the first), and so on. PCA is particularly useful when working with high-dimensional datasets because it reduces computational complexity, removes multicollinearity, and makes data more amenable to visualization. Rather than discarding information arbitrarily, PCA retains the directions in the feature space that carry the most explanatory power — quantified by <em>eigenvalues</em>. By projecting data onto the top principal components, we can often preserve the majority of meaningful variance while working in a much lower-dimensional space. In this project, PCA is applied to the student dataset to explore the underlying structure of student attributes, identify the most influential feature directions, and reduce the data to 2D and 3D representations for visualization.
+  </p>
+
+  <hr class="divider">
+
+  <!-- ── Dataset & Data Source ───────────────────────────── -->
+  <h2>Dataset &amp; Data Source</h2>
+
+  <p>
+    The <strong>Student Performance (Math) dataset</strong> from the UCI Machine Learning Repository was used for PCA. This dataset contains 395 student records, each described by 33 attributes covering demographics, social factors, and academic records.
+  </p>
+
+  <div class="callout blue">
+    <span class="callout-icon">📁</span>
+    <p>
+      <strong>Source file:</strong> <code>student-mat.csv</code> (semicolon-separated) &mdash;
+      <a href="https://archive.ics.uci.edu/ml/datasets/Student+Performance" target="_blank" rel="noopener">UCI Repository Link →</a>
+    </p>
+  </div>
+
+  <div class="img-wrap">
+    <img src="Raw_data.png" alt="Screenshot of raw student dataset showing first rows">
+    <div class="img-caption">Figure: Raw dataset preview — 395 rows × 33 columns before preparation.</div>
+  </div>
+
+  <!-- ── Data Preparation ────────────────────────────────── -->
+  <h2>Data Preparation for PCA</h2>
+
+  <p>
+    PCA requires exclusively <strong>quantitative, numeric data</strong>. Labels (such as the performance category) must be removed, and qualitative columns cannot simply be remapped to numbers — instead, binary and multi-category columns were properly encoded first, then the performance label was separated. The steps applied:
+  </p>
+
+  <div class="card">
+    <h3 style="margin-top:0">Preparation Steps</h3>
+    <ol style="padding-left:20px;color:var(--text-sec);line-height:2">
+      <li>Load raw <code>student-mat.csv</code></li>
+      <li>Binary-encode yes/no columns (e.g., <code>internet</code>, <code>higher</code>, <code>romantic</code>) using <code>LabelEncoder</code></li>
+      <li>One-hot encode nominal columns: <code>Mjob</code>, <code>Fjob</code>, <code>reason</code>, <code>guardian</code></li>
+      <li>Remove target variables: <code>G3</code>, <code>G1</code>, <code>G2</code>, and the <code>performance</code> label</li>
+      <li>Normalize all remaining features using <strong>StandardScaler</strong> (mean=0, std=1)</li>
+    </ol>
+  </div>
+
+  <div class="img-wrap">
+    <img src="fig_pca_prepdata.png" alt="Table of normalized PCA input data showing first 5 rows and 10 columns">
+    <div class="img-caption">Figure: Normalized PCA input data — first 5 rows, first 10 columns. All features are zero-mean, unit-variance after StandardScaler.</div>
+  </div>
+
+  <div class="callout green">
+    <span class="callout-icon">⚙️</span>
+    <p><strong>Normalization:</strong> <code>sklearn.preprocessing.StandardScaler</code> was used to ensure no single feature dominates the PCA due to scale differences. After scaling, each column has mean ≈ 0 and standard deviation ≈ 1.</p>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ── PCA Results ─────────────────────────────────────── -->
+  <h2>PCA Results</h2>
+
+  <!-- 2D -->
+  <h3>PCA with n_components = 2</h3>
+
+  <p>
+    When PCA is performed with 2 principal components, the data is projected onto a 2-dimensional plane. This makes it possible to visualize the entire dataset in a scatter plot. Each point represents one student, and colors indicate their performance category (Low / Medium / High).
+  </p>
+
+  <div class="stat-row">
+    <div class="stat-pill">
+      <span class="pill-val">14.4%</span>
+      <span class="pill-lbl">Variance retained in 2D</span>
+    </div>
+    <div class="stat-pill">
+      <span class="pill-val" style="color:var(--accent-pca)">PC1: 8.1%</span>
+      <span class="pill-lbl">First component</span>
+    </div>
+    <div class="stat-pill">
+      <span class="pill-val" style="color:var(--accent-pca)">PC2: 6.3%</span>
+      <span class="pill-lbl">Second component</span>
+    </div>
+  </div>
+
+  <div class="callout amber">
+    <span class="callout-icon">💡</span>
+    <p>
+      <strong>Interpretation:</strong> The 2D projection retains <strong>14.4%</strong> of the total information. While this number may seem low, it is expected for a high-dimensional dataset like this one where many features share moderate correlations. The student groups show some separation — particularly between Low and High performers — but significant overlap exists, suggesting that 2 components alone are insufficient to fully distinguish performance categories.
+    </p>
+  </div>
+
+  <div class="img-wrap">
+    <img src="fig_pca_2d.png" alt="2D PCA scatter plot of student performance data colored by performance category">
+    <div class="img-caption">Figure: PCA 2D projection. Each dot = one student; color = performance category (Low/Medium/High). PC1 explains 8.7% variance; PC2 explains 5.7%.</div>
+  </div>
+
+  <!-- 3D -->
+  <h3>PCA with n_components = 3</h3>
+
+  <p>
+    Adding a third principal component increases the retained variance and provides additional separation power. Two cross-sectional views (PC1 vs PC2, and PC1 vs PC3) are shown to capture the structure of the 3D space.
+  </p>
+
+  <div class="stat-row">
+    <div class="stat-pill">
+      <span class="pill-val">19.7%</span>
+      <span class="pill-lbl">Variance retained in 3D</span>
+    </div>
+    <div class="stat-pill">
+      <span class="pill-val" style="color:var(--accent-pca)">PC3: 5.4%</span>
+      <span class="pill-lbl">Third component gain</span>
+    </div>
+  </div>
+
+  <div class="callout green">
+    <span class="callout-icon">💡</span>
+    <p>
+      <strong>Interpretation:</strong> The 3D projection retains <strong>19.7%</strong> of total variance. The additional component adds modest separation between groups. The view of PC1 vs PC3 reveals a slightly different clustering pattern, suggesting PC3 captures complementary information not present in the first two components.
+    </p>
+  </div>
+
+  <div class="img-wrap">
+    <img src="fig_pca_3d.png" alt="3D PCA two-view projection showing PC1 vs PC2 and PC1 vs PC3">
+    <div class="img-caption">Figure: 3D PCA projection shown as two 2D cross-sections (PC1 vs PC2 left; PC1 vs PC3 right). Total retained variance: 19.7%.</div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ── Cumulative Variance ─────────────────────────────── -->
+  <h2>How Many Dimensions to Retain 95% Variance?</h2>
+
+  <p>
+    To determine how many principal components are needed to retain at least 95% of the data's information, we plot the <em>cumulative explained variance</em> against the number of components. The red dashed line marks the 95% threshold.
+  </p>
+
+  <div class="callout purple">
+    <span class="callout-icon">📐</span>
+    <p>
+      <strong>Answer: 34 components</strong> are required to retain at least 95% of the variance in this dataset. This reflects the relatively high dimensionality of the student feature space — 43 features (after one-hot encoding) each contribute small but meaningful amounts of information, and no small subset of components fully dominates. To work at 95% fidelity, the dataset would need to be reduced from 43 features down to 34 principal components.
+    </p>
+  </div>
+
+  <div class="img-wrap">
+    <img src="fig_pca_variance.png" alt="Cumulative explained variance curve showing 95% threshold at 27 components">
+    <div class="img-caption">Figure: Cumulative explained variance by number of PCA components. The red dashed line marks 95%. Approx. 27 components are needed to surpass this threshold.</div>
+  </div>
+
+  <!-- Progress visual -->
+  <div class="card">
+    <h3 style="margin-top:0">Variance Retention Summary</h3>
+
+    <div class="progress-wrap">
+      <div class="progress-label"><span>2 Components</span><span>14.4%</span></div>
+      <div class="progress-bar"><div class="progress-fill" data-pct="14.4"></div></div>
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-label"><span>3 Components</span><span>19.7%</span></div>
+      <div class="progress-bar"><div class="progress-fill" data-pct="19.7" style="background:linear-gradient(90deg,var(--accent-pca),var(--accent1))"></div></div>
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-label"><span>34 Components (95% threshold)</span><span>95%</span></div>
+      <div class="progress-bar"><div class="progress-fill" data-pct="95" style="background:linear-gradient(90deg,var(--accent1),var(--accent2))"></div></div>
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-label"><span>All Components (100%)</span><span>100%</span></div>
+      <div class="progress-bar"><div class="progress-fill" data-pct="100" style="background:linear-gradient(90deg,var(--accent2),var(--accent3))"></div></div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ── Eigenvalues ─────────────────────────────────────── -->
+  <h2>Top Eigenvalues</h2>
+
+  <p>
+    <strong>Eigenvalues</strong> measure how much variance each principal component captures from the dataset. The larger the eigenvalue, the more information that component holds. The chart below shows the top 10 eigenvalues.
+  </p>
+
+  <div class="table-scroll">
+    <table>
+      <thead>
+        <tr>
+          <th>Component</th>
+          <th>Eigenvalue</th>
+          <th>% Variance</th>
+          <th>Interpretation</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>PC1</td><td>3.497</td><td>8.1%</td><td>Strongest single direction — likely captures academic/study behavior</td></tr>
+        <tr><td>PC2</td><td>2.695</td><td>6.3%</td><td>Second strongest — social/lifestyle dimension</td></tr>
+        <tr><td>PC3</td><td>2.315</td><td>5.4%</td><td>Third — possibly family background factors</td></tr>
+        <tr><td>PC4–PC10</td><td>1.0–1.5</td><td>~3% each</td><td>Diminishing but still informative components</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="img-wrap">
+    <img src="fig_pca_eigenvalues.png" alt="Bar chart showing the top 10 eigenvalues from PCA">
+    <div class="img-caption">Figure: Top 10 eigenvalues. PC1 (3.50), PC2 (2.29), PC3 (1.62) are the top three, indicating these are the most informative directions in the student feature space.</div>
+  </div>
+
+  <div class="callout amber">
+    <span class="callout-icon">🏆</span>
+    <p>
+      <strong>Top 3 Eigenvalues:</strong> PC1 = 3.497, PC2 = 2.695, PC3 = 2.315. No single component dominates dramatically, which is characteristic of social science datasets where many factors each play a moderate role rather than one factor driving everything.
+    </p>
+  </div>
+
+</main>
+
+<footer>
+  <p>Student Performance Analysis &copy; 2025 &mdash; Data Science Project</p>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>

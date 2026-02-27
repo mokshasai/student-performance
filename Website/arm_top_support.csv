@@ -1,0 +1,16 @@
+antecedents_str,consequents_str,support,confidence,lift
+Internet:Yes,Higher:Yes,0.792,0.951,1.002
+Higher:Yes,Internet:Yes,0.792,0.835,1.002
+Failures:None,Higher:Yes,0.772,0.978,1.03
+Higher:Yes,Failures:None,0.772,0.813,1.03
+Absences:Low,Higher:Yes,0.671,0.946,0.997
+Higher:Yes,Absences:Low,0.671,0.707,0.997
+Internet:Yes,Failures:None,0.671,0.805,1.02
+Failures:None,Internet:Yes,0.671,0.849,1.02
+"Failures:None, Internet:Yes",Higher:Yes,0.653,0.974,1.026
+"Higher:Yes, Internet:Yes",Failures:None,0.653,0.824,1.044
+"Failures:None, Higher:Yes",Internet:Yes,0.653,0.846,1.016
+Internet:Yes,"Failures:None, Higher:Yes",0.653,0.784,1.016
+Failures:None,"Higher:Yes, Internet:Yes",0.653,0.827,1.044
+Higher:Yes,"Failures:None, Internet:Yes",0.653,0.688,1.026
+Romantic:No,Higher:Yes,0.643,0.966,1.017

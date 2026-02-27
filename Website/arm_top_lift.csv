@@ -1,0 +1,16 @@
+antecedents_str,consequents_str,support,confidence,lift
+"Failures:Some, Internet:Yes",Grade:Low,0.104,0.641,1.947
+Grade:Low,"Failures:Some, Internet:Yes",0.104,0.315,1.947
+Grade:Low,Failures:Some,0.132,0.4,1.904
+Failures:Some,Grade:Low,0.132,0.627,1.904
+"Grade:Low, Internet:Yes",Failures:Some,0.104,0.394,1.876
+Failures:Some,"Grade:Low, Internet:Yes",0.104,0.494,1.876
+Grade:Low,"Failures:Some, Higher:Yes",0.106,0.323,1.823
+"Failures:Some, Higher:Yes",Grade:Low,0.106,0.6,1.823
+"FamSupport:No, Romantic:No","Higher:Yes, StudyTime:Low",0.106,0.408,1.732
+"Higher:Yes, StudyTime:Low","FamSupport:No, Romantic:No",0.106,0.452,1.732
+"Alcohol:None, Failures:None, Higher:Yes, Internet:Yes",Grade:High,0.111,0.436,1.721
+Grade:High,"Alcohol:None, Failures:None, Higher:Yes, Internet:Yes",0.111,0.44,1.721
+"Grade:Low, Higher:Yes",Failures:Some,0.106,0.359,1.708
+Failures:Some,"Grade:Low, Higher:Yes",0.106,0.506,1.708
+"Alcohol:None, Failures:None, Internet:Yes",Grade:High,0.111,0.423,1.671

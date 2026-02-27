@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='UTF-8'>
+<meta name='viewport' content='width=device-width,initial-scale=1.0'>
+<title>PCA Code | Student Performance</title>
+<link rel='stylesheet' href='../style.css'>
+<link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css'>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js'></script>
+<style>
+body{background:#0f1117}
+.code-header{display:flex;align-items:center;justify-content:space-between;
+  background:#1a1d27;border:1px solid rgba(255,255,255,.08);
+  border-radius:12px 12px 0 0;padding:14px 22px;margin-top:30px}
+.file-tag{font-family:'JetBrains Mono',monospace;font-size:.85rem;
+  color:#63b3ed;font-weight:600}
+.cpbtn{background:rgba(99,179,237,.12);border:1px solid rgba(99,179,237,.3);
+  color:#63b3ed;padding:6px 14px;border-radius:6px;font-size:.78rem;
+  font-weight:600;cursor:pointer;font-family:inherit;transition:all .2s}
+.cpbtn:hover{background:rgba(99,179,237,.22)}
+.hljs{border-radius:0 0 12px 12px;font-size:.82rem;line-height:1.65}
+pre{margin:0!important;padding:0!important;
+  background:none!important;border:none!important}
+pre code.hljs{padding:24px 28px!important}
+.back-row{display:flex;align-items:center;gap:12px;margin-bottom:10px;flex-wrap:wrap}
+.bdg{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.7rem;
+  font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin:3px}
+.bb{background:rgba(99,179,237,.15);color:#63b3ed}
+.bg{background:rgba(104,211,145,.15);color:#68d391}
+.ba{background:rgba(246,173,85,.15);color:#f6ad55}
+.bp{background:rgba(183,148,244,.15);color:#b794f4}
+.pip{background:#1a1d27;border:1px solid rgba(255,255,255,.08);
+  border-radius:8px;padding:12px 18px;font-family:'JetBrains Mono',monospace;
+  font-size:.8rem;color:#a0d9ef;margin:16px 0}
+</style>
+</head><body>
+<nav><ul>
+  <li><a href='../index.html'>Introduction</a></li>
+  <li><a href='../data-prep.html'>Data Prep</a></li>
+  <li><a href='../pca.html'>PCA</a></li>
+  <li><a href='../clustering.html'>Clustering</a></li>
+  <li><a href='../arm.html'>ARM</a></li>
+</ul></nav>
+<main>
+  <div class='back-row'>
+    <a href='../pca.html' class='btn-link'>&larr; Back to PCA</a>
+    <a href='../../code/02_pca.py' download class='btn-link' style='background:rgba(104,211,145,.1);border-color:rgba(104,211,145,.3);color:#68d391'>&darr; Download .py</a>
+  </div>
+  <div class='hero' style='padding:40px 0 30px'>
+    <span class='hero-badge' style='background:rgba(183,148,244,.15);border-color:rgba(183,148,244,.35);color:#b794f4'>Script 02 of 04</span>
+    <h1 style='font-size:2rem'>PCA Code</h1>
+    <p class='hero-sub'>Dimensionality reduction — 2D/3D projections, variance, and eigenvalues.</p>
+  </div>
+  <div style='margin:14px 0'><span class="bdg bp">sklearn PCA</span><span class="bdg bp">StandardScaler</span><span class="bdg bp">Dimensionality Reduction</span></div>
+  <div class='code-header'>
+    <span class='file-tag'>&#128196; 02_pca.py</span>
+    <div style='display:flex;gap:10px;align-items:center'>
+      <span style='font-size:.75rem;color:#718096'>200 lines &middot; Python 3</span>
+      <button class='cpbtn' onclick='cp()'>Copy Code</button>
+    </div>
+  </div>
+  <pre><code class='language-python' id='cb'>&quot;&quot;&quot;
+Student Performance Analysis
+=============================
+Script 02 — Principal Component Analysis (PCA)
+
+Goal    : Reduce dimensionality of student data, visualize in 2D/3D,
+          understand variance retention, and extract top eigenvalues.
+Dataset : UCI Student Performance (student-mat.csv)
+Author  : Data Science Project 2025
+&quot;&quot;&quot;
+
+# ─────────────────────────────────────────────────────────────
+# IMPORTS
+# ─────────────────────────────────────────────────────────────
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.preprocessing import StandardScaler, LabelEncoder
+from sklearn.decomposition import PCA
+import warnings
+warnings.filterwarnings(&quot;ignore&quot;)
+
+# ─────────────────────────────────────────────────────────────
+# 1. LOAD &amp; PREPARE DATA FOR PCA
+#    - PCA requires: numeric-only, no labels, normalized
+# ─────────────────────────────────────────────────────────────
+raw_df = pd.read_csv(&quot;../data/student-mat.csv&quot;, sep=&quot;;&quot;)
+
+# Encode binary yes/no columns
+binary_cols = [
+    &quot;school&quot;, &quot;sex&quot;, &quot;address&quot;, &quot;famsize&quot;, &quot;Pstatus&quot;,
+    &quot;schoolsup&quot;, &quot;famsup&quot;, &quot;paid&quot;, &quot;activities&quot;,
+    &quot;nursery&quot;, &quot;higher&quot;, &quot;internet&quot;, &quot;romantic&quot;
+]
+for col in binary_cols:
+    raw_df[col] = LabelEncoder().fit_transform(raw_df[col])
+
+# One-hot encode multi-category columns
+raw_df = pd.get_dummies(raw_df, columns=[&quot;Mjob&quot;, &quot;Fjob&quot;, &quot;reason&quot;, &quot;guardian&quot;])
+
+# Create performance label (kept separately — NOT used in PCA)
+def perf_label(g):
+    if g &gt;= 14: return &quot;High&quot;
+    elif g &gt;= 10: return &quot;Medium&quot;
+    else: return &quot;Low&quot;
+
+labels = raw_df[&quot;G3&quot;].apply(perf_label)
+
+# Drop targets + labels — PCA input is features ONLY
+pca_features = raw_df.drop(columns=[&quot;G3&quot;, &quot;G1&quot;, &quot;G2&quot;])
+
+print(f&quot;PCA input shape: {pca_features.shape}&quot;)
+print(f&quot;  → {pca_features.shape[1]} features, {pca_features.shape[0]} students&quot;)
+
+# ─────────────────────────────────────────────────────────────
+# 2. NORMALIZE — StandardScaler (mean=0, std=1 per feature)
+# ─────────────────────────────────────────────────────────────
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(pca_features)
+
+print(&quot;\nNormalized data sample (first 3 rows, first 5 cols):&quot;)
+print(pd.DataFrame(X_scaled, columns=pca_features.columns).head(3).iloc[:, :5].round(3))
+
+# ─────────────────────────────────────────────────────────────
+# 3. PCA — 2 COMPONENTS
+# ─────────────────────────────────────────────────────────────
+pca2 = PCA(n_components=2)
+X_pca2 = pca2.fit_transform(X_scaled)
+var2 = pca2.explained_variance_ratio_
+
+print(f&quot;\n── PCA n=2 ──&quot;)
+print(f&quot;  PC1 variance: {var2[0]*100:.1f}%&quot;)
+print(f&quot;  PC2 variance: {var2[1]*100:.1f}%&quot;)
+print(f&quot;  Total retained: {var2.sum()*100:.1f}%&quot;)
+
+# Visualize 2D
+color_map = {&quot;High&quot;: &quot;#4CAF50&quot;, &quot;Medium&quot;: &quot;#2196F3&quot;, &quot;Low&quot;: &quot;#F44336&quot;}
+fig, ax = plt.subplots(figsize=(8, 6))
+fig.patch.set_facecolor(&quot;#f8f9fa&quot;)
+ax.set_facecolor(&quot;#f8f9fa&quot;)
+for label, color in color_map.items():
+    mask = (labels == label).values
+    ax.scatter(X_pca2[mask, 0], X_pca2[mask, 1],
+               c=color, label=label, alpha=0.7, s=50,
+               edgecolors=&quot;white&quot;, linewidth=0.5)
+ax.set_xlabel(f&quot;PC1 ({var2[0]*100:.1f}% variance)&quot;, fontsize=11)
+ax.set_ylabel(f&quot;PC2 ({var2[1]*100:.1f}% variance)&quot;, fontsize=11)
+ax.set_title(f&quot;PCA — 2D Projection  |  Retained: {var2.sum()*100:.1f}%&quot;,
+             fontsize=13, fontweight=&quot;bold&quot;)
+ax.legend(title=&quot;Performance&quot;)
+ax.grid(True, alpha=0.3)
+plt.tight_layout()
+plt.savefig(&quot;../Website/fig_pca_2d.png&quot;, dpi=150, bbox_inches=&quot;tight&quot;)
+plt.close()
+print(&quot;  Saved: fig_pca_2d.png&quot;)
+
+# ─────────────────────────────────────────────────────────────
+# 4. PCA — 3 COMPONENTS
+# ─────────────────────────────────────────────────────────────
+pca3 = PCA(n_components=3)
+X_pca3 = pca3.fit_transform(X_scaled)
+var3 = pca3.explained_variance_ratio_
+
+print(f&quot;\n── PCA n=3 ──&quot;)
+print(f&quot;  PC1: {var3[0]*100:.1f}%  PC2: {var3[1]*100:.1f}%  PC3: {var3[2]*100:.1f}%&quot;)
+print(f&quot;  Total retained: {var3.sum()*100:.1f}%&quot;)
+
+# Visualize 3D as two 2D cross-sections
+fig, axes = plt.subplots(1, 2, figsize=(13, 5))
+fig.patch.set_facecolor(&quot;#f8f9fa&quot;)
+proj_pairs = [(0, 1, &quot;PC1&quot;, &quot;PC2&quot;), (0, 2, &quot;PC1&quot;, &quot;PC3&quot;)]
+for ax, (xi, yi, xl, yl) in zip(axes, proj_pairs):
+    ax.set_facecolor(&quot;#f8f9fa&quot;)
+    for label, color in color_map.items():
+        mask = (labels == label).values
+        ax.scatter(X_pca3[mask, xi], X_pca3[mask, yi],
+                   c=color, label=label, alpha=0.7, s=40, edgecolors=&quot;w&quot;)
+    ax.set_xlabel(f&quot;{xl} ({var3[xi]*100:.1f}%)&quot;, fontsize=10)
+    ax.set_ylabel(f&quot;{yl} ({var3[yi]*100:.1f}%)&quot;, fontsize=10)
+    ax.legend(title=&quot;Performance&quot;, fontsize=8)
+    ax.grid(True, alpha=0.3)
+fig.suptitle(f&quot;PCA — 3D Projection (Two Views)  |  Retained: {var3.sum()*100:.1f}%&quot;,
+             fontsize=12, fontweight=&quot;bold&quot;)
+plt.tight_layout()
+plt.savefig(&quot;../Website/fig_pca_3d.png&quot;, dpi=150, bbox_inches=&quot;tight&quot;)
+plt.close()
+print(&quot;  Saved: fig_pca_3d.png&quot;)
+
+# ─────────────────────────────────────────────────────────────
+# 5. FULL PCA — CUMULATIVE VARIANCE &amp; 95% THRESHOLD
+# ─────────────────────────────────────────────────────────────
+pca_full = PCA()
+pca_full.fit(X_scaled)
+cumvar = np.cumsum(pca_full.explained_variance_ratio_) * 100
+n_components_95 = int(np.argmax(cumvar &gt;= 95)) + 1
+
+print(f&quot;\n── Cumulative Variance ──&quot;)
+print(f&quot;  Components needed for 95% variance: {n_components_95}&quot;)
+
+fig, ax = plt.subplots(figsize=(9, 5))
+fig.patch.set_facecolor(&quot;#f8f9fa&quot;)
+ax.set_facecolor(&quot;#f8f9fa&quot;)
+ax.plot(range(1, len(cumvar) + 1), cumvar, color=&quot;#2c3e50&quot;, linewidth=2, marker=&quot;o&quot;, ms=3)
+ax.axhline(95, color=&quot;#e74c3c&quot;, linestyle=&quot;--&quot;, linewidth=1.5, label=&quot;95% threshold&quot;)
+ax.axvline(n_components_95, color=&quot;#e74c3c&quot;, linestyle=&quot;:&quot;, linewidth=1.5)
+ax.fill_between(range(1, len(cumvar) + 1), cumvar, alpha=0.12, color=&quot;#2c3e50&quot;)
+ax.annotate(f&quot;{n_components_95} components = 95%&quot;,
+            xy=(n_components_95, 95), xytext=(n_components_95 + 3, 78),
+            fontsize=9, color=&quot;#e74c3c&quot;,
+            arrowprops=dict(arrowstyle=&quot;-&gt;&quot;, color=&quot;#e74c3c&quot;))
+ax.set_xlabel(&quot;Number of Principal Components&quot;, fontsize=11)
+ax.set_ylabel(&quot;Cumulative Explained Variance (%)&quot;, fontsize=11)
+ax.set_title(&quot;Cumulative Variance Explained by PCA&quot;, fontsize=13, fontweight=&quot;bold&quot;)
+ax.legend(); ax.grid(True, alpha=0.3); ax.set_ylim(0, 105)
+plt.tight_layout()
+plt.savefig(&quot;../Website/fig_pca_variance.png&quot;, dpi=150, bbox_inches=&quot;tight&quot;)
+plt.close()
+print(&quot;  Saved: fig_pca_variance.png&quot;)
+
+# ─────────────────────────────────────────────────────────────
+# 6. EIGENVALUES — TOP 10
+# ─────────────────────────────────────────────────────────────
+eigenvalues = pca_full.explained_variance_
+top3 = eigenvalues[:3]
+print(f&quot;\n── Top 3 Eigenvalues ──&quot;)
+print(f&quot;  PC1: {top3[0]:.4f}&quot;)
+print(f&quot;  PC2: {top3[1]:.4f}&quot;)
+print(f&quot;  PC3: {top3[2]:.4f}&quot;)
+
+fig, ax = plt.subplots(figsize=(9, 5))
+fig.patch.set_facecolor(&quot;#f8f9fa&quot;)
+ax.set_facecolor(&quot;#f8f9fa&quot;)
+colors = [&quot;#e74c3c&quot;, &quot;#e67e22&quot;, &quot;#f1c40f&quot;, &quot;#2ecc71&quot;, &quot;#1abc9c&quot;,
+          &quot;#3498db&quot;, &quot;#9b59b6&quot;, &quot;#34495e&quot;, &quot;#95a5a6&quot;, &quot;#7f8c8d&quot;]
+bars = ax.bar(range(1, 11), eigenvalues[:10], color=colors)
+for bar, ev in zip(bars, eigenvalues[:10]):
+    ax.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + 0.04,
+            f&quot;{ev:.2f}&quot;, ha=&quot;center&quot;, va=&quot;bottom&quot;, fontsize=8, fontweight=&quot;bold&quot;)
+ax.set_xlabel(&quot;Principal Component&quot;, fontsize=11)
+ax.set_ylabel(&quot;Eigenvalue&quot;, fontsize=11)
+ax.set_title(&quot;Top 10 Eigenvalues from PCA&quot;, fontsize=13, fontweight=&quot;bold&quot;)
+ax.grid(True, alpha=0.3, axis=&quot;y&quot;)
+plt.tight_layout()
+plt.savefig(&quot;../Website/fig_pca_eigenvalues.png&quot;, dpi=150, bbox_inches=&quot;tight&quot;)
+plt.close()
+print(&quot;  Saved: fig_pca_eigenvalues.png&quot;)
+
+# ─────────────────────────────────────────────────────────────
+# SUMMARY
+# ─────────────────────────────────────────────────────────────
+print(&quot;\n&quot; + &quot;=&quot;*50)
+print(&quot;PCA SUMMARY&quot;)
+print(&quot;=&quot;*50)
+print(f&quot;  Input features        : {pca_features.shape[1]}&quot;)
+print(f&quot;  Variance in 2D        : {var2.sum()*100:.1f}%&quot;)
+print(f&quot;  Variance in 3D        : {var3.sum()*100:.1f}%&quot;)
+print(f&quot;  Components for 95%    : {n_components_95}&quot;)
+print(f&quot;  Top eigenvalues       : {top3[0]:.3f}, {top3[1]:.3f}, {top3[2]:.3f}&quot;)
+print(&quot;=&quot;*50)
+print(&quot;\nScript 02 complete.&quot;)
+</code></pre>
+</main>
+<footer><p>Student Performance Analysis &copy; 2025 &mdash; Data Science Project</p></footer>
+<script src='../script.js'></script>
+<script>
+hljs.highlightAll();
+function cp(){
+  var c=document.getElementById('cb').innerText;
+  navigator.clipboard.writeText(c).then(function(){
+    var b=document.querySelector('.cpbtn');
+    b.textContent='Copied!';
+    setTimeout(function(){b.textContent='Copy Code';},2000);
+  });
+}
+</script>
+</body></html>
