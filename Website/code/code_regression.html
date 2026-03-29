@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='UTF-8'>
+<meta name='viewport' content='width=device-width,initial-scale=1.0'>
+<title>Regression Code | Student Performance</title>
+<link rel='stylesheet' href='../style.css'>
+<link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css'>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js'></script>
+<style>
+body{background:#0f1117}
+.code-header{display:flex;align-items:center;justify-content:space-between;
+  background:#1a1d27;border:1px solid rgba(255,255,255,.08);
+  border-radius:12px 12px 0 0;padding:14px 22px;margin-top:30px}
+.file-tag{font-family:'JetBrains Mono',monospace;font-size:.85rem;
+  color:#f6ad55;font-weight:600}
+.cpbtn{background:rgba(99,179,237,.12);border:1px solid rgba(99,179,237,.3);
+  color:#63b3ed;padding:6px 14px;border-radius:6px;font-size:.78rem;
+  font-weight:600;cursor:pointer;font-family:inherit;transition:all .2s}
+.cpbtn:hover{background:rgba(99,179,237,.22)}
+.hljs{border-radius:0 0 12px 12px;font-size:.82rem;line-height:1.65}
+pre{margin:0!important;padding:0!important;
+  background:none!important;border:none!important}
+pre code.hljs{padding:24px 28px!important}
+.back-row{display:flex;align-items:center;gap:12px;margin-bottom:10px;flex-wrap:wrap}
+.bdg{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.7rem;
+  font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin:3px}
+.bb{background:rgba(99,179,237,.15);color:#63b3ed}
+.bg{background:rgba(104,211,145,.15);color:#68d391}
+</style>
+</head><body>
+<nav><ul>
+  <li><a href='../index.html'>Introduction</a></li>
+  <li><a href='../data-prep.html'>Data Prep</a></li>
+  <li><a href='../pca.html'>PCA</a></li>
+  <li><a href='../clustering.html'>Clustering</a></li>
+  <li><a href='../arm.html'>ARM</a></li>
+  <li><a href='../dt.html'>DT</a></li>
+  <li><a href='../nb.html'>NB</a></li>
+  <li><a href='../svm.html'>SVM</a></li>
+  <li><a href='../regression.html'>Regression</a></li>
+  <li><a href='../conclusions.html'>Conclusions</a></li>
+</ul></nav>
+<main>
+  <div class='back-row'>
+    <a href='../regression.html' class='btn-link'>&larr; Back to Regression</a>
+    <a href='../../code/07_regression.py' download class='btn-link' style='background:rgba(104,211,145,.1);border-color:rgba(104,211,145,.3);color:#68d391'>&darr; Download .py</a>
+  </div>
+  <div class='hero' style='padding:40px 0 30px'>
+    <span class='hero-badge' style='background:rgba(99,179,237,.15);border-color:rgba(99,179,237,.35);color:#63b3ed'>Script 07 of 07</span>
+    <h1 style='font-size:2rem'>Regression Code</h1>
+    <p class='hero-sub'>Logistic Regression vs. Multinomial NB for binary Pass/Fail classification with L1 regularisation.</p>
+  </div>
+  <div class='code-header'>
+    <span class='file-tag'>&#128196; 07_regression.py</span>
+    <div style='display:flex;gap:10px;align-items:center'>
+      <span style='font-size:.75rem;color:#718096'>233 lines &middot; Python 3</span>
+      <button class='cpbtn' onclick='cp()'>Copy Code</button>
+    </div>
+  </div>
+  <pre><code class='language-python' id='cb'>&quot;&quot;&quot;
+Student Performance Analysis
+=============================
+Script 07 — Logistic Regression vs. Multinomial NB — TUNED
+
+Dataset : UCI Student Performance (student_clean.csv + G1/G2 from raw)
+Task    : Binary classification — Pass (G3 &gt;= 10) vs. Fail (G3 &lt; 10)
+Improvements:
+  • Re-introduced G1/G2 as temporal features.
+  • Engineered interaction features.
+  • StandardScaler + L1 regularisation for LogReg.
+  • Alpha tuning for MNB.
+Author  : Data Science Project 2025
+&quot;&quot;&quot;
+
+# ─────────────────────────────────────────────────────────────
+# IMPORTS
+# ─────────────────────────────────────────────────────────────
+import pandas as pd
+import numpy as np
+import matplotlib
+matplotlib.use(&quot;Agg&quot;)
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import MinMaxScaler, StandardScaler
+from sklearn.linear_model import LogisticRegression
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.metrics import (
+    accuracy_score, classification_report, confusion_matrix
+)
+
+# ─────────────────────────────────────────────────────────────
+# 1. LOAD &amp; PREPARE BINARY-LABELED DATA
+# ─────────────────────────────────────────────────────────────
+df  = pd.read_csv(&quot;../data/student_clean.csv&quot;)
+raw = pd.read_csv(&quot;../data/student-mat.csv&quot;, sep=&quot;;&quot;)
+df[&quot;G1&quot;] = raw[&quot;G1&quot;].values
+df[&quot;G2&quot;] = raw[&quot;G2&quot;].values
+
+# Binary label: Pass (1) if G3 &gt;= 10, else Fail (0)
+df[&quot;pass_fail&quot;] = (df[&quot;G3&quot;] &gt;= 10).astype(int)
+class_names = [&quot;Fail&quot;, &quot;Pass&quot;]
+
+y = df[&quot;pass_fail&quot;].values
+X = df.drop(columns=[&quot;performance&quot;, &quot;G3&quot;, &quot;pass_fail&quot;])
+X = X.apply(pd.to_numeric, errors=&quot;coerce&quot;).fillna(0)
+
+# Feature engineering
+X[&quot;G1G2_avg&quot;]        = (X[&quot;G1&quot;] + X[&quot;G2&quot;]) / 2
+X[&quot;G2_minus_G1&quot;]     = X[&quot;G2&quot;] - X[&quot;G1&quot;]
+X[&quot;fail_sq&quot;]         = X[&quot;failures&quot;] ** 2
+X[&quot;fail_x_absences&quot;] = X[&quot;failures&quot;] * X[&quot;absences&quot;]
+X[&quot;parent_edu&quot;]      = X[&quot;Medu&quot;] + X[&quot;Fedu&quot;]
+X[&quot;alc_total&quot;]       = X[&quot;Dalc&quot;] + X[&quot;Walc&quot;]
+X[&quot;G1_x_study&quot;]      = X[&quot;G1&quot;] * X[&quot;studytime&quot;]
+
+print(f&quot;Features shape: {X.shape}&quot;)
+print(f&quot;Class distribution:\n  Pass: {(y==1).sum()}, Fail: {(y==0).sum()}&quot;)
+
+# ─────────────────────────────────────────────────────────────
+# 2. TRAIN / TEST SPLIT
+# ─────────────────────────────────────────────────────────────
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.20, random_state=42, stratify=y
+)
+
+print(f&quot;\nTraining: {X_train.shape[0]}  |  Testing: {X_test.shape[0]}&quot;)
+
+# --- Save train/test split visualization ---
+fig, axes = plt.subplots(1, 3, figsize=(14, 4))
+
+axes[0].pie(
+    [len(X_train), len(X_test)],
+    labels=[f&quot;Train ({len(X_train)})&quot;, f&quot;Test ({len(X_test)})&quot;],
+    colors=[&quot;#f39c12&quot;, &quot;#e74c3c&quot;],
+    autopct=&quot;%1.1f%%&quot;, startangle=90,
+    textprops={&quot;fontsize&quot;: 11, &quot;fontweight&quot;: &quot;bold&quot;}
+)
+axes[0].set_title(&quot;Train / Test Split (80/20)&quot;, fontsize=13, fontweight=&quot;bold&quot;)
+
+for idx, (data, title) in enumerate([
+    (y_train, &quot;Training Set&quot;), (y_test, &quot;Testing Set&quot;)
+]):
+    counts = [np.sum(data == 0), np.sum(data == 1)]
+    axes[idx + 1].bar(class_names, counts, color=[&quot;#e74c3c&quot;, &quot;#2ecc71&quot;])
+    axes[idx + 1].set_title(f&quot;{title} Class Distribution&quot;, fontsize=13, fontweight=&quot;bold&quot;)
+    axes[idx + 1].set_ylabel(&quot;Count&quot;)
+
+plt.tight_layout()
+plt.savefig(&quot;../Website/fig_reg_train_test_split.png&quot;, dpi=150)
+plt.close()
+print(&quot;Saved: fig_reg_train_test_split.png&quot;)
+
+# ─────────────────────────────────────────────────────────────
+# 3. SCALE DATA
+# ─────────────────────────────────────────────────────────────
+# StandardScaler for Logistic Regression (best with regularisation)
+std_scaler = StandardScaler()
+X_train_std = std_scaler.fit_transform(X_train)
+X_test_std  = std_scaler.transform(X_test)
+
+# MinMaxScaler for Multinomial NB (requires non-negative)
+mm_scaler = MinMaxScaler()
+X_train_mm = mm_scaler.fit_transform(X_train)
+X_test_mm  = mm_scaler.transform(X_test)
+
+# ─────────────────────────────────────────────────────────────
+# 4. LOGISTIC REGRESSION  (tuned: C=0.1, L1, StandardScaler)
+# ─────────────────────────────────────────────────────────────
+lr = LogisticRegression(
+    C=0.1, penalty=&quot;l1&quot;, solver=&quot;saga&quot;,
+    max_iter=5000, random_state=42
+)
+lr.fit(X_train_std, y_train)
+y_pred_lr = lr.predict(X_test_std)
+acc_lr    = accuracy_score(y_test, y_pred_lr)
+cm_lr     = confusion_matrix(y_test, y_pred_lr)
+
+print(f&quot;\n{&#x27;=&#x27;*50}&quot;)
+print(f&quot;Logistic Regression — Accuracy: {acc_lr:.4f} ({acc_lr*100:.1f}%)&quot;)
+print(f&quot;{&#x27;=&#x27;*50}&quot;)
+print(classification_report(y_test, y_pred_lr, target_names=class_names))
+
+# ─────────────────────────────────────────────────────────────
+# 5. MULTINOMIAL NAÏVE BAYES  (tuned alpha)
+# ─────────────────────────────────────────────────────────────
+mnb = MultinomialNB(alpha=0.01)
+mnb.fit(X_train_mm, y_train)
+y_pred_mnb = mnb.predict(X_test_mm)
+acc_mnb    = accuracy_score(y_test, y_pred_mnb)
+cm_mnb     = confusion_matrix(y_test, y_pred_mnb)
+
+print(f&quot;\n{&#x27;=&#x27;*50}&quot;)
+print(f&quot;Multinomial Naïve Bayes — Accuracy: {acc_mnb:.4f} ({acc_mnb*100:.1f}%)&quot;)
+print(f&quot;{&#x27;=&#x27;*50}&quot;)
+print(classification_report(y_test, y_pred_mnb, target_names=class_names))
+
+# ─────────────────────────────────────────────────────────────
+# 6. CONFUSION MATRIX — LOGISTIC REGRESSION
+# ─────────────────────────────────────────────────────────────
+fig, ax = plt.subplots(figsize=(6, 5))
+sns.heatmap(
+    cm_lr, annot=True, fmt=&quot;d&quot;, cmap=&quot;Oranges&quot;,
+    xticklabels=class_names, yticklabels=class_names, ax=ax,
+    linewidths=1, linecolor=&quot;white&quot;,
+    annot_kws={&quot;size&quot;: 16, &quot;fontweight&quot;: &quot;bold&quot;}
+)
+ax.set_xlabel(&quot;Predicted Label&quot;, fontsize=12)
+ax.set_ylabel(&quot;True Label&quot;, fontsize=12)
+ax.set_title(f&quot;Logistic Regression — Confusion Matrix\nAccuracy: {acc_lr*100:.1f}%&quot;,
+             fontsize=13, fontweight=&quot;bold&quot;)
+plt.tight_layout()
+plt.savefig(&quot;../Website/fig_reg_cm_logistic.png&quot;, dpi=150)
+plt.close()
+print(&quot;Saved: fig_reg_cm_logistic.png&quot;)
+
+# ─────────────────────────────────────────────────────────────
+# 7. CONFUSION MATRIX — MULTINOMIAL NB
+# ─────────────────────────────────────────────────────────────
+fig, ax = plt.subplots(figsize=(6, 5))
+sns.heatmap(
+    cm_mnb, annot=True, fmt=&quot;d&quot;, cmap=&quot;Blues&quot;,
+    xticklabels=class_names, yticklabels=class_names, ax=ax,
+    linewidths=1, linecolor=&quot;white&quot;,
+    annot_kws={&quot;size&quot;: 16, &quot;fontweight&quot;: &quot;bold&quot;}
+)
+ax.set_xlabel(&quot;Predicted Label&quot;, fontsize=12)
+ax.set_ylabel(&quot;True Label&quot;, fontsize=12)
+ax.set_title(f&quot;Multinomial Naïve Bayes — Confusion Matrix\nAccuracy: {acc_mnb*100:.1f}%&quot;,
+             fontsize=13, fontweight=&quot;bold&quot;)
+plt.tight_layout()
+plt.savefig(&quot;../Website/fig_reg_cm_mnb.png&quot;, dpi=150)
+plt.close()
+print(&quot;Saved: fig_reg_cm_mnb.png&quot;)
+
+# ─────────────────────────────────────────────────────────────
+# 8. ACCURACY COMPARISON
+# ─────────────────────────────────────────────────────────────
+fig, ax = plt.subplots(figsize=(7, 5))
+model_names = [&quot;Logistic Regression&quot;, &quot;Multinomial NB&quot;]
+accuracies  = [acc_lr * 100, acc_mnb * 100]
+colors      = [&quot;#f39c12&quot;, &quot;#3498db&quot;]
+bars = ax.bar(model_names, accuracies, color=colors, edgecolor=&quot;white&quot;, linewidth=2)
+
+for bar, acc in zip(bars, accuracies):
+    ax.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + 0.5,
+            f&quot;{acc:.1f}%&quot;, ha=&quot;center&quot;, va=&quot;bottom&quot;,
+            fontweight=&quot;bold&quot;, fontsize=14)
+
+ax.set_ylim(0, max(accuracies) + 12)
+ax.set_ylabel(&quot;Accuracy (%)&quot;, fontsize=12)
+ax.set_title(&quot;Logistic Regression vs. Multinomial NB\n(Binary: Pass / Fail — with feature engineering)&quot;,
+             fontsize=14, fontweight=&quot;bold&quot;)
+ax.spines[&quot;top&quot;].set_visible(False)
+ax.spines[&quot;right&quot;].set_visible(False)
+plt.tight_layout()
+plt.savefig(&quot;../Website/fig_reg_comparison.png&quot;, dpi=150)
+plt.close()
+print(&quot;Saved: fig_reg_comparison.png&quot;)
+
+# ─────────────────────────────────────────────────────────────
+# 9. SIGMOID FUNCTION ILLUSTRATION
+# ─────────────────────────────────────────────────────────────
+fig, ax = plt.subplots(figsize=(8, 5))
+z = np.linspace(-7, 7, 300)
+sigmoid = 1 / (1 + np.exp(-z))
+ax.plot(z, sigmoid, color=&quot;#f39c12&quot;, linewidth=3, label=&quot;σ(z) = 1 / (1 + e⁻ᶻ)&quot;)
+ax.axhline(y=0.5, color=&quot;#e74c3c&quot;, linestyle=&quot;--&quot;, alpha=0.6, label=&quot;Threshold = 0.5&quot;)
+ax.axvline(x=0, color=&quot;gray&quot;, linestyle=&quot;:&quot;, alpha=0.4)
+ax.fill_between(z, sigmoid, 0.5, where=(sigmoid &gt; 0.5),
+                alpha=0.1, color=&quot;#2ecc71&quot;, label=&quot;Predict: Pass&quot;)
+ax.fill_between(z, sigmoid, 0.5, where=(sigmoid &lt; 0.5),
+                alpha=0.1, color=&quot;#e74c3c&quot;, label=&quot;Predict: Fail&quot;)
+ax.set_xlabel(&quot;z = β₀ + β₁x₁ + β₂x₂ + ...&quot;, fontsize=12)
+ax.set_ylabel(&quot;σ(z) = P(Pass)&quot;, fontsize=12)
+ax.set_title(&quot;The Sigmoid Function in Logistic Regression&quot;, fontsize=14, fontweight=&quot;bold&quot;)
+ax.legend(loc=&quot;upper left&quot;, fontsize=10)
+ax.set_ylim(-0.05, 1.05)
+ax.spines[&quot;top&quot;].set_visible(False)
+ax.spines[&quot;right&quot;].set_visible(False)
+plt.tight_layout()
+plt.savefig(&quot;../Website/fig_reg_sigmoid.png&quot;, dpi=150)
+plt.close()
+print(&quot;Saved: fig_reg_sigmoid.png&quot;)
+
+print(f&quot;\n\nFINAL COMPARISON:&quot;)
+print(f&quot;  Logistic Regression: {acc_lr*100:.1f}%&quot;)
+print(f&quot;  Multinomial NB:      {acc_mnb*100:.1f}%&quot;)
+winner = &quot;Logistic Regression&quot; if acc_lr &gt; acc_mnb else &quot;Multinomial NB&quot;
+print(f&quot;  Winner: {winner}&quot;)
+
+print(&quot;\nScript 07 complete.&quot;)
+</code></pre>
+</main>
+<footer><p>Student Performance Analysis &copy; 2025 &mdash; Data Science Project</p></footer>
+<script src='../script.js'></script>
+<script>
+hljs.highlightAll();
+function cp(){
+  var c=document.getElementById('cb').innerText;
+  navigator.clipboard.writeText(c).then(function(){
+    var b=document.querySelector('.cpbtn');
+    b.textContent='Copied!';
+    setTimeout(function(){b.textContent='Copy Code';},2000);
+  });
+}
+</script>
+</body></html>

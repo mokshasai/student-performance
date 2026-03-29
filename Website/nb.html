@@ -3,25 +3,38 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NB | Student Performance Analysis</title>
-  <meta name="description" content="Naive Bayes classification applied to predict student performance — overview, data, code, and results.">
+  <title>Naïve Bayes | Student Performance Analysis</title>
+  <meta name="description" content="Naive Bayes classification (Multinomial, Gaussian, Bernoulli) applied to predict student performance — overview, data, code, and results.">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <nav>
-  <ul>
-    <li><a href="index.html">Introduction</a></li>
-    <li><a href="data-prep.html">Data Prep</a></li>
-    <li><a href="pca.html">PCA</a></li>
-    <li><a href="clustering.html">Clustering</a></li>
-    <li><a href="arm.html">ARM</a></li>
-    <li><a href="dt.html">DT</a></li>
-    <li><a href="nb.html">NB</a></li>
-    <li><a href="svm.html">SVM</a></li>
-    <li><a href="regression.html">Regression</a></li>
-    <li><a href="conclusions.html">Conclusions</a></li>
-  </ul>
+  <div class="nav-inner">
+    <a href="index.html" class="nav-brand">
+      <div class="brand-seal">📋</div>
+      <div>
+        <div class="brand-text">Student Performance</div>
+        <div class="brand-sub">ML Analysis · 2025</div>
+      </div>
+    </a>
+    <ul>
+      <li><a href="index.html">Introduction</a></li>
+      <li><a href="data-prep.html">Data Prep</a></li>
+      <li><a href="pca.html">PCA</a></li>
+      <li><a href="clustering.html">Clustering</a></li>
+      <li><a href="arm.html">ARM</a></li>
+      <li><a href="dt.html">DT</a></li>
+      <li><a href="nb.html">NB</a></li>
+      <li><a href="svm.html">SVM</a></li>
+      <li><a href="regression.html">Regression</a></li>
+      <li><a href="conclusions.html">Conclusions</a></li>
+    </ul>
+    <a href="https://github.com/mokshasai/student-performance" target="_blank" rel="noopener" class="nav-github">
+      <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+      GitHub
+    </a>
+  </div>
 </nav>
 
 <main>
@@ -32,39 +45,67 @@
       Probabilistic Classifier
     </span>
     <h1>Naïve Bayes (NB)</h1>
-    <p class="hero-sub">A fast probabilistic classifier based on Bayes' theorem — applied to predict student academic performance categories.</p>
+    <p class="hero-sub">Three flavors of probabilistic classification applied to predict student academic performance categories.</p>
   </div>
 
   <div class="info-grid">
-    <div class="info-tile"><div class="tile-value" style="color:#63b3ed">3</div><div class="tile-label">Classes (Low/Med/High)</div></div>
-    <div class="info-tile"><div class="tile-value" style="color:#63b3ed">GNB</div><div class="tile-label">Gaussian Naïve Bayes</div></div>
+    <div class="info-tile"><div class="tile-value" style="color:#63b3ed">3</div><div class="tile-label">NB Flavors Tested</div></div>
+    <div class="info-tile"><div class="tile-value" style="color:#63b3ed">81.0%</div><div class="tile-label">Best Accuracy (GNB)</div></div>
     <div class="info-tile"><div class="tile-value" style="color:#63b3ed">P(A|B)</div><div class="tile-label">Bayes' Theorem</div></div>
     <div class="info-tile"><div class="tile-value" style="color:#63b3ed">sklearn</div><div class="tile-label">Library</div></div>
   </div>
 
-  <!-- ── Overview ──────────────────────────────────────────── -->
+  <!-- ── (a) Overview ──────────────────────────────────────── -->
   <h2>Overview</h2>
 
   <p>
-    <strong>Naïve Bayes (NB)</strong> is a family of probabilistic classifiers built on <strong>Bayes' theorem</strong>, which states that the probability of a class given observed features equals the prior probability of that class multiplied by the likelihood of observing those features given the class, divided by the overall probability of the features. The "naïve" assumption is that all features are conditionally independent given the class label — meaning the model assumes that knowing one feature (e.g., study time) tells us nothing additional about another feature (e.g., absences) beyond what we already know about the class. While this assumption rarely holds perfectly in practice, Naïve Bayes classifiers often perform surprisingly well, especially on high-dimensional data or when training data is limited. For continuous numeric features (like those in the student dataset), <strong>Gaussian Naïve Bayes</strong> is used, which assumes that feature values follow a normal distribution within each class. The model is trained by estimating the mean and standard deviation of each feature per class from the training data.
+    <strong>Naïve Bayes (NB)</strong> is a family of probabilistic classifiers built on <strong>Bayes' theorem</strong>, which states that the probability of a class given observed features equals the prior probability of that class multiplied by the likelihood of observing those features given the class, divided by the overall probability of the features. The "naïve" assumption is that all features are <em>conditionally independent</em> given the class label — meaning the model assumes that knowing one feature (e.g., study time) tells us nothing additional about another feature (e.g., absences) beyond what we already know about the class. While this assumption rarely holds perfectly in practice, Naïve Bayes classifiers often perform surprisingly well, especially on high-dimensional data or when training data is limited. NB is used because it is fast to train, requires very little data to estimate parameters, handles multi-class classification naturally, and produces probability scores alongside predictions.
   </p>
 
+  <h3>Multinomial Naïve Bayes (MNB)</h3>
   <p>
-    Applied to student performance, Naïve Bayes classifies each student as Low, Medium, or High performer. Because the model is probabilistic, it also produces confidence scores — the probability that a student belongs to each class — providing an interpretable measure of certainty alongside the predicted label. Naïve Bayes trains extremely quickly even on larger datasets and serves as an important baseline to compare against more complex classifiers like Decision Trees and SVMs. A model that significantly outperforms Naïve Bayes justifies the added complexity; one that does not suggests the data's patterns are straightforward enough for a simple probabilistic approach.
+    <strong>Multinomial NB</strong> models the likelihood of features as a <em>multinomial distribution</em> — it assumes features represent counts or frequencies (e.g., word counts in text classification). In sklearn, it is implemented as <code>sklearn.naive_bayes.MultinomialNB</code>. Because it requires non-negative feature values, our numeric student data was scaled to [0, 1] using <code>MinMaxScaler</code> before fitting. MNB is most commonly used in text classification (spam detection, document categorization) where features are word counts, but it can be applied to any non-negative numeric data. We tuned the smoothing parameter <code>alpha=10.0</code> to achieve optimal performance for this dataset.
+  </p>
+
+  <h3>Gaussian Naïve Bayes (GNB)</h3>
+  <p>
+    <strong>Gaussian NB</strong> assumes that the values of each feature within a given class follow a <em>normal (Gaussian) distribution</em>. During training, it estimates the mean (μ) and standard deviation (σ) of each feature per class. At prediction time, it computes the probability of observing the feature value under each class's Gaussian curve. GNB is the natural choice when features are continuous numeric values (like G1, G2, absences, study time), which is the case for most features in the student dataset. We tuned the <code>var_smoothing=0.01</code> parameter, which adds a fraction of the largest variance to the variance estimate — this regularisation prevents numerical instability and produces smoother decision boundaries. GNB is implemented as <code>sklearn.naive_bayes.GaussianNB</code>.
+  </p>
+
+  <h3>Bernoulli Naïve Bayes (BNB)</h3>
+  <p>
+    <strong>Bernoulli NB</strong> models features as <em>binary (0/1)</em> variables. It is designed for data where features represent the presence or absence of a characteristic. In sklearn (<code>sklearn.naive_bayes.BernoulliNB</code>), a <code>binarize</code> threshold is specified — features above that threshold become 1, below become 0. We tuned <code>alpha=10.0</code> and <code>binarize=0.0</code> (treating any non-zero value as present). Since many of our student features are already binary (e.g., internet access, family support, school support), BNB is a natural fit. Unlike MNB, BNB explicitly penalizes the <em>absence</em> of features, capturing different patterns.
+  </p>
+
+  <h3>Why Smoothing Is Required</h3>
+  <p>
+    NB models estimate probabilities from training data by counting how often each feature value appears in each class. If a feature value was <strong>never observed</strong> in a particular class during training, the estimated probability for that feature-class combination becomes <strong>zero</strong>. Because Bayes' theorem multiplies all feature probabilities together, a single zero probability would force the entire posterior to zero — effectively vetoing the prediction regardless of all other evidence. This is called the <strong>zero-frequency problem</strong>.
+  </p>
+  <p>
+    <strong>Laplace smoothing</strong> (controlled by the <code>alpha</code> parameter in sklearn) solves this by adding a small constant to every feature count before computing probabilities. With <code>alpha=1.0</code> (the default), one "virtual" observation is added to each feature-class cell, ensuring no probability is ever exactly zero. Higher alpha values (like our tuned <code>alpha=10.0</code>) produce smoother, more conservative estimates that reduce overfitting to training data, while lower values (<code>alpha=0.01</code>) stay closer to the raw counts. For <strong>Gaussian NB</strong>, the analogous parameter is <code>var_smoothing</code>, which adds a fraction of the largest variance to all variance estimates — preventing division by near-zero variances and stabilising the Gaussian PDF calculations.
+  </p>
+
+  <h3>Categorical Naïve Bayes (CNB)</h3>
+  <p>
+    <strong>Categorical NB</strong> (<code>sklearn.naive_bayes.CategoricalNB</code>) assumes each feature follows a <em>categorical distribution</em>. It is designed for data where features take on a finite set of discrete values (e.g., education level = {0,1,2,3,4}, school = {GP, MS}). Unlike MNB, it does not assume order among categories. CNB is ideal when working with raw categorical data that has not been one-hot encoded. In our dataset, since we have already encoded categorical features, we opted for BNB as our third flavor, but CNB would be a valid alternative if working with the raw categorical representation.
   </p>
 
   <div class="callout blue">
     <span class="callout-icon">📐</span>
-    <p><strong>Bayes' Theorem:</strong> P(Class | Features) ∝ P(Class) × P(Features | Class). Naïve Bayes estimates P(Features | Class) by assuming feature independence — making computation fast and requiring very little training data to estimate reliable parameters.</p>
+    <p><strong>Key Comparison:</strong> MNB treats features as counts/frequencies, GNB assumes continuous normal distributions, BNB treats features as binary presence/absence, and CNB handles discrete categorical values. For the student dataset (with G1 and G2 grades as continuous features, plus many binary features), <strong>Gaussian NB achieved the highest accuracy (81.0%)</strong>, because the Gaussian assumption fits the continuous grade features well.</p>
   </div>
 
   <hr class="divider">
 
-  <!-- ── Data ──────────────────────────────────────────────── -->
-  <h2>Data</h2>
+  <!-- ── (b) Data Prep ─────────────────────────────────────── -->
+  <h2>Data Preparation</h2>
 
   <p>
-    The same cleaned, encoded student dataset is used. Gaussian NB works on the full numeric feature set after label encoding. The target is the three-class performance label (Low / Medium / High) derived from G3, with G1 and G2 dropped to prevent leakage.
+    All Naïve Bayes models require <strong>labeled data</strong> — each student record must have a known class label. Our target is the <strong>performance</strong> column (Low / Medium / High), derived from the final grade G3. The cleaned dataset contains <strong>395 students</strong>. After re-introducing <strong>G1</strong> (first-period grade) and <strong>G2</strong> (second-period grade) — which are legitimately available before the final exam — and adding <strong>7 engineered interaction features</strong> (G1G2_avg, grade trend, failure×absences, parent education sum, alcohol total, G1×studytime, failures²), the feature set contains <strong>48 features</strong>.
+  </p>
+
+  <p>
+    For <strong>Multinomial NB</strong>, features must be non-negative, so we applied <code>MinMaxScaler</code> to scale all features to [0, 1]. For <strong>Bernoulli NB</strong>, a binarization threshold of 0.0 was used (any non-zero → 1). <strong>Gaussian NB</strong> works directly on the raw numeric features with tuned <code>var_smoothing=0.01</code>.
   </p>
 
   <div class="figure-grid">
@@ -74,8 +115,19 @@
     </div>
     <div class="img-wrap">
       <img src="cleaned_data.png" alt="Cleaned student dataset used as NB input">
-      <div class="img-caption">Cleaned data — fully numeric after label encoding and one-hot encoding of categorical columns.</div>
+      <div class="img-caption">Cleaned data — fully numeric after label encoding and one-hot encoding, plus G1/G2 re-introduced as features.</div>
     </div>
+  </div>
+
+  <h3>Training &amp; Testing Sets</h3>
+
+  <p>
+    The dataset was split into <strong>80% training</strong> (316 students) and <strong>20% testing</strong> (79 students) using stratified sampling to ensure the class proportions (Low / Medium / High) remain consistent in both sets. The training and testing sets are <strong>disjoint</strong> — no student appears in both sets. This is critical because the model must be evaluated on data it has never seen during training; otherwise, the accuracy would be artificially inflated (the model could simply memorize the training data). Stratification ensures that even minority classes (e.g., "High") are proportionally represented in both sets.
+  </p>
+
+  <div class="img-wrap">
+    <img src="fig_nb_train_test_split.png" alt="Train/Test split visualization showing 80/20 split and class distributions">
+    <div class="img-caption">Training (316 samples) and Testing (79 samples) sets — stratified, disjoint split with balanced class proportions.</div>
   </div>
 
   <div class="callout blue">
@@ -88,37 +140,74 @@
 
   <hr class="divider">
 
-  <!-- ── Code ──────────────────────────────────────────────── -->
+  <!-- ── (c) Code ──────────────────────────────────────────── -->
   <h2>Code</h2>
 
   <p>
-    Implemented in <strong>Python 3</strong>. Core packages: <code>sklearn</code> (GaussianNB, train_test_split, classification_report, confusion_matrix, cross_val_score), <code>pandas</code>, <code>matplotlib</code>, <code>seaborn</code>.
+    Implemented in <strong>Python 3</strong>. Core packages: <code>sklearn</code> (MultinomialNB, GaussianNB, BernoulliNB, train_test_split, MinMaxScaler, classification_report, confusion_matrix), <code>pandas</code>, <code>matplotlib</code>, <code>seaborn</code>.
   </p>
 
   <div class="callout blue">
     <span class="callout-icon">&#128196;</span>
-    <p>Code for this analysis will be linked here once the Naïve Bayes script is complete.</p>
+    <p>
+      <a href="code/code_nb.html" class="btn-link" style="margin-right:10px">📄 View Full NB Code</a>
+      <a href="../code/05_naive_bayes.py" download class="btn-link" style="background:rgba(104,211,145,.1);border-color:rgba(104,211,145,.3);color:#68d391">&darr; Download 05_naive_bayes.py</a>
+    </p>
   </div>
 
   <hr class="divider">
 
-  <!-- ── Results ───────────────────────────────────────────── -->
+  <!-- ── (d) Results ───────────────────────────────────────── -->
   <h2>Results</h2>
 
-  <div class="callout amber">
-    <span class="callout-icon">🔄</span>
-    <p><strong>In Progress:</strong> Naïve Bayes model training and cross-validation results are being finalized. Results will be published here including accuracy, class-level metrics, and comparison with other classifiers.</p>
+  <h3>Accuracy Comparison</h3>
+  <p>
+    The three Naïve Bayes flavors were evaluated on the same 79-sample test set. <strong>Gaussian NB achieved the highest accuracy at 81.0%</strong>, followed by Bernoulli NB at 59.5% and Multinomial NB at 58.2%. The strong performance of GNB is driven by the inclusion of G1 and G2 (first and second period grades) as features, which provide strong continuous signals that fit the Gaussian distribution assumption well. Feature engineering (grade averages, interaction terms) further boosted performance by capturing nonlinear relationships that NB cannot model directly. Tuning the <code>var_smoothing</code> parameter to 0.01 also improved GNB's decision boundaries by regularising the variance estimates.
+  </p>
+
+  <div class="img-wrap">
+    <img src="fig_nb_accuracy_comparison.png" alt="Bar chart comparing accuracy of Multinomial NB, Gaussian NB, and Bernoulli NB">
+    <div class="img-caption">Accuracy comparison across three NB flavors — Gaussian NB leads at 81.0%, demonstrating the value of feature engineering and hyperparameter tuning.</div>
   </div>
 
-  <p>Expected outputs include:</p>
-  <ul style="color:var(--text-sec);padding-left:20px;line-height:2.2">
-    <li>Overall classification accuracy on held-out test set</li>
-    <li>Per-class precision, recall, and F1-score (Low / Medium / High)</li>
-    <li>Confusion matrix showing predicted vs. actual class labels</li>
-    <li>5-fold cross-validation accuracy for robust performance estimation</li>
-    <li>Probability distributions per class (Gaussian curves for key features)</li>
-    <li>Comparison of NB accuracy vs. Decision Tree and SVM baselines</li>
-  </ul>
+  <h3>Confusion Matrices</h3>
+  <p>
+    The confusion matrices below show how each NB model classified the test students across the three performance categories. Gaussian NB performed best across all classes, with particularly strong identification of "Medium" and "High" performers. MNB and BNB showed improved results over their un-tuned baselines but still lag behind GNB because the continuous grade features (G1, G2) are poorly captured by count-based (MNB) or binary (BNB) distributional assumptions.
+  </p>
+
+  <div class="figure-grid">
+    <div class="img-wrap">
+      <img src="fig_nb_cm_multinomial.png" alt="Confusion matrix for Multinomial Naïve Bayes">
+      <div class="img-caption">Multinomial NB — 58.2% accuracy. Improved via alpha tuning and feature engineering, but limited by count-based assumptions.</div>
+    </div>
+    <div class="img-wrap">
+      <img src="fig_nb_cm_gaussian.png" alt="Confusion matrix for Gaussian Naïve Bayes">
+      <div class="img-caption">Gaussian NB — 81.0% accuracy. Strong performance thanks to the Gaussian assumption fitting G1/G2 grade distributions well.</div>
+    </div>
+  </div>
+
+  <div class="img-wrap">
+    <img src="fig_nb_cm_bernoulli.png" alt="Confusion matrix for Bernoulli Naïve Bayes">
+    <div class="img-caption">Bernoulli NB — 59.5% accuracy. Good at leveraging binary features but loses grade granularity through binarisation.</div>
+  </div>
+
+  <div class="callout blue">
+    <span class="callout-icon">📊</span>
+    <p><strong>Why Gaussian NB wins:</strong> The inclusion of G1 and G2 as continuous features gave GNB a major advantage — these grades have roughly Gaussian distributions within each performance class, aligning perfectly with GNB's assumptions. MNB and BNB suffer because they must discretise or flatten the continuous grade information, losing significant predictive signal. The tuned <code>var_smoothing=0.01</code> parameter further improved GNB by regularising the variance estimates and smoothing the decision boundaries.</p>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ── (e) Conclusions ──────────────────────────────────── -->
+  <h2>Conclusions</h2>
+
+  <p>
+    Naïve Bayes classification, when combined with <strong>feature engineering</strong> and <strong>hyperparameter tuning</strong>, achieves strong predictive performance on the student dataset. Gaussian NB's 81.0% accuracy demonstrates that the "naïve" independence assumption is not always a major limitation — when features like G1 and G2 provide strong, approximately Gaussian signals, the model can make highly accurate predictions. The key improvements over the baseline were: (1) re-introducing G1 and G2 as temporally prior features, (2) engineering interaction features (G1G2 average, grade trend, failure×absences), and (3) tuning the var_smoothing hyperparameter.
+  </p>
+
+  <p>
+    From an educational perspective, the model reveals that a student's <strong>trajectory through the academic year</strong> (captured by G1 → G2 progression) is the strongest predictor of final performance. Students whose grades improve from period 1 to period 2 are much more likely to finish in the "High" category, while declining grades foreshadow a "Low" outcome. This insight is actionable: schools could implement automated early-warning systems that flag students whose G2 grades drop below G1, enabling targeted intervention before the final exam.
+  </p>
 
 </main>
 
