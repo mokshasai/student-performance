@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -12,10 +12,10 @@
 <nav>
   <div class="nav-inner">
     <a href="index.html" class="nav-brand">
-      <div class="brand-seal">📋</div>
+      <div class="brand-seal">ðŸ“‹</div>
       <div>
         <div class="brand-text">Student Performance</div>
-        <div class="brand-sub">ML Analysis · 2025</div>
+        <div class="brand-sub">ML Analysis Â· 2025</div>
       </div>
     </a>
     <ul>
@@ -39,7 +39,7 @@
 
 <main>
 
-  <!-- ── Hero ─────────────────────────────────────────────── -->
+  <!-- â”€â”€ Hero â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
   <div class="hero">
     <span class="hero-badge" style="background:rgba(104,211,145,0.15);border-color:rgba(104,211,145,0.35);color:var(--accent2)">
       Unsupervised Learning
@@ -57,7 +57,7 @@
     <div class="info-tile"><div class="tile-value" style="color:var(--accent2)">Ward</div><div class="tile-label">Hierarchical Linkage</div></div>
   </div>
 
-  <!-- ── Compare & Contrast ─────────────────────────────── -->
+  <!-- â”€â”€ Compare & Contrast â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
   <h2>Clustering Algorithms Overview</h2>
 
   <p>
@@ -68,7 +68,7 @@
     <span class="section-tag tag-green">KMeans (Partition)</span>
     <h3 style="margin-top:8px">K-Means Clustering</h3>
     <p style="margin-bottom:0">
-      K-Means is a <strong>partition-based</strong> algorithm that divides data into exactly <em>k</em> clusters. It works by iteratively assigning points to the nearest centroid and updating centroid positions until convergence. K-Means is computationally efficient and works well with globular clusters of similar size. The choice of <em>k</em> must be specified in advance — methods like the Silhouette Score help identify the best value. <strong>Limitation:</strong> K-Means assumes spherical clusters and is sensitive to outliers and initializations.
+      K-Means is a <strong>partition-based</strong> algorithm that divides data into exactly <em>k</em> clusters. It works by iteratively assigning points to the nearest centroid and updating centroid positions until convergence. K-Means is computationally efficient and works well with globular clusters of similar size. The choice of <em>k</em> must be specified in advance â€” methods like the Silhouette Score help identify the best value. <strong>Limitation:</strong> K-Means assumes spherical clusters and is sensitive to outliers and initializations.
     </p>
   </div>
 
@@ -76,7 +76,7 @@
     <span class="section-tag tag-blue">Hierarchical</span>
     <h3 style="margin-top:8px">Hierarchical Clustering</h3>
     <p style="margin-bottom:0">
-      Hierarchical clustering builds a <strong>tree of cluster merges</strong> (dendrogram) without requiring <em>k</em> to be pre-specified. In <em>agglomerative</em> (bottom-up) clustering, each point starts as its own cluster, then pairs are merged based on similarity until one cluster remains. The linkage criterion determines how cluster distances are measured — <strong>Ward linkage</strong> minimizes the total within-cluster variance at each merge step, producing compact, balanced clusters. The dendrogram allows flexible selection of cluster count. <strong>Limitation:</strong> Computationally intensive for large datasets (O(n²) or O(n³)).
+      Hierarchical clustering builds a <strong>tree of cluster merges</strong> (dendrogram) without requiring <em>k</em> to be pre-specified. In <em>agglomerative</em> (bottom-up) clustering, each point starts as its own cluster, then pairs are merged based on similarity until one cluster remains. The linkage criterion determines how cluster distances are measured â€” <strong>Ward linkage</strong> minimizes the total within-cluster variance at each merge step, producing compact, balanced clusters. The dendrogram allows flexible selection of cluster count. <strong>Limitation:</strong> Computationally intensive for large datasets (O(nÂ²) or O(nÂ³)).
     </p>
   </div>
 
@@ -102,7 +102,7 @@
         <tr><td>Requires k?</td><td>Yes</td><td>No (cut dendrogram)</td><td>No</td></tr>
         <tr><td>Cluster shape</td><td>Spherical</td><td>Any (depends on linkage)</td><td>Arbitrary</td></tr>
         <tr><td>Handles noise</td><td>No</td><td>No</td><td>Yes</td></tr>
-        <tr><td>Scalability</td><td>High</td><td>Low–Medium</td><td>Medium</td></tr>
+        <tr><td>Scalability</td><td>High</td><td>Lowâ€“Medium</td><td>Medium</td></tr>
         <tr><td>Sensitive to outliers?</td><td>Yes</td><td>Moderate</td><td>No (labels as noise)</td></tr>
       </tbody>
     </table>
@@ -110,7 +110,7 @@
 
   <hr class="divider">
 
-  <!-- ── Data Prep ──────────────────────────────────────── -->
+  <!-- â”€â”€ Data Prep â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
   <h2>Data Preparation</h2>
 
   <p>
@@ -121,15 +121,15 @@
     <h3 style="margin-top:0">Preparation Steps</h3>
     <ol style="padding-left:20px;color:var(--text-sec);line-height:2.1">
       <li>Load <code>student-mat.csv</code>, apply binary and one-hot encoding (same as PCA prep)</li>
-      <li><strong>Remove the label</strong> (<code>performance</code>, <code>G1</code>, <code>G2</code>, <code>G3</code>) — saved separately for later comparison with clusters</li>
+      <li><strong>Remove the label</strong> (<code>performance</code>, <code>G1</code>, <code>G2</code>, <code>G3</code>) â€” saved separately for later comparison with clusters</li>
       <li>Verify all remaining features are quantitative only</li>
       <li>Normalize using <strong>StandardScaler</strong> (mean=0, std=1 per column)</li>
-      <li>Apply <strong>PCA (n_components=3)</strong> to reduce to 3D — retaining <strong>19.7% variance</strong> — for visualization and computational efficiency</li>
+      <li>Apply <strong>PCA (n_components=3)</strong> to reduce to 3D â€” retaining <strong>19.7% variance</strong> â€” for visualization and computational efficiency</li>
     </ol>
   </div>
 
   <div class="callout blue">
-    <span class="callout-icon">🔖</span>
+    <span class="callout-icon">ðŸ”–</span>
     <p>
       The performance labels (Low / Medium / High) were retained separately and used only <em>after</em> clustering to evaluate how well the discovered clusters align with actual academic performance categories.
     </p>
@@ -142,10 +142,10 @@
 
   <hr class="divider">
 
-  <!-- ── KMeans ──────────────────────────────────────────── -->
+  <!-- â”€â”€ KMeans â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
   <h2>K-Means Clustering</h2>
 
-  <h3>Silhouette Method — Choosing k</h3>
+  <h3>Silhouette Method â€” Choosing k</h3>
 
   <p>
     The <strong>Silhouette Score</strong> measures how well each point fits within its assigned cluster versus neighboring clusters. A higher score (max 1.0) indicates better-defined clusters. We computed the silhouette score for k = 2 through 10 and selected the top three values of k.
@@ -157,7 +157,7 @@
   </div>
 
   <div class="callout green">
-    <span class="callout-icon">🎯</span>
+    <span class="callout-icon">ðŸŽ¯</span>
     <p>
       <strong>Three Smart k Values Selected: k = 4, k = 5, k = 8</strong><br>
       These produced the highest silhouette scores, suggesting meaningful cluster structure at each of these configurations. We explore all three below.
@@ -167,24 +167,24 @@
   <h3>KMeans Results for k = 4, 5, and 8</h3>
 
   <p>
-    Each plot shows the student data projected onto the first two PCA dimensions. Points are colored by cluster assignment (discovered by KMeans), and the black ✕ marks the centroid of each cluster.
+    Each plot shows the student data projected onto the first two PCA dimensions. Points are colored by cluster assignment (discovered by KMeans), and the black âœ• marks the centroid of each cluster.
   </p>
 
   <div class="img-wrap">
     <img src="fig_cluster_kmeans.png" alt="Three KMeans scatter plots for k=4, k=5, and k=8">
-    <div class="img-caption">Figure: KMeans clustering for k=4 (left), k=5 (center), k=8 (right). Each panel shows cluster assignments and centroids (✕) on the PCA 2D projection. Silhouette scores are shown in each panel title.</div>
+    <div class="img-caption">Figure: KMeans clustering for k=4 (left), k=5 (center), k=8 (right). Each panel shows cluster assignments and centroids (âœ•) on the PCA 2D projection. Silhouette scores are shown in each panel title.</div>
   </div>
 
   <div class="callout blue">
-    <span class="callout-icon">💬</span>
+    <span class="callout-icon">ðŸ’¬</span>
     <p>
-      <strong>Interpretation:</strong> At k=4 and k=5, clusters form distinct regions with relatively clear boundaries. Larger k values (k=8) fragment clusters into smaller, more overlapping groups that may correspond to sub-patterns in student behavior (e.g., distinguishing different study-time + alcohol combinations). Compared to the true performance labels (Low / Medium / High), KMeans with k=3–5 aligns reasonably with the natural performance groupings, though perfect separation is not expected given that 19.7% of variance is retained in the 3D PCA input.
+      <strong>Interpretation:</strong> At k=4 and k=5, clusters form distinct regions with relatively clear boundaries. Larger k values (k=8) fragment clusters into smaller, more overlapping groups that may correspond to sub-patterns in student behavior (e.g., distinguishing different study-time + alcohol combinations). Compared to the true performance labels (Low / Medium / High), KMeans with k=3â€“5 aligns reasonably with the natural performance groupings, though perfect separation is not expected given that 19.7% of variance is retained in the 3D PCA input.
     </p>
   </div>
 
   <hr class="divider">
 
-  <!-- ── Hierarchical ────────────────────────────────────── -->
+  <!-- â”€â”€ Hierarchical â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
   <h2>Hierarchical Clustering</h2>
 
   <p>
@@ -195,13 +195,13 @@
 
   <div class="img-wrap">
     <img src="fig_cluster_dendrogram.png" alt="Hierarchical clustering dendrogram with Ward linkage">
-    <div class="img-caption">Figure: Dendrogram from Ward linkage hierarchical clustering (first 100 students, truncated to 20 merge levels for readability). Horizontal cuts at different heights correspond to different numbers of clusters. The natural cut at the largest jump suggests 3–4 clusters.</div>
+    <div class="img-caption">Figure: Dendrogram from Ward linkage hierarchical clustering (first 100 students, truncated to 20 merge levels for readability). Horizontal cuts at different heights correspond to different numbers of clusters. The natural cut at the largest jump suggests 3â€“4 clusters.</div>
   </div>
 
   <div class="callout green">
-    <span class="callout-icon">🌳</span>
+    <span class="callout-icon">ðŸŒ³</span>
     <p>
-      <strong>Dendrogram vs KMeans:</strong> The dendrogram reveals a similar structure — the largest merge distances occur around the 3–5 cluster level, corroborating the KMeans silhouette findings. Unlike KMeans, the hierarchical approach doesn't require specifying k upfront, and the dendrogram provides a richer view of progressive cluster merging at every level.
+      <strong>Dendrogram vs KMeans:</strong> The dendrogram reveals a similar structure â€” the largest merge distances occur around the 3â€“5 cluster level, corroborating the KMeans silhouette findings. Unlike KMeans, the hierarchical approach doesn't require specifying k upfront, and the dendrogram provides a richer view of progressive cluster merging at every level.
     </p>
   </div>
 
@@ -214,7 +214,7 @@
 
   <hr class="divider">
 
-  <!-- ── DBSCAN ──────────────────────────────────────────── -->
+  <!-- â”€â”€ DBSCAN â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
   <h2>DBSCAN Clustering</h2>
 
   <p>
@@ -227,28 +227,28 @@
   </div>
 
   <div class="callout amber">
-    <span class="callout-icon">💬</span>
+    <span class="callout-icon">ðŸ’¬</span>
     <p>
-      <strong>DBSCAN vs KMeans and Hierarchical:</strong> DBSCAN identifies fewer, denser core clusters and labels a subset of students as noise — these are likely students with unusual combinations of attributes (e.g., very high absences and very high study time). Unlike KMeans, DBSCAN does not force every student into a cluster, which is arguably more realistic. The number of clusters discovered by DBSCAN was lower than KMeans, reflecting the natural density landscape of the PCA-reduced data rather than pre-assigned groupings.
+      <strong>DBSCAN vs KMeans and Hierarchical:</strong> DBSCAN identifies fewer, denser core clusters and labels a subset of students as noise â€” these are likely students with unusual combinations of attributes (e.g., very high absences and very high study time). Unlike KMeans, DBSCAN does not force every student into a cluster, which is arguably more realistic. The number of clusters discovered by DBSCAN was lower than KMeans, reflecting the natural density landscape of the PCA-reduced data rather than pre-assigned groupings.
     </p>
   </div>
 
   <hr class="divider">
 
-  <!-- ── Conclusions ─────────────────────────────────────── -->
+  <!-- â”€â”€ Conclusions â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
   <h2>Conclusions</h2>
 
   <div class="card">
     <p>
-      All three clustering algorithms reveal that student data contains meaningful groupings that go beyond a simple high/medium/low performance split. The clustering structure is complex — no single algorithm produces perfectly clean cluster boundaries — which is consistent with the reality that student outcomes are determined by many overlapping factors.
+      All three clustering algorithms reveal that student data contains meaningful groupings that go beyond a simple high/medium/low performance split. The clustering structure is complex â€” no single algorithm produces perfectly clean cluster boundaries â€” which is consistent with the reality that student outcomes are determined by many overlapping factors.
     </p>
     <ul style="color:var(--text-sec);padding-left:20px;line-height:2">
-      <li><strong>KMeans</strong> (k=4–5) reveals that students broadly fall into groups characterized by combinations of study habits, absences, and social behaviors rather than grade alone.</li>
-      <li><strong>Hierarchical clustering</strong> confirms a natural grouping of 3–5 clusters, supporting the academic performance tiers observed in EDA.</li>
-      <li><strong>DBSCAN</strong> highlights that a minority of students are outliers — students whose profiles do not neatly fit any typical pattern, potentially representing at-risk learners deserving individual attention.</li>
+      <li><strong>KMeans</strong> (k=4â€“5) reveals that students broadly fall into groups characterized by combinations of study habits, absences, and social behaviors rather than grade alone.</li>
+      <li><strong>Hierarchical clustering</strong> confirms a natural grouping of 3â€“5 clusters, supporting the academic performance tiers observed in EDA.</li>
+      <li><strong>DBSCAN</strong> highlights that a minority of students are outliers â€” students whose profiles do not neatly fit any typical pattern, potentially representing at-risk learners deserving individual attention.</li>
     </ul>
     <p style="margin-bottom:0">
-      These insights suggest that data-driven clustering could help schools identify student sub-populations for targeted intervention — for example, prioritizing outreach to the "noise" points detected by DBSCAN or the low-performing clusters identified by KMeans.
+      These insights suggest that data-driven clustering could help schools identify student sub-populations for targeted intervention â€” for example, prioritizing outreach to the "noise" points detected by DBSCAN or the low-performing clusters identified by KMeans.
     </p>
   </div>
 

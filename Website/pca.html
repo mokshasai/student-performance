@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PCA | Student Performance Analysis</title>
-  <meta name="description" content="Principal Component Analysis applied to student performance data — dimensionality reduction, variance explanation, and visualizations.">
+  <meta name="description" content="Principal Component Analysis applied to student performance data â€” dimensionality reduction, variance explanation, and visualizations.">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -12,10 +12,10 @@
 <nav>
   <div class="nav-inner">
     <a href="index.html" class="nav-brand">
-      <div class="brand-seal">📋</div>
+      <div class="brand-seal">ðŸ“‹</div>
       <div>
         <div class="brand-text">Student Performance</div>
-        <div class="brand-sub">ML Analysis · 2025</div>
+        <div class="brand-sub">ML Analysis Â· 2025</div>
       </div>
     </a>
     <ul>
@@ -39,7 +39,7 @@
 
 <main>
 
-  <!-- ── Hero ─────────────────────────────────────────────── -->
+  <!-- â”€â”€ Hero â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
   <div class="hero">
     <span class="hero-badge" style="background:rgba(183,148,244,0.15);border-color:rgba(183,148,244,0.35);color:var(--accent-pca)">
       Dimensionality Reduction
@@ -51,22 +51,22 @@
 
   <!-- Quick stats -->
   <div class="info-grid">
-    <div class="info-tile"><div class="tile-value" style="color:var(--accent-pca)">14.4%</div><div class="tile-label">Variance — 2D</div></div>
-    <div class="info-tile"><div class="tile-value" style="color:var(--accent-pca)">19.7%</div><div class="tile-label">Variance — 3D</div></div>
+    <div class="info-tile"><div class="tile-value" style="color:var(--accent-pca)">14.4%</div><div class="tile-label">Variance â€” 2D</div></div>
+    <div class="info-tile"><div class="tile-value" style="color:var(--accent-pca)">19.7%</div><div class="tile-label">Variance â€” 3D</div></div>
     <div class="info-tile"><div class="tile-value" style="color:var(--accent-pca)">34</div><div class="tile-label">Components for 95%</div></div>
     <div class="info-tile"><div class="tile-value" style="color:var(--accent-pca)">3.497</div><div class="tile-label">Top Eigenvalue (PC1)</div></div>
   </div>
 
-  <!-- ── What is PCA ─────────────────────────────────────── -->
+  <!-- â”€â”€ What is PCA â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
   <h2>What is PCA?</h2>
 
   <p>
-    <strong>Principal Component Analysis (PCA)</strong> is an unsupervised dimensionality reduction technique that transforms a dataset with many correlated features into a smaller set of uncorrelated variables called <em>principal components</em>. Each principal component is a linear combination of the original features, ordered so that the first component captures the greatest amount of variance in the data, the second captures the next greatest (orthogonal to the first), and so on. PCA is particularly useful when working with high-dimensional datasets because it reduces computational complexity, removes multicollinearity, and makes data more amenable to visualization. Rather than discarding information arbitrarily, PCA retains the directions in the feature space that carry the most explanatory power — quantified by <em>eigenvalues</em>. By projecting data onto the top principal components, we can often preserve the majority of meaningful variance while working in a much lower-dimensional space. In this project, PCA is applied to the student dataset to explore the underlying structure of student attributes, identify the most influential feature directions, and reduce the data to 2D and 3D representations for visualization.
+    <strong>Principal Component Analysis (PCA)</strong> is an unsupervised dimensionality reduction technique that transforms a dataset with many correlated features into a smaller set of uncorrelated variables called <em>principal components</em>. Each principal component is a linear combination of the original features, ordered so that the first component captures the greatest amount of variance in the data, the second captures the next greatest (orthogonal to the first), and so on. PCA is particularly useful when working with high-dimensional datasets because it reduces computational complexity, removes multicollinearity, and makes data more amenable to visualization. Rather than discarding information arbitrarily, PCA retains the directions in the feature space that carry the most explanatory power â€” quantified by <em>eigenvalues</em>. By projecting data onto the top principal components, we can often preserve the majority of meaningful variance while working in a much lower-dimensional space. In this project, PCA is applied to the student dataset to explore the underlying structure of student attributes, identify the most influential feature directions, and reduce the data to 2D and 3D representations for visualization.
   </p>
 
   <hr class="divider">
 
-  <!-- ── Dataset & Data Source ───────────────────────────── -->
+  <!-- â”€â”€ Dataset & Data Source â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
   <h2>Dataset &amp; Data Source</h2>
 
   <p>
@@ -74,23 +74,23 @@
   </p>
 
   <div class="callout blue">
-    <span class="callout-icon">📁</span>
+    <span class="callout-icon">ðŸ“</span>
     <p>
       <strong>Source file:</strong> <code>student-mat.csv</code> (semicolon-separated) &mdash;
-      <a href="https://archive.ics.uci.edu/ml/datasets/Student+Performance" target="_blank" rel="noopener">UCI Repository Link →</a>
+      <a href="https://archive.ics.uci.edu/ml/datasets/Student+Performance" target="_blank" rel="noopener">UCI Repository Link â†’</a>
     </p>
   </div>
 
   <div class="img-wrap">
     <img src="Raw_data.png" alt="Screenshot of raw student dataset showing first rows">
-    <div class="img-caption">Figure: Raw dataset preview — 395 rows × 33 columns before preparation.</div>
+    <div class="img-caption">Figure: Raw dataset preview â€” 395 rows Ã— 33 columns before preparation.</div>
   </div>
 
-  <!-- ── Data Preparation ────────────────────────────────── -->
+  <!-- â”€â”€ Data Preparation â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
   <h2>Data Preparation for PCA</h2>
 
   <p>
-    PCA requires exclusively <strong>quantitative, numeric data</strong>. Labels (such as the performance category) must be removed, and qualitative columns cannot simply be remapped to numbers — instead, binary and multi-category columns were properly encoded first, then the performance label was separated. The steps applied:
+    PCA requires exclusively <strong>quantitative, numeric data</strong>. Labels (such as the performance category) must be removed, and qualitative columns cannot simply be remapped to numbers â€” instead, binary and multi-category columns were properly encoded first, then the performance label was separated. The steps applied:
   </p>
 
   <div class="card">
@@ -106,17 +106,17 @@
 
   <div class="img-wrap">
     <img src="fig_pca_prepdata.png" alt="Table of normalized PCA input data showing first 5 rows and 10 columns">
-    <div class="img-caption">Figure: Normalized PCA input data — first 5 rows, first 10 columns. All features are zero-mean, unit-variance after StandardScaler.</div>
+    <div class="img-caption">Figure: Normalized PCA input data â€” first 5 rows, first 10 columns. All features are zero-mean, unit-variance after StandardScaler.</div>
   </div>
 
   <div class="callout green">
-    <span class="callout-icon">⚙️</span>
-    <p><strong>Normalization:</strong> <code>sklearn.preprocessing.StandardScaler</code> was used to ensure no single feature dominates the PCA due to scale differences. After scaling, each column has mean ≈ 0 and standard deviation ≈ 1.</p>
+    <span class="callout-icon">âš™ï¸</span>
+    <p><strong>Normalization:</strong> <code>sklearn.preprocessing.StandardScaler</code> was used to ensure no single feature dominates the PCA due to scale differences. After scaling, each column has mean â‰ˆ 0 and standard deviation â‰ˆ 1.</p>
   </div>
 
   <hr class="divider">
 
-  <!-- ── PCA Results ─────────────────────────────────────── -->
+  <!-- â”€â”€ PCA Results â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
   <h2>PCA Results</h2>
 
   <!-- 2D -->
@@ -142,9 +142,9 @@
   </div>
 
   <div class="callout amber">
-    <span class="callout-icon">💡</span>
+    <span class="callout-icon">ðŸ’¡</span>
     <p>
-      <strong>Interpretation:</strong> The 2D projection retains <strong>14.4%</strong> of the total information. While this number may seem low, it is expected for a high-dimensional dataset like this one where many features share moderate correlations. The student groups show some separation — particularly between Low and High performers — but significant overlap exists, suggesting that 2 components alone are insufficient to fully distinguish performance categories.
+      <strong>Interpretation:</strong> The 2D projection retains <strong>14.4%</strong> of the total information. While this number may seem low, it is expected for a high-dimensional dataset like this one where many features share moderate correlations. The student groups show some separation â€” particularly between Low and High performers â€” but significant overlap exists, suggesting that 2 components alone are insufficient to fully distinguish performance categories.
     </p>
   </div>
 
@@ -172,7 +172,7 @@
   </div>
 
   <div class="callout green">
-    <span class="callout-icon">💡</span>
+    <span class="callout-icon">ðŸ’¡</span>
     <p>
       <strong>Interpretation:</strong> The 3D projection retains <strong>19.7%</strong> of total variance. The additional component adds modest separation between groups. The view of PC1 vs PC3 reveals a slightly different clustering pattern, suggesting PC3 captures complementary information not present in the first two components.
     </p>
@@ -185,7 +185,7 @@
 
   <hr class="divider">
 
-  <!-- ── Cumulative Variance ─────────────────────────────── -->
+  <!-- â”€â”€ Cumulative Variance â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
   <h2>How Many Dimensions to Retain 95% Variance?</h2>
 
   <p>
@@ -193,9 +193,9 @@
   </p>
 
   <div class="callout purple">
-    <span class="callout-icon">📐</span>
+    <span class="callout-icon">ðŸ“</span>
     <p>
-      <strong>Answer: 34 components</strong> are required to retain at least 95% of the variance in this dataset. This reflects the relatively high dimensionality of the student feature space — 43 features (after one-hot encoding) each contribute small but meaningful amounts of information, and no small subset of components fully dominates. To work at 95% fidelity, the dataset would need to be reduced from 43 features down to 34 principal components.
+      <strong>Answer: 34 components</strong> are required to retain at least 95% of the variance in this dataset. This reflects the relatively high dimensionality of the student feature space â€” 43 features (after one-hot encoding) each contribute small but meaningful amounts of information, and no small subset of components fully dominates. To work at 95% fidelity, the dataset would need to be reduced from 43 features down to 34 principal components.
     </p>
   </div>
 
@@ -228,7 +228,7 @@
 
   <hr class="divider">
 
-  <!-- ── Eigenvalues ─────────────────────────────────────── -->
+  <!-- â”€â”€ Eigenvalues â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
   <h2>Top Eigenvalues</h2>
 
   <p>
@@ -246,10 +246,10 @@
         </tr>
       </thead>
       <tbody>
-        <tr><td>PC1</td><td>3.497</td><td>8.1%</td><td>Strongest single direction — likely captures academic/study behavior</td></tr>
-        <tr><td>PC2</td><td>2.695</td><td>6.3%</td><td>Second strongest — social/lifestyle dimension</td></tr>
-        <tr><td>PC3</td><td>2.315</td><td>5.4%</td><td>Third — possibly family background factors</td></tr>
-        <tr><td>PC4–PC10</td><td>1.0–1.5</td><td>~3% each</td><td>Diminishing but still informative components</td></tr>
+        <tr><td>PC1</td><td>3.497</td><td>8.1%</td><td>Strongest single direction â€” likely captures academic/study behavior</td></tr>
+        <tr><td>PC2</td><td>2.695</td><td>6.3%</td><td>Second strongest â€” social/lifestyle dimension</td></tr>
+        <tr><td>PC3</td><td>2.315</td><td>5.4%</td><td>Third â€” possibly family background factors</td></tr>
+        <tr><td>PC4â€“PC10</td><td>1.0â€“1.5</td><td>~3% each</td><td>Diminishing but still informative components</td></tr>
       </tbody>
     </table>
   </div>
@@ -260,7 +260,7 @@
   </div>
 
   <div class="callout amber">
-    <span class="callout-icon">🏆</span>
+    <span class="callout-icon">ðŸ†</span>
     <p>
       <strong>Top 3 Eigenvalues:</strong> PC1 = 3.497, PC2 = 2.695, PC3 = 2.315. No single component dominates dramatically, which is characteristic of social science datasets where many factors each play a moderate role rather than one factor driving everything.
     </p>

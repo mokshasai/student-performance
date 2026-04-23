@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Decision Tree | Student Performance Analysis</title>
-  <meta name="description" content="Decision Tree classification with Gini, Entropy, and Information Gain — three different trees applied to predict student performance.">
+  <meta name="description" content="Decision Tree classification with Gini, Entropy, and Information Gain â€” three different trees applied to predict student performance.">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -12,10 +12,10 @@
 <nav>
   <div class="nav-inner">
     <a href="index.html" class="nav-brand">
-      <div class="brand-seal">📋</div>
+      <div class="brand-seal">ðŸ“‹</div>
       <div>
         <div class="brand-text">Student Performance</div>
-        <div class="brand-sub">ML Analysis · 2025</div>
+        <div class="brand-sub">ML Analysis Â· 2025</div>
       </div>
     </a>
     <ul>
@@ -39,13 +39,13 @@
 
 <main>
 
-  <!-- ── Hero ─────────────────────────────────────────────── -->
+  <!-- â”€â”€ Hero â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
   <div class="hero">
     <span class="hero-badge" style="background:rgba(104,211,145,0.15);border-color:rgba(104,211,145,0.35);color:#68d391">
       Classification Model
     </span>
     <h1>Decision Tree (DT)</h1>
-    <p class="hero-sub">A transparent, rule-based classification model — three different trees built to predict student academic performance.</p>
+    <p class="hero-sub">A transparent, rule-based classification model â€” three different trees built to predict student academic performance.</p>
   </div>
 
   <div class="info-grid">
@@ -55,7 +55,7 @@
     <div class="info-tile"><div class="tile-value" style="color:#68d391">G2</div><div class="tile-label">Top Root Feature</div></div>
   </div>
 
-  <!-- ── (a) Overview ──────────────────────────────────────── -->
+  <!-- â”€â”€ (a) Overview â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
   <h2>Overview</h2>
 
   <p>
@@ -64,10 +64,10 @@
 
   <h3>Gini Impurity</h3>
   <p>
-    <strong>Gini impurity</strong> measures how often a randomly chosen sample from a node would be misclassified if it were randomly labeled according to the distribution of classes in that node. For a node with class probabilities p₁, p₂, …, pₖ:
+    <strong>Gini impurity</strong> measures how often a randomly chosen sample from a node would be misclassified if it were randomly labeled according to the distribution of classes in that node. For a node with class probabilities pâ‚, pâ‚‚, â€¦, pâ‚–:
   </p>
   <p style="text-align:center;font-family:'JetBrains Mono',monospace;font-size:1.05rem;color:var(--blue-ink);margin:16px 0">
-    Gini = 1 − Σ pᵢ²
+    Gini = 1 âˆ’ Î£ páµ¢Â²
   </p>
   <p>A pure node (all one class) has Gini = 0. A maximally impure node (equal class distribution) has the highest Gini. The algorithm selects the split that produces the largest decrease in Gini impurity.</p>
 
@@ -76,77 +76,77 @@
     <strong>Entropy</strong> is an alternative impurity measure from information theory. It quantifies the "uncertainty" or "disorder" in a node:
   </p>
   <p style="text-align:center;font-family:'JetBrains Mono',monospace;font-size:1.05rem;color:var(--blue-ink);margin:16px 0">
-    Entropy = −Σ pᵢ · log₂(pᵢ)
+    Entropy = âˆ’Î£ páµ¢ Â· logâ‚‚(páµ¢)
   </p>
   <p>
     <strong>Information Gain (IG)</strong> is the difference between the parent node's entropy and the weighted average entropy of the child nodes after a split. The algorithm selects the feature and threshold that maximizes Information Gain:
   </p>
   <p style="text-align:center;font-family:'JetBrains Mono',monospace;font-size:1.05rem;color:var(--blue-ink);margin:16px 0">
-    IG = Entropy(parent) − Σ (|child| / |parent|) × Entropy(child)
+    IG = Entropy(parent) âˆ’ Î£ (|child| / |parent|) Ã— Entropy(child)
   </p>
 
   <div class="callout" style="border-left-color:#68d391;background:rgba(104,211,145,0.06)">
-    <span class="callout-icon">📝</span>
-    <p><strong>Worked Example — Gini &amp; Information Gain:</strong><br>
+    <span class="callout-icon">ðŸ“</span>
+    <p><strong>Worked Example â€” Gini &amp; Information Gain:</strong><br>
     Consider a node with 100 students: 30 Low, 50 Medium, 20 High.<br>
-    <strong>Gini</strong> = 1 − (0.3² + 0.5² + 0.2²) = 1 − (0.09 + 0.25 + 0.04) = <strong>0.62</strong><br>
-    <strong>Entropy</strong> = −(0.3·log₂0.3 + 0.5·log₂0.5 + 0.2·log₂0.2) = <strong>1.49</strong><br><br>
-    After a split → Left child (20L, 10M, 0H = 30 total), Right child (10L, 40M, 20H = 70 total):<br>
-    Left Entropy = −(0.67·log₂0.67 + 0.33·log₂0.33) = 0.92<br>
-    Right Entropy = −(0.14·log₂0.14 + 0.57·log₂0.57 + 0.29·log₂0.29) = 1.38<br>
-    <strong>IG</strong> = 1.49 − (0.3×0.92 + 0.7×1.38) = 1.49 − 1.24 = <strong>0.25</strong><br>
+    <strong>Gini</strong> = 1 âˆ’ (0.3Â² + 0.5Â² + 0.2Â²) = 1 âˆ’ (0.09 + 0.25 + 0.04) = <strong>0.62</strong><br>
+    <strong>Entropy</strong> = âˆ’(0.3Â·logâ‚‚0.3 + 0.5Â·logâ‚‚0.5 + 0.2Â·logâ‚‚0.2) = <strong>1.49</strong><br><br>
+    After a split â†’ Left child (20L, 10M, 0H = 30 total), Right child (10L, 40M, 20H = 70 total):<br>
+    Left Entropy = âˆ’(0.67Â·logâ‚‚0.67 + 0.33Â·logâ‚‚0.33) = 0.92<br>
+    Right Entropy = âˆ’(0.14Â·logâ‚‚0.14 + 0.57Â·logâ‚‚0.57 + 0.29Â·logâ‚‚0.29) = 1.38<br>
+    <strong>IG</strong> = 1.49 âˆ’ (0.3Ã—0.92 + 0.7Ã—1.38) = 1.49 âˆ’ 1.24 = <strong>0.25</strong><br>
     A higher IG means the split better separates the classes.</p>
   </div>
 
   <h3>Why Infinite Trees Are Possible</h3>
   <p>
-    It is generally possible to create an <strong>infinite number of different trees</strong> from the same dataset because at each node, the algorithm can choose any feature and any threshold value for the split. For continuous numeric features, there are theoretically infinite possible threshold values between any two data points. Additionally, you can vary the tree depth, the minimum number of samples per leaf, the impurity criterion (Gini vs. Entropy), and which features are considered at each split. Even with the same settings, removing a single feature can change the entire tree structure — as demonstrated in our three trees below. This combinatorial explosion means the space of possible trees is effectively infinite, which is why hyperparameter tuning and pruning are essential to find trees that generalize well.
+    It is generally possible to create an <strong>infinite number of different trees</strong> from the same dataset because at each node, the algorithm can choose any feature and any threshold value for the split. For continuous numeric features, there are theoretically infinite possible threshold values between any two data points. Additionally, you can vary the tree depth, the minimum number of samples per leaf, the impurity criterion (Gini vs. Entropy), and which features are considered at each split. Even with the same settings, removing a single feature can change the entire tree structure â€” as demonstrated in our three trees below. This combinatorial explosion means the space of possible trees is effectively infinite, which is why hyperparameter tuning and pruning are essential to find trees that generalize well.
   </p>
 
   <div class="figure-grid">
     <div class="img-wrap">
       <img src="fig_dt_feature_importance.png" alt="Feature importance bar chart from Decision Tree">
-      <div class="img-caption">Feature importance ranking — "G2" (second-period grade) dominates as the top predictor, followed by "G1G2_avg" and "G1".</div>
+      <div class="img-caption">Feature importance ranking â€” "G2" (second-period grade) dominates as the top predictor, followed by "G1G2_avg" and "G1".</div>
     </div>
     <div class="img-wrap">
       <img src="fig_dt_cm.png" alt="Decision Tree confusion matrix">
-      <div class="img-caption">Confusion matrix for the best tree (Gini, depth=4, msl=10) — 89.9% accuracy across Low/Medium/High classes.</div>
+      <div class="img-caption">Confusion matrix for the best tree (Gini, depth=4, msl=10) â€” 89.9% accuracy across Low/Medium/High classes.</div>
     </div>
   </div>
 
   <hr class="divider">
 
-  <!-- ── (b) Data Prep ─────────────────────────────────────── -->
+  <!-- â”€â”€ (b) Data Prep â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
   <h2>Data Preparation</h2>
 
   <p>
-    The Decision Tree uses the <strong>cleaned and encoded student dataset</strong>, enhanced with <strong>G1</strong> (first-period grade) and <strong>G2</strong> (second-period grade) as temporally prior features — both are available before the final exam and are legitimate predictors. <strong>7 engineered features</strong> were added: G1G2 average, grade trend (G2−G1), failures², failure×absences, parent education sum, alcohol total, and G1×studytime. The final feature set contains <strong>48 features</strong>. The target variable is the <strong>performance label</strong> (Low / Medium / High) based on G3. Decision Trees handle both numeric and binary features natively with no need for normalisation or scaling.
+    The Decision Tree uses the <strong>cleaned and encoded student dataset</strong>, enhanced with <strong>G1</strong> (first-period grade) and <strong>G2</strong> (second-period grade) as temporally prior features â€” both are available before the final exam and are legitimate predictors. <strong>7 engineered features</strong> were added: G1G2 average, grade trend (G2âˆ’G1), failuresÂ², failureÃ—absences, parent education sum, alcohol total, and G1Ã—studytime. The final feature set contains <strong>48 features</strong>. The target variable is the <strong>performance label</strong> (Low / Medium / High) based on G3. Decision Trees handle both numeric and binary features natively with no need for normalisation or scaling.
   </p>
 
   <div class="figure-grid">
     <div class="img-wrap">
       <img src="Raw_data.png" alt="Raw student dataset preview">
-      <div class="img-caption">Raw data — original student-mat.csv with all 33 attributes before encoding.</div>
+      <div class="img-caption">Raw data â€” original student-mat.csv with all 33 attributes before encoding.</div>
     </div>
     <div class="img-wrap">
       <img src="cleaned_data.png" alt="Cleaned student dataset preview">
-      <div class="img-caption">Cleaned data — binary-encoded and one-hot-encoded features with G1/G2 re-introduced.</div>
+      <div class="img-caption">Cleaned data â€” binary-encoded and one-hot-encoded features with G1/G2 re-introduced.</div>
     </div>
   </div>
 
   <h3>Training &amp; Testing Sets</h3>
 
   <p>
-    The data was split into an <strong>80% training set</strong> (316 students) and a <strong>20% testing set</strong> (79 students) using <code>train_test_split</code> with stratified sampling (<code>stratify=y</code>) and a fixed random seed (<code>random_state=42</code>) for reproducibility. The training and testing sets are <strong>completely disjoint</strong> — no student record appears in both. This separation is essential because the model is evaluated on its ability to predict unseen data; if training data leaked into the test set, the accuracy score would be misleadingly high. Stratification ensures each class (Low, Medium, High) is proportionally represented in both splits.
+    The data was split into an <strong>80% training set</strong> (316 students) and a <strong>20% testing set</strong> (79 students) using <code>train_test_split</code> with stratified sampling (<code>stratify=y</code>) and a fixed random seed (<code>random_state=42</code>) for reproducibility. The training and testing sets are <strong>completely disjoint</strong> â€” no student record appears in both. This separation is essential because the model is evaluated on its ability to predict unseen data; if training data leaked into the test set, the accuracy score would be misleadingly high. Stratification ensures each class (Low, Medium, High) is proportionally represented in both splits.
   </p>
 
   <div class="img-wrap">
     <img src="fig_dt_train_test_split.png" alt="Train/Test split visualization for Decision Tree">
-    <div class="img-caption">80/20 stratified split — training (316 samples) and testing (79 samples) with balanced class proportions.</div>
+    <div class="img-caption">80/20 stratified split â€” training (316 samples) and testing (79 samples) with balanced class proportions.</div>
   </div>
 
   <div class="callout blue">
-    <span class="callout-icon">📁</span>
+    <span class="callout-icon">ðŸ“</span>
     <p>
       <a href="../data/student-mat.csv" download class="btn-link" style="margin-right:10px">&darr; Raw Data (student-mat.csv)</a>
       <a href="../data/student_clean.csv" download class="btn-link" style="background:rgba(104,211,145,.1);border-color:rgba(104,211,145,.3);color:#68d391">&darr; Clean Data (student_clean.csv)</a>
@@ -155,7 +155,7 @@
 
   <hr class="divider">
 
-  <!-- ── (c) Code ──────────────────────────────────────────── -->
+  <!-- â”€â”€ (c) Code â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
   <h2>Code</h2>
 
   <p>
@@ -165,48 +165,48 @@
   <div class="callout" style="border-left-color:#68d391;background:rgba(104,211,145,0.06)">
     <span class="callout-icon">&#128196;</span>
     <p>
-      <a href="code/code_dt.html" class="btn-link" style="margin-right:10px;background:rgba(104,211,145,.1);border-color:rgba(104,211,145,.3);color:#1a7a4a">📄 View Full DT Code</a>
+      <a href="code/code_dt.html" class="btn-link" style="margin-right:10px;background:rgba(104,211,145,.1);border-color:rgba(104,211,145,.3);color:#1a7a4a">ðŸ“„ View Full DT Code</a>
       <a href="../code/06_decision_tree.py" download class="btn-link" style="background:rgba(104,211,145,.1);border-color:rgba(104,211,145,.3);color:#68d391">&darr; Download 06_decision_tree.py</a>
     </p>
   </div>
 
   <hr class="divider">
 
-  <!-- ── (d) Results ───────────────────────────────────────── -->
+  <!-- â”€â”€ (d) Results â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
   <h2>Results</h2>
 
   <p>
     Three Decision Trees were constructed with <strong>different root nodes</strong> and configurations to demonstrate how tree structure changes with different settings. All trees used the same 80/20 train-test split and the enhanced 48-feature set.
   </p>
 
-  <h3>Tree 1 — Gini Criterion, Depth 4, min_samples_leaf=10 (Root: <code>G2</code>)</h3>
+  <h3>Tree 1 â€” Gini Criterion, Depth 4, min_samples_leaf=10 (Root: <code>G2</code>)</h3>
   <p>
-    The best-tuned tree using Gini impurity selected <strong>"G2"</strong> (second-period grade) as its root split — meaning the most recent academic performance is the single most discriminative feature. With tuned hyperparameters (<code>max_depth=4</code>, <code>min_samples_leaf=10</code>), this tree achieved the <strong>highest accuracy at 89.9%</strong>, a massive improvement from the 55.7% baseline.
+    The best-tuned tree using Gini impurity selected <strong>"G2"</strong> (second-period grade) as its root split â€” meaning the most recent academic performance is the single most discriminative feature. With tuned hyperparameters (<code>max_depth=4</code>, <code>min_samples_leaf=10</code>), this tree achieved the <strong>highest accuracy at 89.9%</strong>, a massive improvement from the 55.7% baseline.
   </p>
   <div class="img-wrap">
-    <img src="fig_dt_tree1.png" alt="Decision Tree 1 — Gini criterion, depth 4, root=G2">
-    <div class="img-caption">Tree 1: Gini criterion, max_depth=4, min_samples_leaf=10. Root node splits on "G2" — the strongest predictor at 89.9% accuracy.</div>
+    <img src="fig_dt_tree1.png" alt="Decision Tree 1 â€” Gini criterion, depth 4, root=G2">
+    <div class="img-caption">Tree 1: Gini criterion, max_depth=4, min_samples_leaf=10. Root node splits on "G2" â€” the strongest predictor at 89.9% accuracy.</div>
   </div>
 
-  <h3>Tree 2 — Entropy Criterion, Depth 5 (Root: <code>G2</code>)</h3>
+  <h3>Tree 2 â€” Entropy Criterion, Depth 5 (Root: <code>G2</code>)</h3>
   <p>
-    Using the entropy (information gain) criterion with depth 5 and min_samples_leaf=5, the tree again selected "G2" as the root — confirming its dominance as a predictive feature regardless of the splitting criterion. This tree achieved <strong>84.8% accuracy</strong>.
+    Using the entropy (information gain) criterion with depth 5 and min_samples_leaf=5, the tree again selected "G2" as the root â€” confirming its dominance as a predictive feature regardless of the splitting criterion. This tree achieved <strong>84.8% accuracy</strong>.
   </p>
   <div class="img-wrap">
-    <img src="fig_dt_tree2.png" alt="Decision Tree 2 — Entropy criterion, depth 5, root=G2">
+    <img src="fig_dt_tree2.png" alt="Decision Tree 2 â€” Entropy criterion, depth 5, root=G2">
     <div class="img-caption">Tree 2: Entropy criterion, max_depth=5. Same root feature ("G2") selected even by a different impurity measure.</div>
   </div>
 
-  <h3>Tree 3 — Feature Subset, No "G2" (Root: <code>G1G2_avg</code>)</h3>
+  <h3>Tree 3 â€” Feature Subset, No "G2" (Root: <code>G1G2_avg</code>)</h3>
   <p>
     To force a different root node, we removed the "G2" feature and re-trained with Gini criterion at depth 5. The tree now selected <strong>"G1G2_avg"</strong> (the average of first and second period grades) as its root. This tree maintained strong performance at <strong>84.8% accuracy</strong>, showing that the engineered G1G2 average effectively captures the same predictive signal as the raw G2.
   </p>
   <div class="img-wrap">
-    <img src="fig_dt_tree3.png" alt="Decision Tree 3 — No G2 feature, root=G1G2_avg">
-    <div class="img-caption">Tree 3: Same Gini criterion but without "G2" — root shifts to "G1G2_avg", still achieving 84.8% accuracy.</div>
+    <img src="fig_dt_tree3.png" alt="Decision Tree 3 â€” No G2 feature, root=G1G2_avg">
+    <div class="img-caption">Tree 3: Same Gini criterion but without "G2" â€” root shifts to "G1G2_avg", still achieving 84.8% accuracy.</div>
   </div>
 
-  <h3>Confusion Matrices — All Three Trees</h3>
+  <h3>Confusion Matrices â€” All Three Trees</h3>
   <p>
     The confusion matrices below show the prediction breakdown for each tree. All three trees are strong at identifying "Medium" performers (the largest class), while the best tree (Tree 1) shows excellent classification across all classes including the minority "High" class.
   </p>
@@ -214,17 +214,17 @@
   <div class="figure-grid">
     <div class="img-wrap">
       <img src="fig_dt_cm_tree1.png" alt="Confusion matrix for Tree 1 (Gini, depth=4)">
-      <div class="img-caption">Tree 1 (Gini, depth=4) — 89.9% accuracy. Best performance across all three classes.</div>
+      <div class="img-caption">Tree 1 (Gini, depth=4) â€” 89.9% accuracy. Best performance across all three classes.</div>
     </div>
     <div class="img-wrap">
       <img src="fig_dt_cm_tree2.png" alt="Confusion matrix for Tree 2 (Entropy, depth=5)">
-      <div class="img-caption">Tree 2 (Entropy, depth=5) — 84.8% accuracy. Slightly more misclassifications with the deeper tree.</div>
+      <div class="img-caption">Tree 2 (Entropy, depth=5) â€” 84.8% accuracy. Slightly more misclassifications with the deeper tree.</div>
     </div>
   </div>
 
   <div class="img-wrap">
     <img src="fig_dt_cm_tree3.png" alt="Confusion matrix for Tree 3 (No G2, depth=5)">
-    <div class="img-caption">Tree 3 (No "G2", depth=5) — 84.8% accuracy. Maintains strong performance using G1G2_avg as a substitute root.</div>
+    <div class="img-caption">Tree 3 (No "G2", depth=5) â€” 84.8% accuracy. Maintains strong performance using G1G2_avg as a substitute root.</div>
   </div>
 
   <h3>Feature Importance</h3>
@@ -235,30 +235,30 @@
   <div class="figure-grid">
     <div class="img-wrap">
       <img src="fig_dt_feature_importance.png" alt="Feature importance bar chart from the best Decision Tree">
-      <div class="img-caption">Feature importance ranking from Tree 1 — "G2" is the dominant split feature across the tree.</div>
+      <div class="img-caption">Feature importance ranking from Tree 1 â€” "G2" is the dominant split feature across the tree.</div>
     </div>
     <div class="img-wrap">
       <img src="fig_dt_cm.png" alt="Combined confusion matrix for best tree">
-      <div class="img-caption">Best tree (Tree 1) confusion matrix — only 8 out of 79 test students were misclassified.</div>
+      <div class="img-caption">Best tree (Tree 1) confusion matrix â€” only 8 out of 79 test students were misclassified.</div>
     </div>
   </div>
 
   <div class="callout" style="border-left-color:#68d391;background:rgba(104,211,145,0.06)">
-    <span class="callout-icon">🌳</span>
-    <p><strong>Key Insight:</strong> Both Gini and Entropy criteria independently selected "G2" as the most important feature. The second-period grade is the strongest predictor of final performance — much more informative than behavioral features like study time or absences. When G2 is removed, the engineered G1G2_avg feature serves as an equally strong substitute. Feature engineering + hyperparameter tuning boosted DT accuracy from 55.7% to 89.9%.</p>
+    <span class="callout-icon">ðŸŒ³</span>
+    <p><strong>Key Insight:</strong> Both Gini and Entropy criteria independently selected "G2" as the most important feature. The second-period grade is the strongest predictor of final performance â€” much more informative than behavioral features like study time or absences. When G2 is removed, the engineered G1G2_avg feature serves as an equally strong substitute. Feature engineering + hyperparameter tuning boosted DT accuracy from 55.7% to 89.9%.</p>
   </div>
 
   <hr class="divider">
 
-  <!-- ── (e) Conclusions ──────────────────────────────────── -->
+  <!-- â”€â”€ (e) Conclusions â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
   <h2>Conclusions</h2>
 
   <p>
-    Decision Tree analysis of student performance reveals several important insights. First, <strong>"G2" (second-period grade)</strong> is the most important predictor, serving as the root node in both Gini and Entropy trees. This means that a student's most recent academic performance is the best indicator of their final outcome — an intuitive and actionable finding. Second, the engineered feature <strong>"G1G2_avg"</strong> is nearly as powerful, demonstrating that feature engineering can capture the same information in different forms.
+    Decision Tree analysis of student performance reveals several important insights. First, <strong>"G2" (second-period grade)</strong> is the most important predictor, serving as the root node in both Gini and Entropy trees. This means that a student's most recent academic performance is the best indicator of their final outcome â€” an intuitive and actionable finding. Second, the engineered feature <strong>"G1G2_avg"</strong> is nearly as powerful, demonstrating that feature engineering can capture the same information in different forms.
   </p>
 
   <p>
-    The best tree achieved <strong>89.9% accuracy</strong> on the three-class problem — a dramatic improvement from the 55.7% baseline and significantly outperforming Naïve Bayes (81.0%). Decision Trees provide unmatched <strong>interpretability</strong>: each prediction can be traced through human-readable rules. For educational stakeholders, this means the model can not only predict which students may struggle, but also explain <em>why</em>: "This student is predicted Low because their G2 grade is below 9 AND they have 1+ past failures." This transparency, combined with near-90% accuracy, makes Decision Trees an excellent tool for <strong>early intervention systems</strong> in schools.
+    The best tree achieved <strong>89.9% accuracy</strong> on the three-class problem â€” a dramatic improvement from the 55.7% baseline and significantly outperforming NaÃ¯ve Bayes (81.0%). Decision Trees provide unmatched <strong>interpretability</strong>: each prediction can be traced through human-readable rules. For educational stakeholders, this means the model can not only predict which students may struggle, but also explain <em>why</em>: "This student is predicted Low because their G2 grade is below 9 AND they have 1+ past failures." This transparency, combined with near-90% accuracy, makes Decision Trees an excellent tool for <strong>early intervention systems</strong> in schools.
   </p>
 
 </main>

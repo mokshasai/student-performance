@@ -28,6 +28,7 @@
       <li><a href="nb.html">NB</a></li>
       <li><a href="svm.html">SVM</a></li>
       <li><a href="regression.html">Regression</a></li>
+      <li><a href="ensemble.html">Ensemble</a></li>
       <li><a href="conclusions.html">Conclusions</a></li>
     </ul>
     <a href="https://github.com/mokshasai/student-performance" target="_blank" rel="noopener" class="nav-github">
@@ -61,7 +62,7 @@
       <div class="tile-label">Dataset Source</div>
     </div>
     <div class="info-tile fade-in">
-      <div class="tile-value">5+</div>
+      <div class="tile-value">7+</div>
       <div class="tile-label">ML Techniques</div>
     </div>
   </div>
@@ -103,6 +104,10 @@
 
   <p>
     While exploratory techniques such as PCA, Clustering, and Association Rule Mining reveal the structure and relationships hidden within student data, they stop short of making predictions about individual outcomes. Supervised learning methods bridge that gap by using labeled examples — students whose performance categories are already known — to train models that can classify or predict new, unseen cases. Classification models like Naïve Bayes and Decision Trees learn to assign each student to a performance group (Low, Medium, or High) based on the combination of behavioral, social, and demographic features observed in the training data. Regression models, on the other hand, can predict a specific numeric grade or estimate the probability of passing versus failing. By comparing the accuracy and interpretability of multiple classifiers on the same dataset, it becomes possible to identify which approaches best capture the patterns underlying academic success and to understand which student characteristics are most predictive. These supervised methods are essential not only for prediction but also for explanation — a Decision Tree, for instance, can tell a teacher exactly which combination of factors places a student at risk, while a logistic regression coefficient can quantify how much each factor increases or decreases the probability of passing.
+  </p>
+
+  <p>
+    The final phase of this project introduces two of the most powerful and widely deployed techniques in modern machine learning: <strong>Support Vector Machines (SVMs)</strong> and <strong>Ensemble Learning</strong>. SVMs approach classification from a geometric perspective — they search for the widest possible boundary between student performance groups, using a mathematical technique called the kernel trick to handle the complexity of real-world data. Ensemble learning, on the other hand, takes a democratic approach: rather than relying on any single model, it combines the predictions of hundreds of independently trained models through voting. Our implementation uses Random Forest, which builds 200 different Decision Trees — each trained on a slightly different sample of students and a random subset of features — and pools their votes to produce a final classification. Together, these methods represent the cutting edge of what machine learning can reveal about student performance using only behavioral and lifestyle data, without the short-cut of relying on prior grades. Their results, and what they tell us about which student habits and characteristics matter most, form the capstone findings of this project.
   </p>
 
   <!-- ── Callout ─────────────────────────────────────────── -->

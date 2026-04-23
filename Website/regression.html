@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Regression | Student Performance Analysis</title>
-  <meta name="description" content="Logistic Regression vs. Multinomial NB for binary student classification — theory, data, code, and results.">
+  <meta name="description" content="Logistic Regression vs. Multinomial NB for binary student classification â€” theory, data, code, and results.">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -12,10 +12,10 @@
 <nav>
   <div class="nav-inner">
     <a href="index.html" class="nav-brand">
-      <div class="brand-seal">📋</div>
+      <div class="brand-seal">ðŸ“‹</div>
       <div>
         <div class="brand-text">Student Performance</div>
-        <div class="brand-sub">ML Analysis · 2025</div>
+        <div class="brand-sub">ML Analysis Â· 2025</div>
       </div>
     </a>
     <ul>
@@ -39,43 +39,43 @@
 
 <main>
 
-  <!-- ── Hero ─────────────────────────────────────────────── -->
+  <!-- â”€â”€ Hero â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
   <div class="hero">
     <span class="hero-badge" style="background:rgba(246,173,85,0.15);border-color:rgba(246,173,85,0.35);color:#f6ad55">
       Classification &amp; Regression
     </span>
     <h1>Regression Analysis</h1>
-    <p class="hero-sub">Comparing Logistic Regression and Multinomial Naïve Bayes for binary student classification (Pass vs. Fail).</p>
+    <p class="hero-sub">Comparing Logistic Regression and Multinomial NaÃ¯ve Bayes for binary student classification (Pass vs. Fail).</p>
   </div>
 
   <div class="info-grid">
     <div class="info-tile"><div class="tile-value" style="color:#f6ad55">2</div><div class="tile-label">Classes (Pass / Fail)</div></div>
     <div class="info-tile"><div class="tile-value" style="color:#f6ad55">88.6%</div><div class="tile-label">LogReg Accuracy</div></div>
     <div class="info-tile"><div class="tile-value" style="color:#f6ad55">68.4%</div><div class="tile-label">MNB Accuracy</div></div>
-    <div class="info-tile"><div class="tile-value" style="color:#f6ad55">σ(z)</div><div class="tile-label">Sigmoid Function</div></div>
+    <div class="info-tile"><div class="tile-value" style="color:#f6ad55">Ïƒ(z)</div><div class="tile-label">Sigmoid Function</div></div>
   </div>
 
-  <!-- ── Theory Questions ──────────────────────────────────── -->
+  <!-- â”€â”€ Theory Questions â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
   <h2>Regression Theory</h2>
 
   <h3>(a) What Is Linear Regression?</h3>
   <p>
-    <strong>Linear regression</strong> is a supervised learning algorithm that fits a straight line through data to predict a continuous numeric output. It learns coefficient weights for each feature that minimize the sum of squared errors between predictions and actual values. For example, it could predict a student's exact final grade (0–20) from their study habits and attendance. The output is an unbounded real number, making it suitable for regression tasks rather than classification.
+    <strong>Linear regression</strong> is a supervised learning algorithm that fits a straight line through data to predict a continuous numeric output. It learns coefficient weights for each feature that minimize the sum of squared errors between predictions and actual values. For example, it could predict a student's exact final grade (0â€“20) from their study habits and attendance. The output is an unbounded real number, making it suitable for regression tasks rather than classification.
   </p>
 
   <h3>(b) What Is Logistic Regression?</h3>
   <p>
-    <strong>Logistic regression</strong> is a supervised classification algorithm that predicts the probability of a binary outcome (e.g., Pass vs. Fail). Despite its name, it is used for classification — the output is passed through the sigmoid function to produce a probability between 0 and 1. If the probability exceeds 0.5, the sample is classified as the positive class; otherwise the negative class. It is widely used in medical diagnosis, spam filtering, and student performance prediction.
+    <strong>Logistic regression</strong> is a supervised classification algorithm that predicts the probability of a binary outcome (e.g., Pass vs. Fail). Despite its name, it is used for classification â€” the output is passed through the sigmoid function to produce a probability between 0 and 1. If the probability exceeds 0.5, the sample is classified as the positive class; otherwise the negative class. It is widely used in medical diagnosis, spam filtering, and student performance prediction.
   </p>
 
   <h3>(c) Similarities &amp; Differences</h3>
   <p>
-    <strong>Similarities:</strong> Both learn a linear combination of features (β₀ + β₁x₁ + …) and produce interpretable coefficients showing each feature's effect. <strong>Differences:</strong> Linear regression predicts an unbounded continuous value and minimizes squared error, while logistic regression predicts a probability (0–1) bounded by the sigmoid function and maximizes log-likelihood. Linear regression is for regression tasks; logistic regression is for classification. The output transformation is the fundamental distinction between the two methods.
+    <strong>Similarities:</strong> Both learn a linear combination of features (Î²â‚€ + Î²â‚xâ‚ + â€¦) and produce interpretable coefficients showing each feature's effect. <strong>Differences:</strong> Linear regression predicts an unbounded continuous value and minimizes squared error, while logistic regression predicts a probability (0â€“1) bounded by the sigmoid function and maximizes log-likelihood. Linear regression is for regression tasks; logistic regression is for classification. The output transformation is the fundamental distinction between the two methods.
   </p>
 
   <h3>(d) Does Logistic Regression Use the Sigmoid Function?</h3>
   <p>
-    <strong>Yes.</strong> The sigmoid function σ(z) = 1 / (1 + e⁻ᶻ) maps the linear combination z to a probability between 0 and 1. When z is large and positive, σ(z) → 1 (predict positive class); when large and negative, σ(z) → 0 (predict negative class). The decision boundary is at σ(z) = 0.5, corresponding to z = 0. This transformation is what makes logistic regression a classifier rather than a regressor.
+    <strong>Yes.</strong> The sigmoid function Ïƒ(z) = 1 / (1 + eâ»á¶») maps the linear combination z to a probability between 0 and 1. When z is large and positive, Ïƒ(z) â†’ 1 (predict positive class); when large and negative, Ïƒ(z) â†’ 0 (predict negative class). The decision boundary is at Ïƒ(z) = 0.5, corresponding to z = 0. This transformation is what makes logistic regression a classifier rather than a regressor.
   </p>
 
   <div class="img-wrap">
@@ -90,27 +90,27 @@
 
   <hr class="divider">
 
-  <!-- ── Data Prep ─────────────────────────────────────────── -->
+  <!-- â”€â”€ Data Prep â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
   <h2>Data Preparation</h2>
 
   <p>
-    For the regression coding task, we created a <strong>binary label</strong> with only two categories: <strong>Pass</strong> (G3 ≥ 10, coded as 1) and <strong>Fail</strong> (G3 &lt; 10, coded as 0). The dataset has <strong>265 Pass</strong> and <strong>130 Fail</strong> students. G1 and G2 were re-introduced as temporally prior features, and <strong>7 engineered features</strong> were added. For the tuned Logistic Regression, <code>StandardScaler</code> was used (zero-mean, unit-variance) since L1 regularisation is sensitive to feature scales. For Multinomial NB, <code>MinMaxScaler</code> ensured non-negative feature values.
+    For the regression coding task, we created a <strong>binary label</strong> with only two categories: <strong>Pass</strong> (G3 â‰¥ 10, coded as 1) and <strong>Fail</strong> (G3 &lt; 10, coded as 0). The dataset has <strong>265 Pass</strong> and <strong>130 Fail</strong> students. G1 and G2 were re-introduced as temporally prior features, and <strong>7 engineered features</strong> were added. For the tuned Logistic Regression, <code>StandardScaler</code> was used (zero-mean, unit-variance) since L1 regularisation is sensitive to feature scales. For Multinomial NB, <code>MinMaxScaler</code> ensured non-negative feature values.
   </p>
 
   <div class="figure-grid">
     <div class="img-wrap">
       <img src="Raw_data.png" alt="Raw student dataset preview">
-      <div class="img-caption">Raw data — 395 students with 33 features including G3 as the basis for the Pass/Fail binary label.</div>
+      <div class="img-caption">Raw data â€” 395 students with 33 features including G3 as the basis for the Pass/Fail binary label.</div>
     </div>
     <div class="img-wrap">
       <img src="cleaned_data.png" alt="Cleaned dataset used for regression">
-      <div class="img-caption">Cleaned data — fully numeric features with G1/G2 re-introduced. G3 converted to binary: Pass (≥10) or Fail (&lt;10).</div>
+      <div class="img-caption">Cleaned data â€” fully numeric features with G1/G2 re-introduced. G3 converted to binary: Pass (â‰¥10) or Fail (&lt;10).</div>
     </div>
   </div>
 
   <h3>Training &amp; Testing Sets</h3>
   <p>
-    An <strong>80/20 stratified split</strong> was used: 316 training samples and 79 testing samples. Stratification ensures the Pass/Fail ratio is preserved in both sets. The sets are completely disjoint — no student appears in both.
+    An <strong>80/20 stratified split</strong> was used: 316 training samples and 79 testing samples. Stratification ensures the Pass/Fail ratio is preserved in both sets. The sets are completely disjoint â€” no student appears in both.
   </p>
 
   <div class="img-wrap">
@@ -119,7 +119,7 @@
   </div>
 
   <div class="callout blue">
-    <span class="callout-icon">📁</span>
+    <span class="callout-icon">ðŸ“</span>
     <p>
       <a href="../data/student-mat.csv" download class="btn-link" style="margin-right:10px">&darr; Raw Data (student-mat.csv)</a>
       <a href="../data/student_clean.csv" download class="btn-link" style="background:rgba(104,211,145,.1);border-color:rgba(104,211,145,.3);color:#68d391">&darr; Clean Data (student_clean.csv)</a>
@@ -128,7 +128,7 @@
 
   <hr class="divider">
 
-  <!-- ── Code ──────────────────────────────────────────────── -->
+  <!-- â”€â”€ Code â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
   <h2>Code</h2>
 
   <p>
@@ -138,24 +138,24 @@
   <div class="callout amber">
     <span class="callout-icon">&#128196;</span>
     <p>
-      <a href="code/code_regression.html" class="btn-link" style="margin-right:10px;background:rgba(246,173,85,.12);border-color:rgba(246,173,85,.3);color:#c0870a">📄 View Full Regression Code</a>
+      <a href="code/code_regression.html" class="btn-link" style="margin-right:10px;background:rgba(246,173,85,.12);border-color:rgba(246,173,85,.3);color:#c0870a">ðŸ“„ View Full Regression Code</a>
       <a href="../code/07_regression.py" download class="btn-link" style="background:rgba(104,211,145,.1);border-color:rgba(104,211,145,.3);color:#68d391">&darr; Download 07_regression.py</a>
     </p>
   </div>
 
   <hr class="divider">
 
-  <!-- ── Results ───────────────────────────────────────────── -->
+  <!-- â”€â”€ Results â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
   <h2>Results</h2>
 
-  <h3>Logistic Regression vs. Multinomial Naïve Bayes</h3>
+  <h3>Logistic Regression vs. Multinomial NaÃ¯ve Bayes</h3>
   <p>
     Both models were trained on the same binary-labeled (Pass/Fail) dataset with 48 engineered features and evaluated on the 79-sample test set. <strong>Logistic Regression achieved 88.6% accuracy</strong>, significantly outperforming <strong>Multinomial NB at 68.4%</strong>. The tuned Logistic Regression used <code>StandardScaler</code> for feature normalisation and <strong>L1 (Lasso) regularisation</strong> with <code>C=0.1</code>, which performs automatic feature selection by driving irrelevant coefficient weights to zero. This combination allowed the model to focus on the most predictive features (G1, G2, grade trends) while ignoring noise.
   </p>
 
   <div class="img-wrap">
     <img src="fig_reg_comparison.png" alt="Accuracy comparison between Logistic Regression and Multinomial NB">
-    <div class="img-caption">Head-to-head accuracy comparison — Logistic Regression dominates at 88.6% vs. MNB's 68.4%.</div>
+    <div class="img-caption">Head-to-head accuracy comparison â€” Logistic Regression dominates at 88.6% vs. MNB's 68.4%.</div>
   </div>
 
   <h3>Confusion Matrices</h3>
@@ -166,26 +166,26 @@
   <div class="figure-grid">
     <div class="img-wrap">
       <img src="fig_reg_cm_logistic.png" alt="Logistic Regression confusion matrix">
-      <div class="img-caption">Logistic Regression — 88.6% accuracy on binary Pass/Fail classification with L1 regularisation.</div>
+      <div class="img-caption">Logistic Regression â€” 88.6% accuracy on binary Pass/Fail classification with L1 regularisation.</div>
     </div>
     <div class="img-wrap">
       <img src="fig_reg_cm_mnb.png" alt="Multinomial NB confusion matrix for binary classification">
-      <div class="img-caption">Multinomial NB — 68.4% accuracy. Limited by the count-based distributional assumption on continuous grade features.</div>
+      <div class="img-caption">Multinomial NB â€” 68.4% accuracy. Limited by the count-based distributional assumption on continuous grade features.</div>
     </div>
   </div>
 
   <div class="callout amber">
-    <span class="callout-icon">📊</span>
+    <span class="callout-icon">ðŸ“Š</span>
     <p><strong>Why LogReg dominates:</strong> Logistic Regression's superiority comes from three key improvements: (1) <strong>StandardScaler</strong> normalises features to zero-mean/unit-variance, which is critical for regularised models; (2) <strong>L1 regularisation</strong> (C=0.1) performs automatic feature selection, focusing on the most predictive features while eliminating noise; (3) <strong>engineered features</strong> like G1G2_avg and grade trends give the linear model richer signal. MNB's count-based assumption is poorly suited for continuous grade features, explaining the performance gap.</p>
   </div>
 
   <hr class="divider">
 
-  <!-- ── Comparison ──────────────────────────────────────── -->
+  <!-- â”€â”€ Comparison â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
   <h2>Comparison of All Three Algorithms</h2>
 
   <p>
-    Below is a head-to-head comparison of all supervised learning models trained on the student performance dataset. Naïve Bayes and Decision Tree were evaluated on the <strong>3-class task</strong> (Low / Medium / High), while Logistic Regression vs. MNB used the <strong>binary task</strong> (Pass / Fail). All models used the same 80/20 stratified split, the same 48 engineered features, and the same random seed (42) for reproducibility.
+    Below is a head-to-head comparison of all supervised learning models trained on the student performance dataset. NaÃ¯ve Bayes and Decision Tree were evaluated on the <strong>3-class task</strong> (Low / Medium / High), while Logistic Regression vs. MNB used the <strong>binary task</strong> (Pass / Fail). All models used the same 80/20 stratified split, the same 48 engineered features, and the same random seed (42) for reproducibility.
   </p>
 
   <table style="width:100%;border-collapse:collapse;margin:20px 0;font-size:0.97rem">
@@ -239,7 +239,7 @@
         <td style="padding:10px 14px">Binary</td>
         <td style="padding:10px 14px;text-align:center;font-weight:bold">68.4%</td>
         <td style="padding:10px 14px">Simple baseline for binary classification, very fast</td>
-        <td style="padding:10px 14px">20 points behind LogReg — confirms MNB's weak fit for continuous features</td>
+        <td style="padding:10px 14px">20 points behind LogReg â€” confirms MNB's weak fit for continuous features</td>
       </tr>
     </tbody>
   </table>
@@ -251,12 +251,12 @@
 
   <h3>Why Decision Tree Is Best for This Project</h3>
   <p>
-    For the 3-class task, <strong>Decision Tree (89.9%) is the clear winner</strong> over Gaussian NB (81.0%) and the other NB variants. DT excels because it can capture nonlinear threshold effects ("if G2 > 12 AND failures = 0 → High") that linear or distributional models miss. Its rule-based structure also provides unmatched <strong>interpretability</strong> — each prediction can be traced through human-readable if-then rules, which is critical in educational settings where stakeholders need to understand <em>why</em> a student is flagged as at-risk. On the binary task, Logistic Regression nearly matches DT's performance, offering a strong alternative when probability calibration matters.
+    For the 3-class task, <strong>Decision Tree (89.9%) is the clear winner</strong> over Gaussian NB (81.0%) and the other NB variants. DT excels because it can capture nonlinear threshold effects ("if G2 > 12 AND failures = 0 â†’ High") that linear or distributional models miss. Its rule-based structure also provides unmatched <strong>interpretability</strong> â€” each prediction can be traced through human-readable if-then rules, which is critical in educational settings where stakeholders need to understand <em>why</em> a student is flagged as at-risk. On the binary task, Logistic Regression nearly matches DT's performance, offering a strong alternative when probability calibration matters.
   </p>
 
   <hr class="divider">
 
-  <!-- ── Conclusions ──────────────────────────────────────── -->
+  <!-- â”€â”€ Conclusions â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
   <h2>Conclusions</h2>
 
   <p>

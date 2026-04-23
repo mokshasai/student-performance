@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ensemble Learning | Student Performance Analysis</title>
+  <meta name="description" content="Random Forest ensemble learning applied to predict student academic performance — overview, bagging, feature importance, results and comparison with other ML methods.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="nav-brand">
+      <div class="brand-seal">📋</div>
+      <div>
+        <div class="brand-text">Student Performance</div>
+        <div class="brand-sub">ML Analysis · 2025</div>
+      </div>
+    </a>
+    <ul>
+      <li><a href="index.html">Introduction</a></li>
+      <li><a href="data-prep.html">Data Prep</a></li>
+      <li><a href="pca.html">PCA</a></li>
+      <li><a href="clustering.html">Clustering</a></li>
+      <li><a href="arm.html">ARM</a></li>
+      <li><a href="dt.html">DT</a></li>
+      <li><a href="nb.html">NB</a></li>
+      <li><a href="svm.html">SVM</a></li>
+      <li><a href="regression.html">Regression</a></li>
+      <li><a href="ensemble.html" class="active">Ensemble</a></li>
+      <li><a href="conclusions.html">Conclusions</a></li>
+    </ul>
+    <a href="https://github.com/mokshasai/student-performance" target="_blank" rel="noopener" class="nav-github">
+      <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+      GitHub
+    </a>
+  </div>
+</nav>
+
+<main>
+
+  <!-- ── Hero ─────────────────────────────────────────────── -->
+  <div class="hero">
+    <span class="hero-badge" style="background:rgba(139,201,154,0.15);border-color:rgba(139,201,154,0.35);color:#8bc99a">
+      Ensemble Learning
+    </span>
+    <h1>Random Forest Classifier</h1>
+    <p class="hero-sub">When one tree isn't enough — combining hundreds of decision trees through democratic voting to build a more powerful and robust prediction system.</p>
+  </div>
+
+  <div class="info-grid">
+    <div class="info-tile fade-in"><div class="tile-value" style="color:#8bc99a">200</div><div class="tile-label">Trees in the Forest</div></div>
+    <div class="info-tile fade-in"><div class="tile-value" style="color:#8bc99a">55.7%</div><div class="tile-label">Accuracy (no G1/G2)</div></div>
+    <div class="info-tile fade-in"><div class="tile-value" style="color:#8bc99a">Bagging</div><div class="tile-label">Ensemble Method</div></div>
+    <div class="info-tile fade-in"><div class="tile-value" style="color:#8bc99a">39</div><div class="tile-label">Features Used</div></div>
+  </div>
+
+  <!-- ── Overview ─────────────────────────────────────────── -->
+  <h2>Overview</h2>
+
+  <p>
+    <strong>Ensemble learning</strong> is one of the most powerful ideas in all of machine learning: instead of building a single complex model and hoping it gets things right, you build <em>many</em> simpler models and let them vote. Each individual model may be imperfect — it might fail on some kinds of students, overfit to certain patterns, or simply miss the forest for the trees. But when hundreds of these imperfect models vote together, their individual errors tend to cancel out, and their shared correct patterns reinforce. The result is a model that is dramatically more robust, accurate, and reliable than any single model could be.
+  </p>
+
+  <p>
+    <strong>Random Forest</strong> is the most widely used and best-understood ensemble method, and it builds directly on the Decision Trees we explored in an earlier tab. The algorithm creates a <strong>forest</strong> of many Decision Trees, each trained on a different random subset of the training data. When classifying a new student, every tree in the forest casts a vote for Low, Medium, or High, and the <strong>majority vote wins</strong>. The "random" in Random Forest refers to two sources of randomness: (1) each tree is trained on a <strong>bootstrap sample</strong> — a random subset of the training data drawn with replacement — and (2) at each split within each tree, only a <strong>random subset of features</strong> is considered, preventing all trees from always using the same dominant feature (like absences) and forcing them to explore different patterns.
+  </p>
+
+  <div class="figure-grid">
+    <div class="img-wrap">
+      <img src="fig_ensemble_concept.png" alt="Random Forest ensemble learning — multiple trees voting on final prediction">
+      <div class="img-caption">Figure: Random Forest trains many individual Decision Trees independently. At prediction time, each tree votes and the majority class wins — a democratic classification process.</div>
+    </div>
+    <div class="img-wrap">
+      <img src="fig_bagging_diagram.png" alt="Bagging diagram — bootstrap sampling and aggregation">
+      <div class="img-caption">Figure: Bagging (Bootstrap Aggregating) — each tree trains on a different random sample drawn with replacement. This diversity is what makes the ensemble robust.</div>
+    </div>
+  </div>
+
+  <h3>Why Ensemble Learning Beats Single Models</h3>
+
+  <p>
+    A single Decision Tree, no matter how carefully tuned, has a fundamental weakness: it builds a very specific set of rules based on the exact training data it saw. Small changes in the data can produce dramatically different trees — this is called <strong>high variance</strong>. Random Forest fixes this by <strong>averaging out that variance</strong>. Each tree in the forest sees a slightly different version of the data and builds a slightly different set of rules. When aggregated, the quirks of individual trees cancel out, leaving behind only the patterns that are truly robust and generalizable.
+  </p>
+
+  <p>
+    Random Forest also dramatically reduces <strong>overfitting</strong>. A single deep tree will memorize the training data and then fail on new students whose profiles don't exactly match. A Random Forest, by averaging predictions across hundreds of trees each trained on different samples, is far less likely to be tricked by any one student's unusual combination of features. This robustness is why Random Forest consistently ranks among the top-performing models across diverse real-world datasets.
+  </p>
+
+  <div class="callout" style="border-left-color:#8bc99a;background:rgba(139,201,154,0.06)">
+    <span class="callout-icon">🌲</span>
+    <p><strong>Key Hyperparameters for this analysis:</strong><br>
+    • <code>n_estimators=200</code> — 200 individual Decision Trees<br>
+    • <code>max_features='sqrt'</code> — each split considers √39 ≈ 6 random features<br>
+    • <code>min_samples_leaf=2</code> — minimum 2 students at each leaf (prevents tiny over-specific rules)<br>
+    • <code>class_weight='balanced'</code> — compensates for the unequal class distribution (more Medium students than High or Low)<br>
+    • <code>random_state=42</code> — fixed seed for reproducibility</p>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ── Data Prep ─────────────────────────────────────────── -->
+  <h2>Data Preparation</h2>
+
+  <p>
+    The Random Forest uses the <strong>same cleaned, encoded dataset</strong> as the SVM analysis — 39 behavioral and demographic features, with G1 and G2 excluded to make the classification task genuine rather than trivial. The same stratified 80/20 split is used: <strong>316 training students</strong> and <strong>79 testing students</strong>, with Low/Medium/High proportions matched in both sets. Unlike SVMs, Random Forests do <em>not</em> require feature scaling — they are based on tree splits that are purely order-based, so the absolute scale of features doesn't matter.
+  </p>
+
+  <div class="figure-grid">
+    <div class="img-wrap">
+      <img src="Raw_data.png" alt="Raw student dataset preview">
+      <div class="img-caption">Raw data — original student-mat.csv before encoding, showing the 33 mixed-type attributes collected per student.</div>
+    </div>
+    <div class="img-wrap">
+      <img src="fig_svm_train_test_split.png" alt="Stratified 80/20 train/test split">
+      <div class="img-caption">Stratified 80/20 split — same partition used across SVM and Ensemble models to ensure fair performance comparison.</div>
+    </div>
+  </div>
+
+  <div class="callout blue">
+    <span class="callout-icon">📁</span>
+    <p>
+      <a href="../data/student-mat.csv" download class="btn-link" style="margin-right:10px">&darr; Raw Data (student-mat.csv)</a>
+      <a href="../data/student_clean.csv" download class="btn-link" style="background:rgba(104,211,145,.1);border-color:rgba(104,211,145,.3);color:#68d391">&darr; Clean Data (student_clean.csv)</a>
+    </p>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ── Code ─────────────────────────────────────────────── -->
+  <h2>Code</h2>
+
+  <p>
+    Implemented in <strong>Python 3</strong>. Core packages: <code>sklearn</code> (RandomForestClassifier, train_test_split, learning_curve, classification_report, confusion_matrix), <code>pandas</code>, <code>numpy</code>, <code>matplotlib</code>, <code>seaborn</code>.
+  </p>
+
+  <div class="callout" style="border-left-color:#8bc99a;background:rgba(139,201,154,0.06)">
+    <span class="callout-icon">&#128196;</span>
+    <p>
+      <a href="code/code_ensemble.html" class="btn-link" style="margin-right:10px;background:rgba(139,201,154,.1);border-color:rgba(139,201,154,.3);color:#1a7a4a">📄 View Full Ensemble Code</a>
+      <a href="../code/09_ensemble.py" download class="btn-link" style="background:rgba(139,201,154,.08);border-color:rgba(139,201,154,.3);color:#8bc99a">&darr; Download 09_ensemble.py</a>
+    </p>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ── Results ───────────────────────────────────────────── -->
+  <h2>Results</h2>
+
+  <p>
+    The Random Forest with 200 trees achieved <strong>55.7% accuracy</strong> on the 79-student test set — the <strong>highest accuracy of any model</strong> tested without using G1 or G2. This represents a meaningful improvement over SVMs (~51.9%), Naïve Bayes without grade features, and a random-chance baseline of 33%.
+  </p>
+
+  <h3>Confusion Matrix</h3>
+
+  <div class="figure-grid">
+    <div class="img-wrap">
+      <img src="fig_ens_cm.png" alt="Random Forest confusion matrix showing predictions vs true performance classes">
+      <div class="img-caption">Random Forest confusion matrix — 55.7% overall accuracy. High performers are most reliably identified (74% recall), while Low performers remain the hardest to classify.</div>
+    </div>
+    <div class="img-wrap">
+      <img src="fig_ens_accuracy_comparison.png" alt="Accuracy comparison across Naive Bayes, Decision Tree, SVM, and Random Forest">
+      <div class="img-caption">Model comparison — when G1/G2 grades are excluded, Random Forest (55.7%) leads all other behavioral-only models, followed closely by SVM (51.9%).</div>
+    </div>
+  </div>
+
+  <h3>Feature Importance</h3>
+
+  <p>
+    One of Random Forest's greatest advantages is its ability to measure <strong>feature importance</strong> — which behavioral and demographic characteristics most influenced the classification decisions across all 200 trees. The chart below shows the top 15 most important features, measured by how much each feature reduces impurity when used as a split point across all trees.
+  </p>
+
+  <div class="img-wrap">
+    <img src="fig_ens_feature_importance.png" alt="Top 15 most important features from Random Forest">
+    <div class="img-caption">Feature importance from the Random Forest — absences, failures, and social behaviors (goout, Walc) are the top predictors when grade trajectory is excluded.</div>
+  </div>
+
+  <div class="callout" style="border-left-color:#8bc99a;background:rgba(139,201,154,0.06)">
+    <span class="callout-icon">💡</span>
+    <p><strong>Key Finding — Top Features Without Grades:</strong><br>
+    The three most important features identified by Random Forest are: <strong>absences</strong> (how many school days a student missed), <strong>failures</strong> (past academic failures), and <strong>goout</strong> (how often a student goes out with friends). This tells a compelling story: when you remove the grade signal, what's left as the strongest predictor of academic performance is a student's <em>physical presence</em> in school, their <em>academic history</em>, and their <em>social lifestyle choices</em>. Alcohol consumption (Walc, Dalc) and family relationship quality (famrel) also appear, reflecting the project's broader finding that lifestyle and home environment matter enormously for academic outcomes.</p>
+  </div>
+
+  <h3>Number of Trees — Finding the Sweet Spot</h3>
+
+  <div class="img-wrap">
+    <img src="fig_ens_ntrees.png" alt="Random Forest accuracy vs number of trees (n_estimators)">
+    <div class="img-caption">Accuracy vs number of trees — performance stabilizes around 100–150 trees, confirming that 200 trees provides reliable accuracy without unnecessary computation.</div>
+  </div>
+
+  <p>
+    One question in Random Forest design is: how many trees are enough? Adding more trees always improves stability but quickly hits diminishing returns. The plot above shows that accuracy stabilizes around 100–150 trees. We use 200 trees to ensure robustness without over-extending computation time.
+  </p>
+
+  <h3>Learning Curve</h3>
+
+  <div class="img-wrap">
+    <img src="fig_ens_learning_curve.png" alt="Learning curve showing training and cross-validation accuracy vs training set size">
+    <div class="img-caption">Learning curve — the gap between training (green) and cross-validation (blue) accuracy narrows as training data increases, indicating that the model generalizes better with more examples.</div>
+  </div>
+
+  <p>
+    The learning curve plots model accuracy against the number of training samples used. It reveals two key insights: (1) the training accuracy starts very high (overfitting on small data) and decreases slightly as more training data is added — a healthy sign; (2) the cross-validation accuracy rises gradually as more training data is available. The narrowing gap between training and validation scores shows that Random Forest is not severely overfitting, and that <strong>collecting more student data would likely further improve performance</strong>.
+  </p>
+
+  <hr class="divider">
+
+  <!-- ── Conclusions ────────────────────────────────────────── -->
+  <h2>Conclusions</h2>
+
+  <p>
+    The Random Forest analysis provides the clearest and most nuanced picture of what drives student performance when we commit to predicting it from behavioral and demographic data alone. At <strong>55.7% accuracy</strong> — a 22-point improvement over random guessing and the best result among behavioral-only models — Random Forest demonstrates that ensemble methods genuinely extract signal that individual models miss. Each tree in the forest sees a different "angle" on the same students, and their collective judgment outperforms any single perspective.
+  </p>
+
+  <p>
+    The feature importance results are perhaps the most valuable output of this entire analysis. <strong>Absences</strong> emerge as the single strongest predictor — students who miss school frequently are far more likely to underperform, regardless of their family background or study habits. <strong>Past failures</strong> reinforce this: the compounding nature of academic struggle is real and measurable. <strong>Social behaviors</strong> — particularly how often a student goes out and their weekend alcohol consumption — complete the top predictors, aligning with and amplifying the findings from our earlier Decision Tree and Clustering analyses.
+  </p>
+
+  <p>
+    For students, families, and educators, the Random Forest's story can be distilled into a practical message: <em>showing up matters more than anything else</em>. Once a student is regularly present, the next most important thing is their history — whether past struggles have been addressed or left to compound. And surrounding lifestyle choices, while they seem personal and unrelated to academics, have a measurable and consistent relationship with how well students learn. These are not immutable traits. They are changeable conditions, and the Random Forest gives us the data to prioritize which changes have the highest impact.
+  </p>
+
+</main>
+
+<footer>
+  <p>Student Performance Analysis &copy; 2025 &mdash; Data Science Project</p>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>

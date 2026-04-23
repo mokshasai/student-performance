@@ -1,0 +1,395 @@
+"""
+08_svm.py — Support Vector Machine Classification
+Student Performance Analysis Project
+Module 4 Assignment
+
+Trains SVM classifiers (linear, poly, rbf kernels) on the student dataset
+and generates all figures for the SVM tab of the website.
+"""
+
+import pandas as pd
+import numpy as np
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
+import seaborn as sns
+from sklearn.svm import SVC
+from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import (
+    classification_report, confusion_matrix, accuracy_score
+)
+from sklearn.decomposition import PCA
+import warnings
+warnings.filterwarnings('ignore')
+
+# ── Chalkboard style ────────────────────────────────────────────
+BOARD      = '#2c3e2d'
+BOARD_LT   = '#354a36'
+CHALK      = '#e8e4d9'
+CHALK_DIM  = '#b5b0a0'
+CHALK_YEL  = '#f0d87a'
+CHALK_BLUE = '#7ec8e3'
+CHALK_PINK = '#e8a0b0'
+CHALK_GRN  = '#8bc99a'
+CHALK_ORG  = '#e8b86d'
+
+plt.rcParams.update({
+    'figure.facecolor': BOARD,
+    'axes.facecolor':   BOARD_LT,
+    'axes.edgecolor':   CHALK_DIM,
+    'axes.labelcolor':  CHALK,
+    'xtick.color':      CHALK_DIM,
+    'ytick.color':      CHALK_DIM,
+    'text.color':       CHALK,
+    'font.family':      'DejaVu Sans',
+    'font.size':        11,
+    'grid.color':       '#354a36',
+    'grid.alpha':       0.4,
+})
+
+OUT = 'Website/'  # output directory for figures
+
+# ── 1. Load & prepare data ──────────────────────────────────────
+print("Loading data...")
+df = pd.read_csv('data/student_clean.csv')
+
+# Drop G1 and G2 to avoid data leakage — we only use behavioral/demographic features
+# G3 is encoded as 'performance' (Low/Medium/High)
+LABEL_COL = 'performance'
+DROP_COLS  = ['G3', 'performance', 'G1', 'G2'] if 'G1' in df.columns else ['G3', 'performance']
+
+# Filter columns that exist
+drop_actual = [c for c in DROP_COLS if c in df.columns]
+X = df.drop(columns=drop_actual)
+y = df[LABEL_COL]
+
+# Convert any boolean columns to int
+for col in X.select_dtypes(include='bool').columns:
+    X[col] = X[col].astype(int)
+
+print(f"Features: {X.shape[1]}, Samples: {X.shape[0]}")
+print(f"Class distribution:\n{y.value_counts()}")
+
+# ── 2. Train/Test Split ─────────────────────────────────────────
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.20, random_state=42, stratify=y
+)
+print(f"\nTrain: {len(X_train)} | Test: {len(X_test)}")
+
+# Scale features (SVM is sensitive to scale)
+scaler = StandardScaler()
+X_train_sc = scaler.fit_transform(X_train)
+X_test_sc  = scaler.transform(X_test)
+
+# ── 3. Figure: Train/Test Split Visualization ───────────────────
+fig, axes = plt.subplots(1, 2, figsize=(12, 5))
+fig.patch.set_facecolor(BOARD)
+
+class_order   = ['Low', 'Medium', 'High']
+colors_order  = [CHALK_PINK, CHALK_BLUE, CHALK_GRN]
+label_map     = {cls: col for cls, col in zip(class_order, colors_order)}
+
+for ax, data, title in zip(axes, [y_train, y_test], ['Training Set (80%)', 'Testing Set (20%)']):
+    ax.set_facecolor(BOARD_LT)
+    counts = data.value_counts().reindex(class_order)
+    bars = ax.bar(class_order, counts.values,
+                  color=colors_order, edgecolor=CHALK_DIM, linewidth=1.2,
+                  width=0.55)
+    for bar, val in zip(bars, counts.values):
+        ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 1,
+                str(int(val)), ha='center', va='bottom',
+                color=CHALK_YEL, fontsize=13, fontweight='bold')
+    ax.set_title(title, color=CHALK_YEL, fontsize=14, pad=10)
+    ax.set_xlabel('Performance Class', color=CHALK_DIM)
+    ax.set_ylabel('Number of Students', color=CHALK_DIM)
+    ax.set_ylim(0, counts.max() + 20)
+    for spine in ax.spines.values():
+        spine.set_edgecolor(CHALK_DIM)
+        spine.set_linewidth(0.5)
+
+fig.suptitle('SVM — Stratified 80/20 Train/Test Split', color=CHALK, fontsize=15, y=1.02)
+plt.tight_layout()
+plt.savefig(f'{OUT}fig_svm_train_test_split.png', dpi=130, bbox_inches='tight',
+            facecolor=BOARD)
+plt.close()
+print("Saved: fig_svm_train_test_split.png")
+
+# ── 4. Figure: Data Sample ──────────────────────────────────────
+sample_cols = ['age', 'studytime', 'failures', 'absences',
+               'Medu', 'Fedu', 'goout', 'Dalc', 'Walc', 'health', LABEL_COL]
+sample_cols = [c for c in sample_cols if c in df.columns]
+sample_df   = df[sample_cols].head(8)
+
+fig, ax = plt.subplots(figsize=(12, 3.5))
+fig.patch.set_facecolor(BOARD)
+ax.set_facecolor(BOARD)
+ax.axis('off')
+
+tbl = ax.table(
+    cellText=sample_df.values,
+    colLabels=sample_df.columns,
+    loc='center',
+    cellLoc='center'
+)
+tbl.auto_set_font_size(False)
+tbl.set_fontsize(9.5)
+tbl.scale(1, 1.6)
+
+for (r, c), cell in tbl.get_celld().items():
+    cell.set_facecolor(BOARD_LT if r % 2 == 0 else BOARD)
+    cell.set_text_props(color=CHALK if r > 0 else CHALK_YEL)
+    cell.set_edgecolor(CHALK_DIM)
+    cell.set_linewidth(0.4)
+    if r == 0:
+        cell.set_facecolor('#1e2b1f')
+        cell.set_text_props(color=CHALK_YEL, fontsize=9, fontweight='bold')
+
+ax.set_title('Sample of Cleaned Student Data Used for SVM', color=CHALK,
+             fontsize=13, pad=14, y=1.02)
+plt.tight_layout()
+plt.savefig(f'{OUT}fig_svm_data_sample.png', dpi=130, bbox_inches='tight',
+            facecolor=BOARD)
+plt.close()
+print("Saved: fig_svm_data_sample.png")
+
+# ── 5. Train SVMs — 3 Kernels, Multiple Costs ───────────────────
+kernels     = ['linear', 'poly', 'rbf']
+costs       = [0.01, 0.1, 1, 10, 100]
+results     = {}   # {kernel: {cost: accuracy}}
+best_models = {}   # {kernel: (model, C, accuracy)}
+cm_dict     = {}   # {kernel: confusion_matrix}
+
+print("\n--- Training SVMs ---")
+for kernel in kernels:
+    results[kernel] = {}
+    best_acc  = 0
+    best_C    = None
+    best_clf  = None
+
+    for C in costs:
+        if kernel == 'poly':
+            clf = SVC(kernel=kernel, C=C, degree=3, coef0=1,
+                      decision_function_shape='ovr', random_state=42)
+        elif kernel == 'rbf':
+            clf = SVC(kernel=kernel, C=C, gamma='scale',
+                      decision_function_shape='ovr', random_state=42)
+        else:  # linear
+            clf = SVC(kernel=kernel, C=C,
+                      decision_function_shape='ovr', random_state=42)
+
+        clf.fit(X_train_sc, y_train)
+        acc = accuracy_score(y_test, clf.predict(X_test_sc))
+        results[kernel][C] = round(acc * 100, 1)
+
+        if acc > best_acc:
+            best_acc = acc
+            best_C   = C
+            best_clf  = clf
+
+    best_models[kernel] = (best_clf, best_C, round(best_acc * 100, 1))
+    cm_dict[kernel]     = confusion_matrix(y_test, best_clf.predict(X_test_sc),
+                                           labels=class_order)
+    print(f"  {kernel:6s}: best C={best_C}, accuracy={best_acc*100:.1f}%")
+    print(f"           All costs: {results[kernel]}")
+    report = classification_report(y_test, best_clf.predict(X_test_sc),
+                                   target_names=class_order)
+    print(f"  Classification Report:\n{report}")
+
+# ── 6. Figure: Accuracy vs Cost (per kernel) ────────────────────
+fig, axes = plt.subplots(1, 3, figsize=(15, 5))
+fig.patch.set_facecolor(BOARD)
+
+kernel_colors = {'linear': CHALK_BLUE, 'poly': CHALK_YEL, 'rbf': CHALK_PINK}
+
+for ax, kernel in zip(axes, kernels):
+    ax.set_facecolor(BOARD_LT)
+    acc_vals = [results[kernel][C] for C in costs]
+    best_C   = best_models[kernel][1]
+
+    ax.plot([str(C) for C in costs], acc_vals,
+            color=kernel_colors[kernel], marker='o', linewidth=2.2,
+            markersize=8, markerfacecolor=CHALK)
+
+    # Highlight best
+    best_idx = costs.index(best_C)
+    ax.plot(str(best_C), results[kernel][best_C],
+            'o', color=CHALK_GRN, markersize=13, zorder=5,
+            label=f'Best: C={best_C}')
+
+    ax.set_title(f'{kernel.capitalize()} Kernel', color=kernel_colors[kernel],
+                 fontsize=13, pad=8)
+    ax.set_xlabel('Cost (C)', color=CHALK_DIM)
+    ax.set_ylabel('Test Accuracy (%)', color=CHALK_DIM)
+    ax.set_ylim(0, 105)
+    ax.legend(facecolor=BOARD, edgecolor=CHALK_DIM, labelcolor=CHALK, fontsize=10)
+    ax.grid(True, linestyle='--', alpha=0.3, color=CHALK_DIM)
+    for spine in ax.spines.values():
+        spine.set_edgecolor(CHALK_DIM)
+        spine.set_linewidth(0.5)
+
+fig.suptitle('SVM — Accuracy vs Cost (C) Across 3 Kernels', color=CHALK,
+             fontsize=15, y=1.02)
+plt.tight_layout()
+plt.savefig(f'{OUT}fig_svm_cost_comparison.png', dpi=130, bbox_inches='tight',
+            facecolor=BOARD)
+plt.close()
+print("Saved: fig_svm_cost_comparison.png")
+
+# ── 7. Figure: Confusion Matrices ───────────────────────────────
+for kernel in kernels:
+    cm   = cm_dict[kernel]
+    acc  = best_models[kernel][2]
+    best_C = best_models[kernel][1]
+
+    fig, ax = plt.subplots(figsize=(6, 5))
+    fig.patch.set_facecolor(BOARD)
+    ax.set_facecolor(BOARD_LT)
+
+    # Custom colormap based on board colors
+    from matplotlib.colors import LinearSegmentedColormap
+    cmap = LinearSegmentedColormap.from_list(
+        'chalk', [BOARD_LT, kernel_colors[kernel]], N=256
+    )
+
+    sns.heatmap(cm, annot=True, fmt='d', cmap=cmap,
+                xticklabels=class_order, yticklabels=class_order,
+                ax=ax, linewidths=0.5, linecolor=CHALK_DIM,
+                annot_kws={'size': 14, 'color': CHALK, 'weight': 'bold'},
+                cbar_kws={'shrink': 0.8})
+
+    ax.set_title(f'{kernel.capitalize()} Kernel — C={best_C}\nAccuracy: {acc}%',
+                 color=CHALK_YEL, fontsize=13, pad=10)
+    ax.set_xlabel('Predicted Class', color=CHALK_DIM, fontsize=11)
+    ax.set_ylabel('True Class', color=CHALK_DIM, fontsize=11)
+    ax.tick_params(colors=CHALK_DIM)
+
+    cbar = ax.collections[0].colorbar
+    cbar.ax.yaxis.set_tick_params(color=CHALK_DIM)
+    plt.setp(cbar.ax.yaxis.get_ticklabels(), color=CHALK_DIM)
+
+    plt.tight_layout()
+    fname = f'{OUT}fig_svm_cm_{kernel}.png'
+    plt.savefig(fname, dpi=130, bbox_inches='tight', facecolor=BOARD)
+    plt.close()
+    print(f"Saved: fig_svm_cm_{kernel}.png")
+
+# ── 8. Figure: Decision Boundary (2-feature PCA) ────────────────
+print("\nGenerating decision boundary plots...")
+
+# Use PCA to reduce to 2D for visualization
+pca2 = PCA(n_components=2, random_state=42)
+X_train_2d = pca2.fit_transform(X_train_sc)
+X_test_2d  = pca2.transform(X_test_sc)
+
+label_enc = {'Low': 0, 'Medium': 1, 'High': 2}
+enc_inv   = {0: 'Low', 1: 'Medium', 2: 'High'}
+class_colors = [CHALK_PINK, CHALK_BLUE, CHALK_GRN]
+
+y_train_num = np.array([label_enc[l] for l in y_train])
+y_test_num  = np.array([label_enc[l] for l in y_test])
+
+for kernel in kernels:
+    best_C = best_models[kernel][1]
+    if kernel == 'poly':
+        clf2d = SVC(kernel=kernel, C=best_C, degree=3, coef0=1,
+                    decision_function_shape='ovr', random_state=42)
+    elif kernel == 'rbf':
+        clf2d = SVC(kernel=kernel, C=best_C, gamma='scale',
+                    decision_function_shape='ovr', random_state=42)
+    else:
+        clf2d = SVC(kernel=kernel, C=best_C,
+                    decision_function_shape='ovr', random_state=42)
+
+    clf2d.fit(X_train_2d, y_train)
+
+    # Mesh grid
+    h = 0.05
+    x_min, x_max = X_train_2d[:,0].min()-0.5, X_train_2d[:,0].max()+0.5
+    y_min, y_max = X_train_2d[:,1].min()-0.5, X_train_2d[:,1].max()+0.5
+    xx, yy = np.meshgrid(np.arange(x_min, x_max, h),
+                         np.arange(y_min, y_max, h))
+    Z = clf2d.predict(np.c_[xx.ravel(), yy.ravel()])
+    Z_num = np.array([label_enc[z] for z in Z]).reshape(xx.shape)
+
+    fig, ax = plt.subplots(figsize=(8, 6))
+    fig.patch.set_facecolor(BOARD)
+    ax.set_facecolor(BOARD_LT)
+
+    # Background regions
+    region_colors = ['#5c2a36', '#2a3d5c', '#2a5c3a']
+    ax.contourf(xx, yy, Z_num, alpha=0.35,
+                colors=region_colors, levels=[-0.5, 0.5, 1.5, 2.5])
+
+    # Scatter test points
+    for cls_idx, cls_name in enumerate(class_order):
+        mask = y_test == cls_name
+        ax.scatter(X_test_2d[mask, 0], X_test_2d[mask, 1],
+                   c=class_colors[cls_idx], s=55, edgecolors=CHALK,
+                   linewidths=0.5, label=cls_name, alpha=0.85, zorder=3)
+
+    acc_2d = accuracy_score(y_test, clf2d.predict(X_test_2d))
+    ax.set_title(
+        f'{kernel.capitalize()} Kernel — Decision Boundary (2D PCA projection)\n'
+        f'C={best_C} | 2D Accuracy: {acc_2d*100:.1f}%',
+        color=CHALK_YEL, fontsize=12, pad=10
+    )
+    ax.set_xlabel('PCA Component 1', color=CHALK_DIM)
+    ax.set_ylabel('PCA Component 2', color=CHALK_DIM)
+    ax.legend(facecolor=BOARD, edgecolor=CHALK_DIM, labelcolor=CHALK,
+              fontsize=10, title='Performance', title_fontsize=9)
+
+    for spine in ax.spines.values():
+        spine.set_edgecolor(CHALK_DIM)
+
+    plt.tight_layout()
+    fname = f'{OUT}fig_svm_boundary_{kernel}.png'
+    plt.savefig(fname, dpi=130, bbox_inches='tight', facecolor=BOARD)
+    plt.close()
+    print(f"Saved: fig_svm_boundary_{kernel}.png")
+
+# ── 9. Figure: Final Kernel Comparison Bar Chart ────────────────
+fig, ax = plt.subplots(figsize=(8, 5))
+fig.patch.set_facecolor(BOARD)
+ax.set_facecolor(BOARD_LT)
+
+k_names = ['Linear', 'Polynomial\n(degree=3)', 'RBF']
+k_accs  = [best_models[k][2] for k in kernels]
+k_cs    = [best_models[k][1] for k in kernels]
+bars    = ax.bar(k_names, k_accs,
+                 color=[CHALK_BLUE, CHALK_YEL, CHALK_PINK],
+                 edgecolor=CHALK_DIM, linewidth=1.2, width=0.5)
+
+for bar, acc, C in zip(bars, k_accs, k_cs):
+    ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.5,
+            f'{acc}%\n(C={C})', ha='center', va='bottom',
+            color=CHALK, fontsize=11, fontweight='bold')
+
+ax.set_ylim(0, 110)
+ax.set_ylabel('Test Accuracy (%)', color=CHALK_DIM)
+ax.set_title('SVM Kernel Comparison — Best Accuracy per Kernel',
+             color=CHALK, fontsize=13, pad=12)
+ax.grid(axis='y', linestyle='--', alpha=0.3, color=CHALK_DIM)
+for spine in ax.spines.values():
+    spine.set_edgecolor(CHALK_DIM)
+    spine.set_linewidth(0.5)
+
+plt.tight_layout()
+plt.savefig(f'{OUT}fig_svm_accuracy_comparison.png', dpi=130, bbox_inches='tight',
+            facecolor=BOARD)
+plt.close()
+print("Saved: fig_svm_accuracy_comparison.png")
+
+# ── 10. Print summary table ─────────────────────────────────────
+print("\n" + "="*55)
+print("SVM RESULTS SUMMARY")
+print("="*55)
+print(f"{'Kernel':<10} {'Best C':<10} {'Accuracy':<12}")
+print("-"*35)
+for k in kernels:
+    _, bc, acc = best_models[k]
+    print(f"{k:<10} {bc:<10} {acc}%")
+print("="*55)
+
+print("\nAll SVM figures generated successfully!")

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SVM | Student Performance Analysis</title>
-  <meta name="description" content="Support Vector Machine applied to classify student performance — overview, data, code, and results.">
+  <meta name="description" content="Support Vector Machines applied to classify student academic performance — overview, kernel trick, data preparation, code, and results with 3 kernels.">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -26,8 +26,9 @@
       <li><a href="arm.html">ARM</a></li>
       <li><a href="dt.html">DT</a></li>
       <li><a href="nb.html">NB</a></li>
-      <li><a href="svm.html">SVM</a></li>
+      <li><a href="svm.html" class="active">SVM</a></li>
       <li><a href="regression.html">Regression</a></li>
+      <li><a href="ensemble.html">Ensemble</a></li>
       <li><a href="conclusions.html">Conclusions</a></li>
     </ul>
     <a href="https://github.com/mokshasai/student-performance" target="_blank" rel="noopener" class="nav-github">
@@ -45,49 +46,115 @@
       Margin-Based Classifier
     </span>
     <h1>Support Vector Machine (SVM)</h1>
-    <p class="hero-sub">Finding the optimal hyperplane to separate student performance classes with maximum margin.</p>
+    <p class="hero-sub">Finding the widest possible gap between student performance groups — and using the kernel trick to see patterns invisible in flat data.</p>
   </div>
 
   <div class="info-grid">
-    <div class="info-tile"><div class="tile-value" style="color:#fc8181">RBF</div><div class="tile-label">Kernel Function</div></div>
-    <div class="info-tile"><div class="tile-value" style="color:#fc8181">3</div><div class="tile-label">Classes (OvR Strategy)</div></div>
-    <div class="info-tile"><div class="tile-value" style="color:#fc8181">C, γ</div><div class="tile-label">Hyperparameters</div></div>
-    <div class="info-tile"><div class="tile-value" style="color:#fc8181">sklearn</div><div class="tile-label">Library</div></div>
+    <div class="info-tile fade-in"><div class="tile-value" style="color:#fc8181">3</div><div class="tile-label">Kernels Compared</div></div>
+    <div class="info-tile fade-in"><div class="tile-value" style="color:#fc8181">51.9%</div><div class="tile-label">Best Accuracy (no G1/G2)</div></div>
+    <div class="info-tile fade-in"><div class="tile-value" style="color:#fc8181">5</div><div class="tile-label">Cost Values Tested</div></div>
+    <div class="info-tile fade-in"><div class="tile-value" style="color:#fc8181">OvR</div><div class="tile-label">Multi-Class Strategy</div></div>
   </div>
 
-  <!-- ── Overview ──────────────────────────────────────────── -->
+  <!-- ── (a) Overview ──────────────────────────────────────── -->
   <h2>Overview</h2>
 
   <p>
-    A <strong>Support Vector Machine (SVM)</strong> is a supervised learning algorithm that finds the <strong>optimal decision boundary</strong> — called a hyperplane — that separates classes with the largest possible margin of separation. The data points closest to the boundary on either side are called <strong>support vectors</strong>, and the model is entirely defined by these critical points. In high-dimensional feature spaces, SVMs are particularly powerful because the margin maximization objective provides strong generalization ability even when the number of features is large relative to the number of training examples. For non-linearly separable data, SVMs employ a <strong>kernel function</strong> — such as the Radial Basis Function (RBF) kernel — to implicitly transform the feature space into a higher-dimensional representation where a linear boundary becomes sufficient. The regularization parameter <code>C</code> controls the trade-off between maximizing the margin and minimizing training error, while the kernel coefficient <code>gamma</code> determines how far the influence of a single training example reaches.
+    A <strong>Support Vector Machine (SVM)</strong> is a supervised machine learning algorithm that learns to classify data by finding the <strong>optimal decision boundary</strong> — called a <em>hyperplane</em> — that separates classes with the <strong>largest possible margin</strong>. Imagine drawing a line between two groups of students on a chart: SVMs do not just draw any line — they find the single best line that keeps the largest possible gap, or "margin," between the two groups. This makes SVMs remarkably resistant to overfitting and highly generalizable to new, unseen data.
   </p>
 
   <p>
-    For multi-class classification of student performance (Low, Medium, High), SVM uses a <strong>One-vs-Rest (OvR)</strong> strategy: three separate binary classifiers are trained, each distinguishing one class from the other two. The class with the highest decision function score is assigned as the final label. Because SVM is sensitive to feature scale, all numeric features are normalized using <code>StandardScaler</code> before training. SVMs generally produce higher accuracy than simpler models on complex datasets and are especially valuable when discovering sharp, nonlinear boundaries between performance groups. The model is less interpretable than a Decision Tree, but its accuracy and robustness to overfitting make it a strong contender for the best-performing classifier in this project.
-  </p>
-
-  <div class="callout" style="border-left-color:#fc8181;background:rgba(252,129,129,0.06)">
-    <span class="callout-icon">⚙️</span>
-    <p><strong>Key Hyperparameters:</strong> <code>C</code> (regularization strength — larger C = less margin, fewer misclassifications on training set), <code>kernel</code> (RBF, linear, polynomial), <code>gamma</code> (RBF width — smaller gamma = smoother boundary). GridSearchCV is used to find the optimal combination via cross-validation.</p>
-  </div>
-
-  <hr class="divider">
-
-  <!-- ── Data ──────────────────────────────────────────────── -->
-  <h2>Data</h2>
-
-  <p>
-    SVM requires fully numeric features and is sensitive to scale. The cleaned, encoded dataset is normalized with <code>StandardScaler</code> before training. The target is the three-class performance label. G1 and G2 are dropped to avoid leakage.
+    The concept of the <strong>maximum margin hyperplane</strong> is what makes SVMs "linear separators." In 2D space, the decision boundary is a line. In 3D, it becomes a plane. In higher dimensions, it becomes a general hyperplane — but the principle remains the same: the boundary is always the linear surface that maximizes the separation distance between the nearest points of each class. Those nearest points — the ones that actually define and "support" the boundary — are called <strong>support vectors</strong>. Remove any other data point and the boundary does not change; remove a support vector and the entire model shifts. This is a unique and powerful property.
   </p>
 
   <div class="figure-grid">
     <div class="img-wrap">
-      <img src="Raw_data.png" alt="Raw student dataset preview">
-      <div class="img-caption">Raw data — original CSV with mixed data types before any encoding.</div>
+      <img src="fig_svm_concept.png" alt="SVM hyperplane, margin, and support vectors diagram">
+      <div class="img-caption">Figure: The optimal SVM hyperplane (yellow dashed) maximizes the margin between classes. Support vectors (highlighted in pink) are the critical boundary-defining points.</div>
     </div>
     <div class="img-wrap">
-      <img src="cleaned_data.png" alt="Cleaned dataset used for SVM">
-      <div class="img-caption">Cleaned &amp; normalized data — StandardScaler applied before SVM training.</div>
+      <img src="fig_svm_kernel_trick.png" alt="Kernel trick: mapping 2D non-separable data into 3D separable space">
+      <div class="img-caption">Figure: The kernel trick projects non-linearly separable data from 2D into a higher-dimensional space where a flat separating plane becomes possible.</div>
+    </div>
+  </div>
+
+  <h3>Why the Kernel Works — The Dot Product</h3>
+
+  <p>
+    When data cannot be separated by a straight line (as is often the case in real-world datasets), SVMs use a <strong>kernel function</strong> to implicitly transform the data into a higher-dimensional space where a linear boundary <em>does</em> work. The mathematical magic here is that the SVM optimization problem only ever needs to compute <strong>dot products</strong> between pairs of data points — it never needs to explicitly compute the transformed coordinates. This is known as the <strong>kernel trick</strong>: we define a function K(x, z) that directly computes what the dot product <em>would be</em> in the transformed space, without paying the computational cost of the actual transformation.
+  </p>
+
+  <p>
+    Formally, the SVM decision function in the original space is:
+  </p>
+  <p style="text-align:center;font-family:'JetBrains Mono',monospace;font-size:1rem;color:var(--chalk-blue);margin:14px 0">
+    f(x) = sign( Σᵢ αᵢ yᵢ K(xᵢ, x) + b )
+  </p>
+  <p>
+    where αᵢ are the learned support vector weights, yᵢ are the class labels, and K(xᵢ, x) is the kernel function. Because the dot product is the inner operation, <strong>the kernel replaces the dot product</strong> and implicitly lifts the computation to a potentially infinite-dimensional space — without ever materializing it.
+  </p>
+
+  <h3>Polynomial Kernel — Formula &amp; Worked Example</h3>
+
+  <p>
+    The <strong>polynomial kernel</strong> with coefficient r and degree d is defined as:
+  </p>
+  <p style="text-align:center;font-family:'JetBrains Mono',monospace;font-size:1.05rem;color:var(--chalk-blue);margin:14px 0">
+    K(x, z) = (x · z + r)<sup>d</sup>
+  </p>
+
+  <div class="callout" style="border-left-color:#fc8181;background:rgba(252,129,129,0.06)">
+    <span class="callout-icon">📐</span>
+    <p><strong>Worked Example — Polynomial Kernel (r=1, d=2):</strong><br>
+    Take a 2D input point <strong>x = (2, 3)</strong>.<br><br>
+    The polynomial kernel with r=1, d=2 maps x into a higher-dimensional space via the feature map φ(x):<br>
+    <code style="display:block;margin:8px 0">φ(x) = (x₁², √2·x₁x₂, x₂²)</code>
+    For x = (2, 3): <code style="display:block;margin:8px 0">φ(2, 3) = (4, √2·6, 9) = (4, 8.485, 9)</code>
+    This maps the original <strong>2D point into a 3D space</strong>! The dot product of two mapped points equals the kernel:
+    <code style="display:block;margin:8px 0">K(x, z) = (x·z + 1)² = φ(x)·φ(z)</code>
+    The SVM works in this 3D space without ever computing φ explicitly — just evaluating K(x,z) for each pair of support vectors. This is the power of the kernel trick.</p>
+  </div>
+
+  <h3>RBF Kernel</h3>
+  <p>
+    The <strong>Radial Basis Function (RBF) kernel</strong> — also called the Gaussian kernel — is defined as:
+  </p>
+  <p style="text-align:center;font-family:'JetBrains Mono',monospace;font-size:1.05rem;color:var(--chalk-blue);margin:14px 0">
+    K(x, z) = exp(−γ · ||x − z||²)
+  </p>
+  <p>
+    The RBF kernel measures the <strong>similarity between two points as a function of their distance</strong>. Points that are very close together have a kernel value near 1; distant points have a value near 0. The parameter γ controls how quickly similarity drops off with distance. A small γ creates broad, smooth decision regions; a large γ creates tight, complex ones. RBF implicitly maps data into an infinite-dimensional space, making it one of the most powerful and flexible kernels available.
+  </p>
+
+  <hr class="divider">
+
+  <!-- ── (b) Data Prep ─────────────────────────────────────── -->
+  <h2>Data Preparation</h2>
+
+  <p>
+    Supervised machine learning — of which SVM is a prime example — requires <strong>labeled data</strong>. Each student record must already have a known performance category (Low, Medium, or High) before the model can learn. Without labels, the algorithm has nothing to optimize toward. In this project, labels were derived from the final grade G3: scores 0–9 → Low, 10–14 → Medium, 15–20 → High.
+  </p>
+
+  <p>
+    A critical requirement of any supervised model is the split of labeled data into a <strong>Training Set</strong> and a <strong>Testing Set</strong>. The training set is used to build (train) the model — it sees all the examples and learns the patterns. The testing set is held back and <strong>never used during training</strong>. It serves as a realistic simulation of "new" students the model has never encountered. If training and testing data overlapped, the reported accuracy would be artificially high and meaningless. This is why the two sets must be completely <strong>disjoint</strong> — not a single student record appears in both.
+  </p>
+
+  <p>
+    <strong>SVMs can only work on labeled, numeric data.</strong> Unlike Decision Trees, SVMs do not handle categorical text values or missing data — every feature must be a number. Our dataset was pre-encoded (binary and one-hot encoding) during the Data Preparation phase, making it SVM-ready. Additionally, SVMs are highly sensitive to feature <strong>scale</strong>: a feature ranging from 0–100 would dominate one ranging from 0–5 unless both are normalized. We apply <code>StandardScaler</code> to give all features zero mean and unit variance before training.
+  </p>
+
+  <p>
+    <strong>Important:</strong> For this SVM analysis, the features G1 (first-period grade) and G2 (second-period grade) are <strong>excluded</strong>. While these grades are temporally available before G3, including them would make the task trivially easy and would not test the SVM's ability to learn from behavioral and demographic features. The goal here is to see whether <em>lifestyle, family, and social factors alone</em> can predict performance — a much more meaningful and challenging question.
+  </p>
+
+  <div class="figure-grid">
+    <div class="img-wrap">
+      <img src="fig_svm_data_sample.png" alt="Sample of cleaned student data used for SVM training">
+      <div class="img-caption">Sample of the cleaned dataset — 39 behavioral and demographic features, all numeric, scaled before SVM training.</div>
+    </div>
+    <div class="img-wrap">
+      <img src="fig_svm_train_test_split.png" alt="Stratified 80/20 train/test split visualization">
+      <div class="img-caption">Stratified 80/20 split — 316 training and 79 testing students, with balanced Low/Medium/High proportions in both sets.</div>
     </div>
   </div>
 
@@ -101,38 +168,132 @@
 
   <hr class="divider">
 
-  <!-- ── Code ──────────────────────────────────────────────── -->
+  <!-- ── (c) Code ──────────────────────────────────────────── -->
   <h2>Code</h2>
 
   <p>
-    Implemented in <strong>Python 3</strong>. Core packages: <code>sklearn</code> (SVC, StandardScaler, GridSearchCV, classification_report, confusion_matrix, cross_val_score), <code>pandas</code>, <code>matplotlib</code>, <code>seaborn</code>.
+    Implemented in <strong>Python 3</strong>. Core packages: <code>sklearn</code> (SVC, StandardScaler, train_test_split, classification_report, confusion_matrix, PCA), <code>pandas</code>, <code>numpy</code>, <code>matplotlib</code>, <code>seaborn</code>.
   </p>
 
   <div class="callout" style="border-left-color:#fc8181;background:rgba(252,129,129,0.06)">
     <span class="callout-icon">&#128196;</span>
-    <p>Code for this analysis will be linked here once the SVM script is complete.</p>
+    <p>
+      <a href="code/code_svm.html" class="btn-link" style="margin-right:10px;background:rgba(252,129,129,.1);border-color:rgba(252,129,129,.3);color:#fc8181">📄 View Full SVM Code</a>
+      <a href="../code/08_svm.py" download class="btn-link" style="background:rgba(252,129,129,.08);border-color:rgba(252,129,129,.3);color:#fc8181">&darr; Download 08_svm.py</a>
+    </p>
   </div>
 
   <hr class="divider">
 
-  <!-- ── Results ───────────────────────────────────────────── -->
+  <!-- ── (d) Results ───────────────────────────────────────── -->
   <h2>Results</h2>
 
-  <div class="callout amber">
-    <span class="callout-icon">🔄</span>
-    <p><strong>In Progress:</strong> SVM training with hyperparameter tuning (GridSearchCV across C and gamma) is being finalized. Results including accuracy, confusion matrix, and decision boundary analysis will be published here.</p>
+  <p>
+    Three SVM kernels were evaluated — <strong>Linear, Polynomial (degree=3), and RBF</strong>. For each kernel, five cost values were tested: C = 0.01, 0.1, 1, 10, and 100. The cost parameter C controls the trade-off between maximizing the margin (simple boundary) and minimizing training errors (complex boundary). A very small C allows many misclassifications for a wide margin; a large C tries to classify everything correctly at the risk of overfitting.
+  </p>
+
+  <div class="img-wrap">
+    <img src="fig_svm_cost_comparison.png" alt="SVM accuracy vs cost value for all 3 kernels">
+    <div class="img-caption">Figure: Accuracy vs Cost (C) for all three kernels. The sweet spot differs per kernel — Linear prefers small C, RBF performs best at C=10.</div>
   </div>
 
-  <p>Expected outputs include:</p>
-  <ul style="color:var(--text-sec);padding-left:20px;line-height:2.2">
-    <li>Best hyperparameter combination found via GridSearchCV (C, kernel, gamma)</li>
-    <li>Test set accuracy on the optimal model</li>
-    <li>Classification report: precision, recall, F1-score per class</li>
-    <li>Confusion matrix across Low / Medium / High performance groups</li>
-    <li>Cross-validation accuracy distribution (boxplot across 5 folds)</li>
-    <li>Comparison of RBF vs. linear kernel performance</li>
-    <li>Discussion of which student features SVM found most separating</li>
-  </ul>
+  <div class="table-scroll" style="margin:20px 0">
+    <table>
+      <thead>
+        <tr>
+          <th>Kernel</th>
+          <th>C=0.01</th>
+          <th>C=0.1</th>
+          <th>C=1</th>
+          <th>C=10</th>
+          <th>C=100</th>
+          <th>Best</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Linear</td><td>49.4%</td><td><strong style="color:var(--chalk-green)">51.9%</strong></td><td>45.6%</td><td>45.6%</td><td>44.3%</td><td>C=0.1 → 51.9%</td></tr>
+        <tr><td>Polynomial (d=3)</td><td>48.1%</td><td>48.1%</td><td><strong style="color:var(--chalk-green)">50.6%</strong></td><td>44.3%</td><td>44.3%</td><td>C=1 → 50.6%</td></tr>
+        <tr><td>RBF (γ=scale)</td><td>48.1%</td><td>48.1%</td><td>49.4%</td><td><strong style="color:var(--chalk-green)">51.9%</strong></td><td>46.8%</td><td>C=10 → 51.9%</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Linear Kernel — Best C = 0.1, Accuracy: 51.9%</h3>
+
+  <p>
+    The linear kernel seeks a straight-line boundary between student performance groups. With C=0.1, it achieved <strong>51.9% accuracy</strong>. The linear kernel performed best with a very small cost, suggesting that the data is not linearly separable and a wider margin (more tolerance for misclassification) is preferable. This kernel excels when the feature space is very high-dimensional or when there are clear linear patterns, but student behavior is rarely so cleanly separated.
+  </p>
+
+  <div class="figure-grid">
+    <div class="img-wrap">
+      <img src="fig_svm_cm_linear.png" alt="Linear kernel confusion matrix">
+      <div class="img-caption">Linear Kernel (C=0.1) confusion matrix — 51.9% accuracy. The model struggles most with Low and Medium students, often misclassifying them as High.</div>
+    </div>
+    <div class="img-wrap">
+      <img src="fig_svm_boundary_linear.png" alt="Linear kernel decision boundary (2D PCA projection)">
+      <div class="img-caption">Decision boundary for Linear Kernel in 2D PCA space. The linear boundary creates broad regions — reflecting the difficulty of separating these classes linearly.</div>
+    </div>
+  </div>
+
+  <h3>Polynomial Kernel — Best C = 1, Degree = 3, Accuracy: 50.6%</h3>
+
+  <p>
+    The polynomial kernel (degree=3, r=1) adds curvature to the decision boundary by implicitly mapping to a higher-dimensional space. With C=1, it reached <strong>50.6% accuracy</strong> — slightly below the linear and RBF kernels. The polynomial kernel can capture more complex patterns than a linear kernel, but at degree=3 it may be creating unnecessary complexity for this relatively small dataset. Student behavioral patterns do not seem to follow a clean polynomial relationship.
+  </p>
+
+  <div class="figure-grid">
+    <div class="img-wrap">
+      <img src="fig_svm_cm_poly.png" alt="Polynomial kernel confusion matrix">
+      <div class="img-caption">Polynomial Kernel (C=1, degree=3) confusion matrix — 50.6% accuracy. Slightly better balance between Low and Medium predictions than Linear.</div>
+    </div>
+    <div class="img-wrap">
+      <img src="fig_svm_boundary_poly.png" alt="Polynomial kernel decision boundary (2D PCA projection)">
+      <div class="img-caption">Decision boundary for Polynomial Kernel in 2D PCA space. Curved regions emerge — capturing some nonlinearity absent from the linear kernel.</div>
+    </div>
+  </div>
+
+  <h3>RBF Kernel — Best C = 10, γ = scale, Accuracy: 51.9%</h3>
+
+  <p>
+    The Radial Basis Function kernel matched the Linear kernel with <strong>51.9% accuracy</strong> at C=10. The RBF kernel, which measures similarity based on the distance between students in feature space, creates smooth curved boundaries that adapt to the local density of data. It required a higher cost (C=10), indicating it benefits from a tighter boundary with fewer margin violations. The RBF kernel is generally the most flexible and is often the default choice for SVMs on real-world data — its tied performance here with the simpler Linear kernel is notable and worth discussing.
+  </p>
+
+  <div class="figure-grid">
+    <div class="img-wrap">
+      <img src="fig_svm_cm_rbf.png" alt="RBF kernel confusion matrix">
+      <div class="img-caption">RBF Kernel (C=10, γ=scale) confusion matrix — 51.9% accuracy. Best classification of High performers (74% recall) among all three kernels.</div>
+    </div>
+    <div class="img-wrap">
+      <img src="fig_svm_boundary_rbf.png" alt="RBF kernel decision boundary (2D PCA projection)">
+      <div class="img-caption">Decision boundary for RBF Kernel in 2D PCA space. Non-linear, adaptive regions emerge — the most flexible boundary of the three kernels.</div>
+    </div>
+  </div>
+
+  <h3>Kernel Comparison</h3>
+
+  <div class="img-wrap">
+    <img src="fig_svm_accuracy_comparison.png" alt="Bar chart comparing accuracy of all 3 SVM kernels">
+    <div class="img-caption">Final comparison: Linear and RBF both achieve 51.9%; Polynomial trails at 50.6%. All three kernels perform similarly on this behavioral dataset.</div>
+  </div>
+
+  <div class="callout" style="border-left-color:#fc8181;background:rgba(252,129,129,0.06)">
+    <span class="callout-icon">🔍</span>
+    <p><strong>Which kernel won?</strong> Linear and RBF tied at 51.9%, with Polynomial slightly behind at 50.6%. The RBF kernel is preferred overall because it better handles the High performance class (highest recall of 74% vs 63% for Linear). The RBF kernel's flexibility in shaping non-linear boundaries gives it an edge when classifying the minority High-performer group — a practically important outcome.<br><br>
+    <strong>Why are accuracies modest (~51%)?</strong> The deliberate exclusion of G1 and G2 makes this a genuinely hard prediction problem: can we predict final performance from behavioral and family data alone? The answer is: partially. The SVM identifies broad trends but cannot perfectly separate the classes without the strong grade-trajectory signal. This is actually an important scientific finding — it shows that grades are not fully predictable from lifestyle and demographics, and that there is substantial variance in outcomes even among students with similar behavioral profiles.</p>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ── (e) Conclusions ──────────────────────────────────── -->
+  <h2>Conclusions</h2>
+
+  <p>
+    The SVM analysis reveals a critical lesson about the limits — and the honest value — of behavioral prediction. When we strip away the grade trajectory (G1, G2) and ask the SVM to classify students purely from their lifestyle, family background, and social habits, we achieve approximately <strong>51–52% accuracy</strong> on a three-class problem — notably above the 33% random baseline. This tells us that behavioral and demographic features do carry predictive signal, but that signal is not strong enough on its own to reliably classify every student.
+  </p>
+
+  <p>
+    The <strong>RBF kernel's strength</strong> in identifying High performers (74% recall) is an actionable finding: even in a challenging prediction setting, the SVM can reliably flag students likely to excel based on their behavioral profile. Conversely, the <strong>difficulty identifying Low performers</strong> (33% recall) suggests that poor performance often occurs for reasons not captured in our feature set — perhaps sudden life events, illness, or factors that don't show up in survey-style data. For educators, this means that behavioral monitoring is a useful early-warning tool, but it must be supplemented by direct teacher observation and student engagement to catch students falling through the cracks.
+  </p>
 
 </main>
 

@@ -37,3 +37,6 @@ node_modules/
 # Sensitive
 .env
 *.env
+
+# Large media files
+Student_Performance_Presentation.mp4

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -12,10 +12,10 @@
 <nav>
   <div class="nav-inner">
     <a href="index.html" class="nav-brand">
-      <div class="brand-seal">📋</div>
+      <div class="brand-seal">ðŸ“‹</div>
       <div>
         <div class="brand-text">Student Performance</div>
-        <div class="brand-sub">ML Analysis · 2025</div>
+        <div class="brand-sub">ML Analysis Â· 2025</div>
       </div>
     </a>
     <ul>
@@ -39,14 +39,14 @@
 
 <main>
 
-  <!-- ── Hero ─────────────────────────────────────────────── -->
+  <!-- â”€â”€ Hero â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
   <div class="hero">
     <span class="hero-badge">Data Preparation &amp; EDA</span>
     <h1>Data Preparation &amp;<br>Exploratory Analysis</h1>
     <p class="hero-sub">Gathering, cleaning, and visually exploring the student performance dataset before modeling.</p>
   </div>
 
-  <!-- ── Data Source ────────────────────────────────────── -->
+  <!-- â”€â”€ Data Source â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
   <h2>Data Source</h2>
 
   <p>
@@ -58,20 +58,20 @@
   </p>
 
   <div class="callout blue">
-    <span class="callout-icon">📁</span>
+    <span class="callout-icon">ðŸ“</span>
     <p>
       <strong>Dataset source:</strong> UCI Machine Learning Repository &mdash;
       <strong>File used:</strong> <code>student-mat.csv</code> (Math course, 395 students, 33 attributes)<br>
-      <a href="https://archive.ics.uci.edu/ml/datasets/Student+Performance" target="_blank" rel="noopener">Link to UCI Repository →</a>
+      <a href="https://archive.ics.uci.edu/ml/datasets/Student+Performance" target="_blank" rel="noopener">Link to UCI Repository â†’</a>
     </p>
   </div>
 
   <div class="img-wrap">
     <img src="Raw_data.png" alt="Screenshot of the raw student dataset showing first five rows">
-    <div class="img-caption">Figure: Raw dataset preview — 395 rows × 33 columns as loaded from student-mat.csv.</div>
+    <div class="img-caption">Figure: Raw dataset preview â€” 395 rows Ã— 33 columns as loaded from student-mat.csv.</div>
   </div>
 
-  <!-- ── API ────────────────────────────────────────────── -->
+  <!-- â”€â”€ API â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
   <h2>API Data Collection</h2>
 
   <p>
@@ -79,11 +79,11 @@
     the <strong>World Bank Open Data API</strong>. This API was used to retrieve
     country-level education and technology indicators (Portugal) to provide broader
     educational context. These indicators were used for contextual understanding
-    and enrichment — they were not merged at the individual student level.
+    and enrichment â€” they were not merged at the individual student level.
   </p>
 
   <div class="callout blue">
-    <span class="callout-icon">🌐</span>
+    <span class="callout-icon">ðŸŒ</span>
     <p>
       <strong>API:</strong> World Bank Open Data &mdash;
       <a href="https://data.worldbank.org/" target="_blank" rel="noopener">data.worldbank.org</a>
@@ -92,7 +92,7 @@
 
   <pre><code>https://api.worldbank.org/v2/country/PRT/indicator/IT.NET.USER.ZS?format=json</code></pre>
 
-  <!-- ── Cleaning ────────────────────────────────────────── -->
+  <!-- â”€â”€ Cleaning â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
   <h2>Data Cleaning &amp; Preparation</h2>
 
   <p>
@@ -103,10 +103,10 @@
   <div class="card">
     <h3 style="margin-top:0">Preparation Steps</h3>
     <ol style="padding-left:20px;color:var(--text-sec);line-height:2.2">
-      <li>Checked for <strong>null / missing values</strong> — none found ✓</li>
-      <li>Checked for <strong>duplicate rows</strong> — none found ✓</li>
+      <li>Checked for <strong>null / missing values</strong> â€” none found âœ“</li>
+      <li>Checked for <strong>duplicate rows</strong> â€” none found âœ“</li>
       <li>Verified all <strong>data types</strong> for correctness</li>
-      <li>Reviewed numerical ranges for <strong>outliers</strong> (e.g., absences 0–93)</li>
+      <li>Reviewed numerical ranges for <strong>outliers</strong> (e.g., absences 0â€“93)</li>
       <li>Dropped intermediate grades <code>G1</code> and <code>G2</code> to avoid data leakage</li>
       <li>Created derived <strong>performance category</strong> from G3 (Low / Medium / High)</li>
       <li>Binary-encoded yes/no columns; One-hot encoded job/reason/guardian columns</li>
@@ -120,7 +120,7 @@
 
   <hr class="divider">
 
-  <!-- ── EDA ────────────────────────────────────────────── -->
+  <!-- â”€â”€ EDA â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
   <h2>Exploratory Data Analysis</h2>
 
   <p>
@@ -137,7 +137,7 @@
     </div>
     <figcaption>
       <strong>Figure 1: Distribution of Final Grades.</strong>
-      Most students score in the mid-range (10–14), with fewer extreme high or low values,
+      Most students score in the mid-range (10â€“14), with fewer extreme high or low values,
       indicating balanced academic performance across the dataset. There is a notable spike at G3=0 representing students who withdrew from the course.
     </figcaption>
   </figure>
@@ -184,7 +184,7 @@
       </div>
       <figcaption>
         <strong>Figure 9: Age Distribution of Students.</strong>
-        Most students fall within a narrow age range (15–18), suggesting behavioral factors are more predictive than age.
+        Most students fall within a narrow age range (15â€“18), suggesting behavioral factors are more predictive than age.
       </figcaption>
     </figure>
   </div>
@@ -245,16 +245,16 @@
       title="Interactive parallel coordinates plot of student attributes">
     </iframe>
     <figcaption>
-      <strong>Figure 10: Interactive Parallel Coordinates — Student Behavior &amp; Academic Performance.</strong>
+      <strong>Figure 10: Interactive Parallel Coordinates â€” Student Behavior &amp; Academic Performance.</strong>
       Each line = one student. Color intensity indicates final grade. Students with higher grades follow patterns of higher study time and lower absences. Drag axes to reorder and explore different relationships.
     </figcaption>
   </figure>
 
   <div class="callout blue">
-    <span class="callout-icon">💻</span>
+    <span class="callout-icon">ðŸ’»</span>
     <p>
       <strong>Code Repository:</strong> All data preparation and EDA code is in the main Python notebook.
-      <a href="#" target="_blank">Link to Notebook (EDA &amp; Data Preparation) →</a>
+      <a href="#" target="_blank">Link to Notebook (EDA &amp; Data Preparation) â†’</a>
     </p>
   </div>
 

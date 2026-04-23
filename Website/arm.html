@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ARM | Student Performance Analysis</title>
-  <meta name="description" content="Association Rule Mining applied to student performance data — Apriori algorithm, support/confidence/lift rule discovery.">
+  <meta name="description" content="Association Rule Mining applied to student performance data â€” Apriori algorithm, support/confidence/lift rule discovery.">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -12,10 +12,10 @@
 <nav>
   <div class="nav-inner">
     <a href="index.html" class="nav-brand">
-      <div class="brand-seal">📋</div>
+      <div class="brand-seal">ðŸ“‹</div>
       <div>
         <div class="brand-text">Student Performance</div>
-        <div class="brand-sub">ML Analysis · 2025</div>
+        <div class="brand-sub">ML Analysis Â· 2025</div>
       </div>
     </a>
     <ul>
@@ -39,7 +39,7 @@
 
 <main>
 
-  <!-- ── Hero ─────────────────────────────────────────────── -->
+  <!-- â”€â”€ Hero â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
   <div class="hero">
     <span class="hero-badge" style="background:rgba(246,173,85,0.15);border-color:rgba(246,173,85,0.35);color:var(--accent3)">
       Association Rule Mining
@@ -57,15 +57,15 @@
     <div class="info-tile"><div class="tile-value" style="color:var(--accent3)">1.947</div><div class="tile-label">Max Lift Achieved</div></div>
   </div>
 
-  <!-- ── Overview ──────────────────────────────────────────── -->
+  <!-- â”€â”€ Overview â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
   <h2>Overview: What is ARM?</h2>
 
   <p>
-    <strong>Association Rule Mining (ARM)</strong> is an unsupervised data mining technique that identifies interesting relationships — called <em>rules</em> — between variables in large datasets. ARM was originally developed for market basket analysis (e.g., "customers who buy bread also buy butter"), but it applies equally well to any transactional or event-based dataset. In the context of student performance, ARM uncovers statements like: "students who have no past failures and use the internet are likely to aspire to higher education." These rules provide interpretable, human-readable insights that complement the more abstract patterns found by clustering and PCA.
+    <strong>Association Rule Mining (ARM)</strong> is an unsupervised data mining technique that identifies interesting relationships â€” called <em>rules</em> â€” between variables in large datasets. ARM was originally developed for market basket analysis (e.g., "customers who buy bread also buy butter"), but it applies equally well to any transactional or event-based dataset. In the context of student performance, ARM uncovers statements like: "students who have no past failures and use the internet are likely to aspire to higher education." These rules provide interpretable, human-readable insights that complement the more abstract patterns found by clustering and PCA.
   </p>
 
   <p>
-    An <strong>association rule</strong> takes the form: <code>{antecedents} → {consequents}</code>. The strength of a rule is measured by three core metrics:
+    An <strong>association rule</strong> takes the form: <code>{antecedents} â†’ {consequents}</code>. The strength of a rule is measured by three core metrics:
   </p>
 
   <div class="card">
@@ -78,12 +78,12 @@
         <tbody>
           <tr>
             <td><strong>Support</strong></td>
-            <td><code>freq(A ∪ B) / N</code></td>
+            <td><code>freq(A âˆª B) / N</code></td>
             <td>How often the rule appears in the dataset (frequency). Higher = more common pattern.</td>
           </tr>
           <tr>
             <td><strong>Confidence</strong></td>
-            <td><code>freq(A ∪ B) / freq(A)</code></td>
+            <td><code>freq(A âˆª B) / freq(A)</code></td>
             <td>How often the rule is correct given the antecedent. P(B | A). Higher = more reliable rule.</td>
           </tr>
           <tr>
@@ -99,45 +99,45 @@
   <h3>The Apriori Algorithm</h3>
 
   <p>
-    The <strong>Apriori algorithm</strong> is the foundational method for ARM. It works in two phases: first, it discovers all <em>frequent itemsets</em> — combinations of items that appear together in at least <code>min_support</code> fraction of transactions. It exploits the <em>anti-monotone property</em>: if an itemset is infrequent, all of its supersets must also be infrequent, allowing large portions of the search space to be pruned. Second, it generates association rules from the frequent itemsets and filters them by a <code>min_confidence</code> threshold. The result is a set of high-quality, statistically meaningful if-then rules derived directly from the data.
+    The <strong>Apriori algorithm</strong> is the foundational method for ARM. It works in two phases: first, it discovers all <em>frequent itemsets</em> â€” combinations of items that appear together in at least <code>min_support</code> fraction of transactions. It exploits the <em>anti-monotone property</em>: if an itemset is infrequent, all of its supersets must also be infrequent, allowing large portions of the search space to be pruned. Second, it generates association rules from the frequent itemsets and filters them by a <code>min_confidence</code> threshold. The result is a set of high-quality, statistically meaningful if-then rules derived directly from the data.
   </p>
 
   <div class="callout amber">
-    <span class="callout-icon">🔑</span>
+    <span class="callout-icon">ðŸ”‘</span>
     <p>
-      <strong>Thresholds used in this project:</strong> Min support = <strong>0.10</strong> (rule must appear in ≥10% of students), Min confidence = <strong>0.30</strong> (rule must be correct ≥30% of the time). These were chosen to balance specificity and generalizability — too low a threshold produces too many trivial rules; too high misses meaningful patterns.
+      <strong>Thresholds used in this project:</strong> Min support = <strong>0.10</strong> (rule must appear in â‰¥10% of students), Min confidence = <strong>0.30</strong> (rule must be correct â‰¥30% of the time). These were chosen to balance specificity and generalizability â€” too low a threshold produces too many trivial rules; too high misses meaningful patterns.
     </p>
   </div>
 
   <hr class="divider">
 
-  <!-- ── Data Prep ──────────────────────────────────────────── -->
+  <!-- â”€â”€ Data Prep â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
   <h2>Data Preparation</h2>
 
   <p>
-    ARM requires <strong>unlabeled transactional data</strong> — each "transaction" is a list of present items (attributes) for one record, without numeric values or labels. Unlike regression or clustering, ARM cannot use raw numeric columns; all features must be converted to interpretable categorical items.
+    ARM requires <strong>unlabeled transactional data</strong> â€” each "transaction" is a list of present items (attributes) for one record, without numeric values or labels. Unlike regression or clustering, ARM cannot use raw numeric columns; all features must be converted to interpretable categorical items.
   </p>
 
   <div class="card">
     <h3 style="margin-top:0">Transaction Construction</h3>
-    <p>Each student was converted into a transaction — a list of discrete behavioral and academic items:</p>
+    <p>Each student was converted into a transaction â€” a list of discrete behavioral and academic items:</p>
     <ul style="color:var(--text-sec);padding-left:20px;line-height:2">
-      <li><code>StudyTime:Low / Medium / High / VeryHigh</code> (from numeric 1–4)</li>
+      <li><code>StudyTime:Low / Medium / High / VeryHigh</code> (from numeric 1â€“4)</li>
       <li><code>Absences:Low</code> (&le;6) or <code>Absences:High</code> (&gt;6)</li>
-      <li><code>Alcohol:None / Low / Medium / High / VeryHigh</code> (Walc 1–5)</li>
+      <li><code>Alcohol:None / Low / Medium / High / VeryHigh</code> (Walc 1â€“5)</li>
       <li><code>Internet:Yes / No</code></li>
       <li><code>Failures:None</code> or <code>Failures:Some</code></li>
       <li><code>FamSupport:Yes / No</code>, <code>Higher:Yes / No</code>, <code>Romantic:Yes / No</code></li>
       <li><code>FreeTime:VeryLow / Low / Medium / High / VeryHigh</code></li>
-      <li><code>Grade:Low</code> (G3 &lt;10) / <code>Grade:Medium</code> (10–13) / <code>Grade:High</code> (≥14)</li>
+      <li><code>Grade:Low</code> (G3 &lt;10) / <code>Grade:Medium</code> (10â€“13) / <code>Grade:High</code> (â‰¥14)</li>
     </ul>
   </div>
 
   <div class="callout blue">
-    <span class="callout-icon">📋</span>
+    <span class="callout-icon">ðŸ“‹</span>
     <p>
       <strong>Sample transaction data:</strong> 
-      <a href="arm_transactions_sample.csv" target="_blank" rel="noopener">Download sample transactions CSV →</a>
+      <a href="arm_transactions_sample.csv" target="_blank" rel="noopener">Download sample transactions CSV â†’</a>
     </p>
   </div>
 
@@ -152,7 +152,7 @@
 
   <hr class="divider">
 
-  <!-- ── Code ──────────────────────────────────────────────── -->
+  <!-- â”€â”€ Code â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
   <h2>Code</h2>
 
   <p>ARM was implemented in <strong>Python 3</strong> using the <strong>mlxtend</strong> library. Core packages used: <code>mlxtend</code> (apriori, association_rules, TransactionEncoder), <code>pandas</code>, <code>numpy</code>, <code>matplotlib</code>.</p>
@@ -167,7 +167,7 @@
 
   <hr class="divider">
 
-  <!-- ── Results ───────────────────────────────────────────── -->
+  <!-- â”€â”€ Results â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
   <h2>Results &amp; Visualizations</h2>
 
   <!-- Scatter -->
@@ -175,7 +175,7 @@
 
   <div class="img-wrap">
     <img src="fig_arm_scatter.png" alt="ARM scatter plot showing support vs confidence of all rules, colored by lift value">
-    <div class="img-caption">Figure: All 9,021 association rules plotted as Support vs Confidence. Color encodes Lift — green dots indicate stronger-than-expected associations. High-confidence rules cluster at the top regardless of support level.</div>
+    <div class="img-caption">Figure: All 9,021 association rules plotted as Support vs Confidence. Color encodes Lift â€” green dots indicate stronger-than-expected associations. High-confidence rules cluster at the top regardless of support level.</div>
   </div>
 
   <!-- Network -->
@@ -183,7 +183,7 @@
 
   <div class="img-wrap">
     <img src="fig_arm_network.png" alt="Network diagram showing the top 25 association rules with directional arrows by lift strength">
-    <div class="img-caption">Figure: Network of the top 20 rules by Lift. Each node is an itemset; arrows show rule direction (antecedent → consequent). Arrow color and thickness encode Lift strength — thicker/warmer = stronger association. Red nodes = Grade outcomes; blue = Academic factors; amber = Alcohol/lifestyle; green = Other factors.</div>
+    <div class="img-caption">Figure: Network of the top 20 rules by Lift. Each node is an itemset; arrows show rule direction (antecedent â†’ consequent). Arrow color and thickness encode Lift strength â€” thicker/warmer = stronger association. Red nodes = Grade outcomes; blue = Academic factors; amber = Alcohol/lifestyle; green = Other factors.</div>
   </div>
 
   <!-- Top lift bar chart -->
@@ -191,10 +191,10 @@
 
   <div class="img-wrap">
     <img src="fig_arm_top_lift.png" alt="Horizontal bar chart of top 10 association rules by lift value">
-    <div class="img-caption">Figure: Top 10 association rules ranked by Lift. All top rules involve Grade:Low + past failures combinations, with lift values up to 1.947 — nearly twice the baseline expectation.</div>
+    <div class="img-caption">Figure: Top 10 association rules ranked by Lift. All top rules involve Grade:Low + past failures combinations, with lift values up to 1.947 â€” nearly twice the baseline expectation.</div>
   </div>
 
-  <!-- ── Top 15 Tables ─────────────────────────────────────── -->
+  <!-- â”€â”€ Top 15 Tables â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
   <h3>Top 15 Rules by Support</h3>
   <p>Most commonly occurring rule combinations among students. High support = widely observed patterns.</p>
 
@@ -224,7 +224,7 @@
   </div>
 
   <h3>Top 15 Rules by Confidence</h3>
-  <p>Most reliable rules — when the antecedent is present, the consequent is nearly always present too.</p>
+  <p>Most reliable rules â€” when the antecedent is present, the consequent is nearly always present too.</p>
 
   <div class="table-scroll">
     <table id="table-confidence">
@@ -252,7 +252,7 @@
   </div>
 
   <h3>Top 15 Rules by Lift</h3>
-  <p>Rules where the co-occurrence is most unexpected — a lift &gt; 1.0 means the items appear together more often than if they were independent, suggesting a real association.</p>
+  <p>Rules where the co-occurrence is most unexpected â€” a lift &gt; 1.0 means the items appear together more often than if they were independent, suggesting a real association.</p>
 
   <div class="table-scroll">
     <table id="table-lift">
@@ -281,7 +281,7 @@
 
   <hr class="divider">
 
-  <!-- ── Conclusions ─────────────────────────────────────── -->
+  <!-- â”€â”€ Conclusions â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
   <h2>Conclusions</h2>
 
   <div class="card">
@@ -293,7 +293,7 @@
 
     <ul style="color:var(--text-sec);padding-left:20px;line-height:2.1">
       <li>
-        <strong>Past failures are the strongest predictor of low grades:</strong> The top rules by lift all involve <code>Failures:Some → Grade:Low</code>, with lift values up to 1.947. Students with any academic failure history are nearly twice as likely to receive low final grades.
+        <strong>Past failures are the strongest predictor of low grades:</strong> The top rules by lift all involve <code>Failures:Some â†’ Grade:Low</code>, with lift values up to 1.947. Students with any academic failure history are nearly twice as likely to receive low final grades.
       </li>
       <li>
         <strong>High achievers share a consistent behavioral profile:</strong> High-confidence rules reveal that <code>Grade:High</code> students almost universally aspire to higher education, consume no or low alcohol, have no past failures, and use the internet. This "success profile" is highly consistent.
@@ -302,7 +302,7 @@
         <strong>Internet access co-occurs with academic resilience:</strong> Even among students with some failures, internet access is frequently associated with higher goal-setting (higher education aspiration), suggesting it may serve as both a resource and a motivational signal.
       </li>
       <li>
-        <strong>Aspiration to higher education is universal across most the dataset:</strong> The high-support rules show that <code>Higher:Yes</code> co-occurs with nearly every other positive behavioral attribute — showing that academic ambition is widely held but must be supported by reducing failures and absences.
+        <strong>Aspiration to higher education is universal across most the dataset:</strong> The high-support rules show that <code>Higher:Yes</code> co-occurs with nearly every other positive behavioral attribute â€” showing that academic ambition is widely held but must be supported by reducing failures and absences.
       </li>
       <li>
         <strong>Alcohol and social behavior interact with performance:</strong> The network visualization reveals that alcohol items form a distinct cluster of rules pointing toward Grade:Low, reinforcing findings from EDA that lifestyle choices have measurable effects on academic outcomes.
