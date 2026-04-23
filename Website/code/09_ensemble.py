@@ -1,47 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ensemble Code | Student Performance Analysis</title>
-  <link rel="stylesheet" href="../style.css">
-</head>
-<body>
-<nav>
-  <div class="nav-inner">
-    <a href="../index.html" class="nav-brand">
-      <div class="brand-seal">??</div>
-      <div>
-        <div class="brand-text">Student Performance</div>
-        <div class="brand-sub">ML Analysis � 2025</div>
-      </div>
-    </a>
-    <ul>
-      <li><a href="../index.html">Introduction</a></li>
-      <li><a href="../svm.html">SVM</a></li>
-      <li><a href="../ensemble.html">Ensemble</a></li>
-      <li><a href="../conclusions.html">Conclusions</a></li>
-    </ul>
-  </div>
-</nav>
-<main>
-  <div class="hero">
-    <span class="hero-badge" style="background:rgba(139,201,154,0.15);border-color:rgba(139,201,154,0.35);color:#8bc99a">Python Code</span>
-    <h1>Ensemble Code � 09_ensemble.py</h1>
-    <p class="hero-sub">Full source for Random Forest ensemble learning with feature importance, learning curve, and multi-model comparison.</p>
-  </div>
-  <div class="callout blue">
-    <span class="callout-icon">??</span>
-    <p><a href="09_ensemble.py" download class="btn-link">&darr; Download 09_ensemble.py</a></p>
-  </div>
-  <pre><code>&quot;&quot;&quot;
+"""
 09_ensemble.py — Random Forest Ensemble Learning Classification
 Student Performance Analysis Project
 Module 4 Assignment
 
 Trains a Random Forest classifier on the student dataset and
 generates all figures for the Ensemble tab of the website.
-&quot;&quot;&quot;
+"""
 
 import pandas as pd
 import numpy as np
@@ -87,8 +51,8 @@ plt.rcParams.update({
 
 OUT = 'Website/'
 
-# ── 1. Load &amp; prepare data ──────────────────────────────────────
-print(&quot;Loading data...&quot;)
+# ── 1. Load & prepare data ──────────────────────────────────────
+print("Loading data...")
 df = pd.read_csv('data/student_clean.csv')
 
 LABEL_COL = 'performance'
@@ -101,8 +65,8 @@ for col in X.select_dtypes(include='bool').columns:
     X[col] = X[col].astype(int)
 
 class_order = ['Low', 'Medium', 'High']
-print(f&quot;Features: {X.shape[1]}, Samples: {X.shape[0]}&quot;)
-print(f&quot;Class distribution:\n{y.value_counts()}&quot;)
+print(f"Features: {X.shape[1]}, Samples: {X.shape[0]}")
+print(f"Class distribution:\n{y.value_counts()}")
 
 # ── 2. Train/Test Split ─────────────────────────────────────────
 X_train, X_test, y_train, y_test = train_test_split(
@@ -110,7 +74,7 @@ X_train, X_test, y_train, y_test = train_test_split(
 )
 
 # ── 3. Train Random Forest ──────────────────────────────────────
-print(&quot;\n--- Training Random Forest ---&quot;)
+print("\n--- Training Random Forest ---")
 rf = RandomForestClassifier(
     n_estimators=200,
     max_depth=None,
@@ -127,7 +91,7 @@ y_pred = rf.predict(X_test)
 acc    = accuracy_score(y_test, y_pred)
 cm     = confusion_matrix(y_test, y_pred, labels=class_order)
 
-print(f&quot;Random Forest Accuracy: {acc*100:.1f}%&quot;)
+print(f"Random Forest Accuracy: {acc*100:.1f}%")
 print(classification_report(y_test, y_pred, target_names=class_order))
 
 # ── 4. Figure: Confusion Matrix ─────────────────────────────────
@@ -157,7 +121,7 @@ plt.setp(cbar.ax.yaxis.get_ticklabels(), color=CHALK_DIM)
 plt.tight_layout()
 plt.savefig(f'{OUT}fig_ens_cm.png', dpi=130, bbox_inches='tight', facecolor=BOARD)
 plt.close()
-print(&quot;Saved: fig_ens_cm.png&quot;)
+print("Saved: fig_ens_cm.png")
 
 # ── 5. Figure: Feature Importance ───────────────────────────────
 importances = pd.Series(rf.feature_importances_, index=X.columns)
@@ -167,7 +131,7 @@ fig, ax = plt.subplots(figsize=(10, 7))
 fig.patch.set_facecolor(BOARD)
 ax.set_facecolor(BOARD_LT)
 
-colors = [CHALK_GRN if v &gt; top15.median() else CHALK_BLUE for v in top15.values]
+colors = [CHALK_GRN if v > top15.median() else CHALK_BLUE for v in top15.values]
 bars = ax.barh(top15.index, top15.values,
                color=colors, edgecolor=CHALK_DIM, linewidth=0.8, height=0.65)
 
@@ -195,10 +159,10 @@ plt.tight_layout()
 plt.savefig(f'{OUT}fig_ens_feature_importance.png', dpi=130, bbox_inches='tight',
             facecolor=BOARD)
 plt.close()
-print(&quot;Saved: fig_ens_feature_importance.png&quot;)
+print("Saved: fig_ens_feature_importance.png")
 
 # ── 6. Figure: Learning Curve ────────────────────────────────────
-print(&quot;Computing learning curve (this may take a moment)...&quot;)
+print("Computing learning curve (this may take a moment)...")
 train_sizes, train_scores, val_scores = learning_curve(
     RandomForestClassifier(n_estimators=100, random_state=42, n_jobs=-1,
                            class_weight='balanced'),
@@ -241,7 +205,7 @@ plt.tight_layout()
 plt.savefig(f'{OUT}fig_ens_learning_curve.png', dpi=130, bbox_inches='tight',
             facecolor=BOARD)
 plt.close()
-print(&quot;Saved: fig_ens_learning_curve.png&quot;)
+print("Saved: fig_ens_learning_curve.png")
 
 # ── 7. Figure: Model Comparison (RF vs DT vs NB) ────────────────
 # Approximate accuracies from prior tabs
@@ -285,7 +249,7 @@ plt.tight_layout()
 plt.savefig(f'{OUT}fig_ens_accuracy_comparison.png', dpi=130, bbox_inches='tight',
             facecolor=BOARD)
 plt.close()
-print(&quot;Saved: fig_ens_accuracy_comparison.png&quot;)
+print("Saved: fig_ens_accuracy_comparison.png")
 
 # ── 8. Hyperparameter exploration: n_estimators ─────────────────
 n_trees_range = [10, 25, 50, 100, 150, 200, 300]
@@ -322,20 +286,14 @@ for spine in ax.spines.values():
 plt.tight_layout()
 plt.savefig(f'{OUT}fig_ens_ntrees.png', dpi=130, bbox_inches='tight', facecolor=BOARD)
 plt.close()
-print(&quot;Saved: fig_ens_ntrees.png&quot;)
+print("Saved: fig_ens_ntrees.png")
 
 # ── Summary ─────────────────────────────────────────────────────
-print(&quot;\n&quot; + &quot;=&quot;*50)
-print(&quot;RANDOM FOREST RESULTS SUMMARY&quot;)
-print(&quot;=&quot;*50)
-print(f&quot;n_estimators : 200&quot;)
-print(f&quot;Test Accuracy: {acc*100:.1f}%&quot;)
-print(f&quot;Top 3 features: {', '.join(importances.nlargest(3).index.tolist())}&quot;)
-print(&quot;=&quot;*50)
-print(&quot;\nAll Ensemble figures generated successfully!&quot;)
-</code></pre>
-</main>
-<footer><p>Student Performance Analysis &copy; 2025</p></footer>
-<script src="../script.js"></script>
-</body>
-</html>
+print("\n" + "="*50)
+print("RANDOM FOREST RESULTS SUMMARY")
+print("="*50)
+print(f"n_estimators : 200")
+print(f"Test Accuracy: {acc*100:.1f}%")
+print(f"Top 3 features: {', '.join(importances.nlargest(3).index.tolist())}")
+print("="*50)
+print("\nAll Ensemble figures generated successfully!")
