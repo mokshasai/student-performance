@@ -108,11 +108,13 @@
     <p><strong>Worked Example — Polynomial Kernel (r=1, d=2):</strong><br>
     Take a 2D input point <strong>x = (2, 3)</strong>.<br><br>
     The polynomial kernel with r=1, d=2 maps x into a higher-dimensional space via the feature map φ(x):<br>
-    <code style="display:block;margin:8px 0">φ(x) = (x₁², √2·x₁x₂, x₂²)</code>
-    For x = (2, 3): <code style="display:block;margin:8px 0">φ(2, 3) = (4, √2·6, 9) = (4, 8.485, 9)</code>
-    This maps the original <strong>2D point into a 3D space</strong>! The dot product of two mapped points equals the kernel:
+    <code style="display:block;margin:8px 0">φ(x) = (x₁², √2·x₁x₂, x₂², √(2r)·x₁, √(2r)·x₂, r)</code>
+    With r=1, this simplifies to:
+    <code style="display:block;margin:8px 0">φ(x) = (x₁², √2·x₁x₂, x₂², √2·x₁, √2·x₂, 1)</code>
+    For x = (2, 3): <code style="display:block;margin:8px 0">φ(2, 3) = (4, 8.485, 9, 2.828, 4.243, 1)</code>
+    This maps the original <strong>2D point into a 6D space</strong>! The dot product of two mapped points equals the kernel:
     <code style="display:block;margin:8px 0">K(x, z) = (x·z + 1)² = φ(x)·φ(z)</code>
-    The SVM works in this 3D space without ever computing φ explicitly — just evaluating K(x,z) for each pair of support vectors. This is the power of the kernel trick.</p>
+    The SVM works in this 6D space without ever computing φ explicitly — just evaluating K(x,z) for each pair of support vectors. This is the power of the kernel trick.</p>
   </div>
 
   <h3>RBF Kernel</h3>
